@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>www.kattskallen.3D – Sundby 7:130, Ornö</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
+--bg:#e7edef;--panel:#f6f7f5;--ink:#1f2b30;--muted:#5b6a6f;--line:#cad3d5;--chip:#ffffff;--on:#8e2a22;--onInk:#ffffff;--tagBg:rgba(246,247,245,.88)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#12191c;--panel:#192225;--ink:#e4ebeb;--muted:#9babae;--line:#2d3a3e;--chip:#212c30;--on:#b8463a;--onInk:#ffffff;--tagBg:rgba(25,34,37,.86)}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#12191c;--panel:#192225;--ink:#e4ebeb;--muted:#9babae;--line:#2d3a3e;--chip:#212c30;--on:#b8463a;--onInk:#ffffff;--tagBg:rgba(25,34,37,.86)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+#stage{flex:1;min-height:0;position:relative;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+#stage canvas{display:block;width:100%;height:100%}
+.tag{position:absolute;top:12px;left:12px;background:var(--tagBg);color:var(--ink);border-radius:10px;padding:8px 12px;pointer-events:none;max-width:calc(100% - 24px)}
+.tag h1{font-size:17px;font-weight:600;letter-spacing:-0.01em;margin:0;line-height:1.2}
+.tag p{font-size:13px;color:var(--muted);margin:2px 0 0}
+.hint{position:absolute;left:12px;right:12px;bottom:12px;margin:0;background:var(--tagBg);color:var(--ink);font-size:13px;line-height:1.4;border-radius:10px;padding:8px 12px;pointer-events:none;transition:opacity .6s;max-width:420px}
+nav{background:var(--panel);border-top:1px solid var(--line);padding:10px 0 12px;flex:none}
+.row{display:flex;gap:8px;overflow-x:auto;padding:0 12px;scrollbar-width:none;align-items:center}
+.row::-webkit-scrollbar{display:none}
+.tabs{display:flex;gap:6px;padding:0 12px 8px;overflow-x:auto;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tab{font-weight:600;background:transparent;border-color:transparent;color:var(--muted)}.tab[aria-selected="true"]{background:var(--chip);border-color:var(--line);color:var(--ink)}
+nav .panel{display:none}nav .panel.on{display:flex}.row.wrap{flex-wrap:wrap;row-gap:8px}
+.navhelp{margin:0 0 4px;font-size:13px;line-height:1.45;color:var(--muted);flex-basis:100%}.navhelp b{color:var(--ink);font-weight:600}
+.lock{position:fixed;inset:0;z-index:50;display:grid;place-items:end center;padding-bottom:30%;background:transparent}.lock[hidden]{display:none}
+.lock span{background:var(--tagBg);color:var(--ink);padding:8px 14px;border-radius:10px;font-size:14px}
+.shot{flex:none;width:96px;padding:0;border-radius:8px;overflow:hidden;min-height:0;position:relative}.shot img{display:block;width:96px;height:64px;object-fit:cover}.shot span{display:block;font-size:10px;line-height:1.2;padding:2px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px}
+.lbl{font-size:12px;font-weight:500;color:var(--muted);flex:none;width:38px}
+button{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:7px 13px;white-space:nowrap;flex:none;cursor:pointer;min-height:36px}
+button[aria-pressed="true"]{background:var(--on);border-color:var(--on);color:var(--onInk)}
+button:focus-visible{outline:2px solid var(--on);outline-offset:2px}
+.compass{position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;background:var(--tagBg);display:grid;place-items:center;pointer-events:none}
+.compass span{display:block;font-size:13px;font-weight:600;color:var(--on);transform-origin:50% 50%;position:relative}
+.compass span::before{content:"";position:absolute;left:50%;top:-11px;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:8px solid var(--on);transform:translateX(-50%)}
+.mlabel{position:absolute;transform:translate(-50%,-120%);background:var(--tagBg);color:var(--ink);font-size:13px;line-height:1.35;padding:6px 10px;border-radius:8px;pointer-events:none;white-space:nowrap}
+.ovl{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;opacity:.5}
+.photobar{background:var(--panel);border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 12px;flex:none;font-size:13px;color:var(--muted)}
+.photobar[hidden]{display:none}
+.gal{display:flex;gap:6px;overflow-x:auto;width:100%;scrollbar-width:none;padding-bottom:2px}
+.gal::-webkit-scrollbar{display:none}
+.gal button{padding:0;min-height:0;border-radius:6px;overflow:hidden;border:2px solid transparent;background:none;flex:none}
+.gal button[aria-pressed="true"]{border-color:var(--on);background:none}
+.gal img{display:block;height:54px;width:auto}
+.gal button{position:relative}
+.gal button[data-saved]::after{content:"✓";position:absolute;right:3px;bottom:3px;background:var(--on);color:var(--onInk);font-size:11px;line-height:16px;width:16px;height:16px;border-radius:50%;text-align:center}
+.filebtn{position:relative;border:1px solid var(--line);background:var(--chip);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:14px;cursor:pointer;min-height:36px}
+.filebtn input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.photobar label{display:flex;align-items:center;gap:8px}
+.photobar output{min-width:3.2em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.presets{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.photobar input[type=range]{width:120px;accent-color:var(--on)}
+@media (prefers-reduced-motion:reduce){.hint{transition:none}}
+</style>
+</head>
+<body>
+<div id="stage">
+<div class="tag"><h1>www.kattskallen.3D</h1><p>Sundby 7:130, Ornö · senaste uppdatering 26 okt 2026 · v66</p><p>Vit bod med brygga på östra udden, där vassranden slutar</p></div>
+<img id="ovl" class="ovl" alt="" hidden>
+<div id="compass" class="compass" aria-hidden="true"><span>N</span></div>
+<div id="mlabel" class="mlabel" hidden></div>
+<p id="hint" class="hint">Dra för att vrida, nyp för att zooma. Dubbeltryck där du vill komma närmare.</p>
+</div>
+<div id="photoBar" class="photobar" hidden>
+<div id="phGal" class="gal" role="list" aria-label="Dina foton"></div>
+<label class="filebtn">＋ Lägg till foton …<input id="phFile" type="file" accept="image/*" multiple></label>
+<label>Fotots synlighet <input id="opSl" type="range" min="0" max="100" value="50"> <output id="opOut">50 %</output></label>
+<label>Kamerans bildvinkel <input id="fovSl" type="range" min="20" max="90" value="42"> <output id="fovOut">42°</output></label>
+<span class="presets">Snabbval: <button type="button" id="prDrone">Drönarbild (56°)</button> <button type="button" id="prPhone">Mobilbild stående (72°)</button></span>
+<button type="button" id="phSave">Spara matchning</button><button type="button" id="phDel">🗑 Ta bort fotot</button>
+<button type="button" id="phFit">Hela bilden syns</button>
+<button type="button" id="phClose">Stäng fotot</button>
+</div>
+<nav aria-label="Meny">
+<div class="tabs" role="tablist">
+<button type="button" class="tab" data-tab="rowVisa" role="tab">Visa</button><button type="button" class="tab" data-tab="rowUte" role="tab">Ute</button><button type="button" class="tab" data-tab="rowInne" role="tab">Inne</button><button type="button" class="tab" data-tab="rowBilder" role="tab">Bilder</button><button type="button" class="tab" data-tab="rowNav" role="tab">Navigering</button>
+</div>
+<div class="row panel" id="rowVisa" role="tabpanel"></div>
+<div class="row panel" id="rowUte" role="tabpanel"></div>
+<div class="row panel" id="rowInne" role="tabpanel"></div>
+<div class="row panel wrap" id="rowBilder" role="tabpanel"></div>
+<div class="row panel wrap" id="rowNav" role="tabpanel"><p class="navhelp"><b>Pekskärm:</b> ett finger vrider vyn · två fingrar flyttar fokus (även upp/ner) och nyper för zoom · dubbeltryck zoomar dit du pekar · nära håll glider vyn framåt så du kan flyga igenom väggar och träd.<br><b>Mus:</b> dra vrider · högerklick-dra eller Shift+dra flyttar · hjulet zoomar · dubbelklick zoomar dit.<br><b>Tangenter:</b> pilar vrider/lutar · + och − zoomar · PgUp/PgDn flyttar fokus upp/ner · Home = översikt.</p></div>
+</nav>
+<div id="lock" class="lock" hidden><span>Tar bilder … rör inte skärmen</span></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/objects/Water.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+// ===== 00_core: renderer, scen, ljus, hjälpfunktioner, gemensamma material =====
+// felrapport: om något går fel när sidan laddas sparas felet i modellens databas så Claude kan se det
+(function(){const rep=(msg,src,line)=>{try{if(window.claude&&window.claude.use)window.claude.use('db').then(db=>db&&db.collection('errors').doc('e-'+Date.now()).set({msg:String(msg).slice(0,400),src:String(src||'').slice(-80),line:line||0,at:new Date().toISOString(),ua:navigator.userAgent.slice(0,120)})).catch(()=>{})}catch(e){}};
+window.addEventListener('error',e=>rep(e.message,e.filename,e.lineno));window.addEventListener('unhandledrejection',e=>rep('promise: '+(e.reason&&e.reason.message||e.reason),'',0))})();
+const D=Math.PI/180;
+const stage=document.getElementById('stage');
+const Rn=new THREE.WebGLRenderer({antialias:true,logarithmicDepthBuffer:true});
+Rn.setPixelRatio(Math.min(window.devicePixelRatio,2));
+Rn.shadowMap.enabled=true;Rn.shadowMap.type=THREE.PCFSoftShadowMap;
+stage.appendChild(Rn.domElement);
+const S=new THREE.Scene();
+S.background=new THREE.Color(0xd6e3ea);
+S.fog=new THREE.Fog(0xd6e3ea,140,360);
+const C=new THREE.PerspectiveCamera(42,1,0.03,900);
+S.add(new THREE.HemisphereLight(0xf4f7ff,0x4a4a3c,0.7));
+const sun=new THREE.DirectionalLight(0xffe2b8,0.95);
+sun.target.position.set(-4,3,22);S.add(sun.target);
+sun.position.set(36,53,82);
+sun.castShadow=true;sun.shadow.mapSize.set(4096,4096);
+Object.assign(sun.shadow.camera,{left:-42,right:42,top:42,bottom:-42,near:5,far:230});
+sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.03;S.add(sun);
+
+let seed=13;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+const cl=v=>Math.min(1,Math.max(0,v));
+
+// Placering enligt nybyggnadskartan (meter, x = öster, z = söder)
+// Betongplattans nivå bestäms i förhållande till röda stugans golv (beslut 24 okt 2026). Ändra bara SLAB_BELOW_RED när måttet är inmätt.
+const RED_FLOOR=8.92,SLAB_BELOW_RED=5.12;   // plattans ovansida ligger 5,12 m under röda stugans golv (preliminärt, ger +3,8)
+const AX=-16.3,AZ=15.1,AT=21.5*Math.PI/180,F=RED_FLOOR-SLAB_BELOW_RED;    // attefallshuset, långsidan i riktning 158,5°
+const RX=-0.7,RZ=18.7,RA=-68.5*Math.PI/180;           // röda stugan, långsidan i riktning 158,5° (beslut 23 okt 2026) — röda stugan
+const ac=Math.cos(AT),as=Math.sin(AT),RCA=Math.cos(RA),RSA=Math.sin(RA);
+const L2W=(lx,lz)=>[AX+lx*ac+lz*as,AZ-lx*as+lz*ac];
+const loc=(x,z)=>{const dx=x-AX,dz=z-AZ;return[dx*ac-dz*as,dx*as+dz*ac]};
+const AW=(lx,ly,lz)=>{const w=L2W(lx,lz);return[w[0],ly+F,w[1]]};
+const R2W=(lx,lz)=>[RX+lx*RCA+lz*RSA,RZ-lx*RSA+lz*RCA];
+const rloc=(x,z)=>{const dx=x-RX,dz=z-RZ;return[dx*RCA-dz*RSA,dx*RSA+dz*RCA]};
+
+// Grupper som kan tändas/släckas
+const TAG={roof:[],loft:[],trad:[]};
+const tag=(k,o)=>{TAG[k].push(o);return o};
+const ATRANS=[];   // [material, opacitet] som kan göras genomskinliga
+
+function tex(rgb,rep,v){const c=document.createElement('canvas');c.width=256;c.height=16;const x=c.getContext('2d');let p=0;while(p<256){const w=(v||18)+Math.random()*16,s=Math.floor(Math.random()*22-11);x.fillStyle=`rgb(${rgb[0]+s},${rgb[1]+s},${rgb[2]+s})`;x.fillRect(p,0,w,16);x.fillStyle='rgba(0,0,0,.22)';x.fillRect(p+w-2,0,2,16);p+=w}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rep,1);return t}
+function tileTex(rep){const c=document.createElement('canvas');c.width=128;c.height=128;const x=c.getContext('2d');x.fillStyle='#7d3527';x.fillRect(0,0,128,128);for(let r=0;r<8;r++)for(let k=0;k<8;k++){const s=Math.random()*24-12;x.fillStyle=`rgb(${125+s},${55+s/2},${40+s/2})`;x.fillRect(k*16+(r%2)*8,r*16,15,13);x.fillStyle='rgba(0,0,0,.35)';x.fillRect(k*16+(r%2)*8,r*16+13,15,3)}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rep[0],rep[1]);return t}
+function ctex(r){const c=document.createElement('canvas');c.width=128;c.height=128;const x=c.getContext('2d');x.fillStyle='#b0afaa';x.fillRect(0,0,128,128);for(let i=0;i<500;i++){const s=Math.random()*30-15;x.fillStyle=`rgba(${120+s},${120+s},${115+s},0.25)`;x.fillRect(Math.random()*128,Math.random()*128,2,2)}x.fillStyle='rgba(0,0,0,0.12)';x.fillRect(0,63,128,1);x.fillRect(0,127,128,1);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(r[0],r[1]);return t}
+function stoneTex(){const c=document.createElement('canvas');c.width=128;c.height=64;const x=c.getContext('2d');x.fillStyle='#6d6a64';x.fillRect(0,0,128,64);for(let i=0;i<40;i++){const s=Math.random()*40-20;x.fillStyle=`rgb(${140+s},${135+s},${128+s})`;x.beginPath();x.ellipse(Math.random()*128,Math.random()*64,6+Math.random()*8,4+Math.random()*4,0,0,7);x.fill()}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(3,1);return t}
+function tileFloorTex(){const c=document.createElement('canvas');c.width=64;c.height=64;const x=c.getContext('2d');x.fillStyle='#8e9192';x.fillRect(0,0,64,64);for(let i=0;i<4;i++)for(let k=0;k<4;k++){const s=Math.random()*12-6;x.fillStyle=`rgb(${120+s},${124+s},${126+s})`;x.fillRect(i*16+1,k*16+1,14,14)}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(3,8);return t}
+
+const M=o=>new THREE.MeshStandardMaterial(Object.assign({roughness:0.85},o));
+let cur=S;
+function box(w,h,d,x,y,z,m){const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,y,z);cur.add(b);return b}
+function cyl(r,h,x,y,z,m,seg){const c=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,seg||10),m);c.position.set(x,y,z);cur.add(c);return c}
+function slab(x0,y0,x1,y1,depth,zc,mat,seam,sp){const G=new THREE.Group();const dx=x1-x0,dy=y1-y0,len=Math.hypot(dx,dy);G.position.set((x0+x1)/2,(y0+y1)/2,zc);G.rotation.z=Math.atan2(dy,dx);G.add(new THREE.Mesh(new THREE.BoxGeometry(len,0.07,depth),mat));if(seam)for(let z=-depth/2+0.25;z<depth/2;z+=(sp||0.5)){const b=new THREE.Mesh(new THREE.BoxGeometry(len,0.05,0.03),seam);b.position.set(0,0.05,z);G.add(b)}cur.add(G);return G}
+function tri(pts,mat,x,z,ry){const s=new THREE.Shape();s.moveTo(pts[0][0],pts[0][1]);pts.slice(1).forEach(p=>s.lineTo(p[0],p[1]));const m=new THREE.Mesh(new THREE.ShapeGeometry(s),mat);m.position.set(x,0,z);m.rotation.y=ry||0;cur.add(m);return m}
+// Form med rektangulära hål: outline [[x,y]...], holes [[x0,y0,x1,y1]...]
+function holeShape(outline,holes){const s=new THREE.Shape();s.moveTo(outline[0][0],outline[0][1]);outline.slice(1).forEach(p=>s.lineTo(p[0],p[1]));(holes||[]).forEach(h=>{const p=new THREE.Path();p.moveTo(h[0],h[1]);p.lineTo(h[0],h[3]);p.lineTo(h[2],h[3]);p.lineTo(h[2],h[1]);p.lineTo(h[0],h[1]);s.holes.push(p)});return s}
+
+// Gemensamma material
+const roofAZ=M({color:0xb7bcc0,metalness:0.55,roughness:0.4}),seamM=M({color:0xc9cdd0,metalness:0.6,roughness:0.35});
+const glass=M({color:0x2c3a44,roughness:0.08,metalness:0.3});
+const glassT=new THREE.MeshStandardMaterial({color:0xa9c3cf,roughness:0.05,metalness:0.1,transparent:true,opacity:0.22,depthWrite:false});
+const frame=M({color:0x6f6b64}),white=M({color:0xf2f0ea}),dark=M({color:0x3b3631});
+const deckOld=M({map:tex([138,132,122],2)}),deckNew=M({map:tex([200,176,134],3)}),deckAlt=M({map:tex([178,160,132],3)});
+const post=M({color:0x8a7f70}),wood=M({color:0xa98d66}),capM=M({color:0x1e1e1e,metalness:0.5});
+
+const PHOTOS=[];
+// ===== 10_terrain: berget, vassen, stränderna, sjön =====
+function raw(x,z){const dz=z+1.5,sh=dz>15?0.3*(dz-15):0,dx=x+0.7-sh,a=dx<0?24:30,b=dz>0?45:70-27*cl((-dz-8)/10),e=2+0.6*cl((dz-10)/20);
+const rho=Math.pow(Math.pow(Math.abs(dx/a),e)+Math.pow(Math.abs(dz/b),e),1/e);const u=dz>0?Math.abs(dz/b)/Math.max(rho,1e-3):0;const p=1.2+2.8*u*u;
+let h=rho<1?9*(1-Math.pow(rho,p)):-(rho-1)*12;
+if(dz<-22)h=Math.max(h,1.3*cl((-dz-22)/6)*cl((13+1.5*Math.sin(z*0.3)-Math.abs(x-NECKX(z)))/4)); // landtungan (bredare kring grusplanen: träd och berg runt om) med infart och parkering (läge enligt flygbilden: x≈17–24, z≈−26…−41) och vägen norrut
+if(h<=0)return h;
+// Granithällens form efter bilderna: inlandsisen har slipat rundade "valryggar" i isriktningen (ca 160°),
+// berget är genomdraget av raka sprickor i två riktningar, och mot öster och söder bryts det i trappstegsformade avsatser.
+const R=rockDetail(x,z),w=cl(h/1.0);h+=(R.hump+R.crack)*w;
+// branta partier: södra klippan bakom bryggan och östra klippväggen mot spången – avsatser och lodräta block
+const steep=Math.max(cl((x+0.7-sh-17)/7)*cl((z+10)/12)*cl((44-z)/6),cl((z-33)/5)*cl((x+4)/6)*cl((22-x)/6));
+if(steep>0){const st=1.35,q=h/st,f=q-Math.floor(q),stp=(Math.floor(q)+cl((f-0.62)/0.3))*st;h=h+(stp-h)*steep*0.75}
+return h}
+// små former: rundade hällar längs isriktningen, sprickor och sänkor (används även för färgerna)
+// värdebrus utan upprepning: ersätter periodiska sinusmönster som syntes som rutnät i berget (23 okt 2026)
+function _h2(i,j){let n=(i*374761393+j*668265263)|0;n=(n^(n>>>13))*1274126177|0;return((n^(n>>>16))>>>0)/4294967295}
+function vn(x,z){const i=Math.floor(x),j=Math.floor(z),fx=x-i,fz=z-j,u=fx*fx*(3-2*fx),w=fz*fz*(3-2*fz);const a=_h2(i,j),b=_h2(i+1,j),c=_h2(i,j+1),d=_h2(i+1,j+1);return a+(b-a)*u+(c-a)*w+(a-b-c+d)*u*w}
+function fbm(x,z){let s=0,a=0.5,f=1;for(let k=0;k<3;k++){const c=Math.cos(0.9*k+0.4),q=Math.sin(0.9*k+0.4);s+=a*vn((x*c-z*q)*f+k*17.3,(x*q+z*c)*f-k*9.1);a*=0.5;f*=2.03}return s/0.875}
+function rockDetail(x,z){const u=x*0.342+z*0.94,v=x*0.94-z*0.342;
+// oregelbunden granit (genomgång av modellbilder 23 okt): koordinaterna vrids med långvågigt brus så att
+// valryggar och sprickor inte bildar ett rutmönster; sprickorna finns bara fläckvis och är grundare.
+const wu=u+3.2*Math.sin(v*0.11+1.3)+1.8*Math.sin(u*0.07+v*0.05),wv=v+2.6*Math.sin(u*0.13+0.4)+1.5*Math.sin(v*0.09-u*0.04);
+const hump=0.38*Math.pow(Math.abs(Math.sin(wv*0.33+Math.sin(wu*0.09)*1.4)),1.1)+0.2*Math.pow(Math.abs(Math.sin(wv*0.71+wu*0.12+1.7)),1.1)+0.18*Math.sin(wu*0.19+wv*0.23)+0.06*(fbm(x*0.9+3.1,z*0.9-1.7)-0.5)*2-0.36;
+const m1=cl(0.35+0.9*Math.sin(wu*0.05+2)*Math.sin(wv*0.06+0.5)),m2=cl(0.25+0.9*Math.sin(wu*0.045-1)*Math.sin(wv*0.055+2.2));
+const s1=Math.sin(wu*0.61+wv*0.17),s2=Math.sin(wv*0.47-wu*0.29+0.8),c1=Math.exp(-s1*s1*70)*m1,c2=Math.exp(-s2*s2*70)*m2;
+return{hump,crack:-0.16*(c1+c2*0.8),cr:Math.max(c1,c2)}}
+// Vassen efter flygbild + drönarbilder (georefererat 23 okt 2026):
+// öster: stort vassfält från stranden långt österut, söderut till ca z 30 (östra landningen), sedan en vassrand längs vikens östra strand (x > 47) ner till z ≈ 60.
+// väster: vassbälte mellan stranden och den öppna kanalen, brett i norr (kant x −50 vid z −46) och smalnande till z ≈ 9; därefter bara en smal rand (ca 3 m) förbi attefallshuset.
+const WREED=[[-70,-58],[-46,-49.8],[-29.7,-44],[-13.1,-36.6],[3.6,-30],[8.7,-26.1]];
+function wEdge(z){if(z<=WREED[0][0])return WREED[0][1];for(let i=1;i<WREED.length;i++)if(z<=WREED[i][0]){const[a,b]=WREED[i-1],[c,d]=WREED[i];return b+(d-b)*(z-a)/(c-a)}return null}
+// Omgivningens kanter (genomgång 23 okt 2026: flygbild LM, Apple-satellit, drönarbilder A–E, 26):
+// EAST = fast mark/skogskant öster om vassfältet och viken, WEST = fast mark på motstranden i väster. Mynning mot havet ca z 200–215.
+const EAST=[[-140,40],[-85,45],[-73,54],[-42,75],[18,97],[29,97],[38,80],[51,79],[82,88],[120,85],[170,62],[200,42],[215,38],[235,90],[270,150]];
+const WEST=[[-140,-96],[-26,-96],[-14,-58],[40,-58],[70,-45],[120,-40],[170,-20],[205,0],[215,4],[235,-40],[270,-110]];
+function pw(a,z){if(z<=a[0][0])return a[0][1];for(let i=1;i<a.length;i++)if(z<=a[i][0]){const[p,q]=a[i-1],[r,t]=a[i];return q+(t-q)*(z-p)/(r-p)}return a[a.length-1][1]}
+const eastEdge=z=>pw(EAST,z)+3*Math.sin(z*0.17)+1.6*Math.sin(z*0.47+1.3),westEdge=z=>pw(WEST,z)+2.5*Math.sin(z*0.19+0.7)+1.2*Math.sin(z*0.53);
+const nE=x=>2.2*Math.sin(x*0.21)+1.3*Math.sin(x*0.57+1.1),nN=x=>3*Math.sin(x*0.13)+1.5*Math.sin(x*0.41+2);
+// Östra udden (drönarbild 26, 26 okt 2026): vassranden längs vikens östra strand slutar vid en liten vit bod med brygga, sedan klippstrand.
+// Läget är ungefärligt (bara perspektivbild) – flytta EBOD om en bättre källa visar annat.
+const REED_END_E=120,EBOD=[eastEdge(124)+3.5,124];
+function marsh(x,z){if(z<-86+nN(x))return false;
+if(x>0){const xe=eastEdge(z);if(z<30.5+nE(x)*cl((x-30)/6)-0.8*cl((x-20)/8))return x<xe;const lo=47+1.8*Math.sin(z*0.23)+1.1*Math.sin(z*0.61+0.4)+(xe-7-47)*cl((z-62)/18);return z<REED_END_E&&x>lo&&x<xe}   // vikens östra vassrand: från x≈47 (LM-flygbild) och smalnande söderut
+const we=wEdge(z);if(we!==null&&x>we&&x>-58)return true;
+if(z<-18)return x>westEdge(z)&&x<(we===null?-62:we-13);
+return false}   // ingen vassrand förbi attefallshuset (varken flygbild eller drönarbild visar någon)
+function base(x,z){let h=Math.max(raw(x,z),-0.8);   // grunt vatten runt om: mjuka strandlinjer i stället för trappsteg
+{const mf=(marsh(x,z)+marsh(x+1.1,z)+marsh(x-1.1,z)+marsh(x,z+1.1)+marsh(x,z-1.1))/5;if(mf>0){const mh=0.22+0.04*Math.sin(x*.7+z*.5);if(h<mh)h=h+(mh-h)*(mf>=1?1:mf*mf*(3-2*mf))}}   // vassbotten alltid över vattnet (ingen randning)
+{const xe=eastEdge(z);if(x>xe)h=Math.max(h,0.5+Math.min(9,(x-xe)*0.3)+0.4*Math.sin(z*.15));}
+{const xw=westEdge(z);if(x<xw)h=Math.max(h,0.5+Math.min(9,(xw-x)*0.35)+0.5*Math.sin(z*.13));}
+{const zn=-86+nN(x);if(z<zn)h=Math.max(h,0.6+Math.min(7,(zn-z)*0.3)+0.5*Math.sin(x*.2));}
+return Math.max(h,-5)}
+// Röda stugans golvhöjd
+const Fr=RED_FLOOR;   // röda stugans golv, kalibrerat (+8,9)
+function ground(x,z){let h=base(x,z);const[lx,lz]=loc(x,z);
+if(lx>-2.45&&lx<2.42&&lz>-5.4&&lz<3.8&&h>F-0.1)h=F-0.1;               // utsprängd platå 8,5 x 4,2
+if(lx>-2.15&&lx<2.05&&lz>-3.62&&lz<3.65)h=Math.min(h,F-1.5);           // under huset
+{const sm=(a,b,v)=>{const q=cl((v-a)/(b-a));return q*q*(3-2*q)};
+ // utfyllnad bakom muren mot berget (krön i nivå med muren, vid fönsterdörren 1,6 m, under terrassen 2,15 m)
+ if(lx>=2.4&&lx<5.0&&lz>-5.8&&lz<3.9){const fy=F+(lz<-1.1?2.1:lz<-0.05?1.4:2.15);const k=1-sm(3.4,5.0,lx);h=Math.max(h,h+(fy-h)*k);if(lx<3.4)h=fy}
+ // utfyllnad bakom bakre muren
+ if(lz<=-5.3&&lz>-7.0&&lx>-0.2&&lx<2.6){const fy=F+1.1,k=1-sm(-6.2,-7.0,lz)*0;const kk=sm(-7.0,-6.0,lz);if(lz>-6.0)h=Math.max(h,fy);else h=Math.max(h,h+(fy-h)*kk)}
+ // hela bergskammen framför huset förskjuten 1,2 m (nu 2,2 m utsprängt), mjuk övergång
+ if(lx>-3.6&&lx<2.8&&lz>=3.55&&lz<8.0){const lim=F-0.3+Math.max(0,lz-6.1)*1.6;h=Math.min(h,lim)}}
+if(lx>-3.2&&lx<-2.05&&lz>-1.6&&lz<3.6)h=Math.min(h,F-0.3);               // under altanen längs långsidan
+if(lx>=2.4&&lx<5.25&&lz>-1.15&&lz<3.75)h=Math.min(h,F+2.15);             // under takterrassen
+if(lx>=2.4&&lx<4.5&&lz>-1.1&&lz<-0.05)h=Math.min(h,F+1.4);               // vilplan utanför glasdörren
+if(lx>=2.36&&lx<2.58&&lz>-3.42&&lz<-1.27)h=Math.min(h,F-0.03);               // vertikala graven (nisch 2,01 x 0,5 m) genom muren
+h=Math.max(h,fillW(lx,lz));                                              // sprängsten längs långsidan + stenramp
+{const pc=onPath(lx,lz);if(pc!==null&&pc<0.45&&base(x,z)<PY+0.8)h=PY;   // gångvägen ligger alltid överst (även genom stenrampens slänt)
+ else if(pc===null||pc>=0.45){const d2=onPath2(x,z);if(d2<0.45)h=Math.max(PY,Math.min(h,base(x,z)))}else if(pc!==null&&pc<1.0&&h<PY)h=PY-(pc-0.45)*0.6}   // gångvägen skär aldrig ett dike genom berget   // gångväg 0,9 m bred, 0,3 m över vattnet
+const[rx,rz]=rloc(x,z);if((rx>1.7&&rx<5.6&&rz>2.3&&rz<7.2)||(rx>4.5&&rx<5.6&&rz>-2.6&&rz<2.4))h=Math.min(h,Fr-0.4); // under altanen och trallremsan
+// inget berg eller fyllning får sticka upp inne i attefallshuset eller teknikrummet: allt är bortsprängt till plattan
+if(lx>-2.15&&lx<2.06&&lz>-3.6&&lz<3.6)h=Math.min(h,F-1.5);else if(lx>-2.2&&lx<2.4&&lz>-5.35&&lz<3.65)h=Math.min(h,F-0.35);
+{const d=-2.43-rz;   // röda stugan: marken följer naturligt berg, bara urschaktat under huset och altanerna
+{const pd=Math.hypot(rx-0.45,(d-4.6)*1.1);const g=Math.exp(-(pd/2.6)*(pd/2.6)),tg=Fr+0.7*Math.exp(-(pd/3.2)*(pd/3.2));h=h+Math.max(0,tg-h)*Math.min(1,g*1.4)}   // berg 0,7 m upp mot utbyggnadens gavel, högst mitt på, svag lutning ut
+if(d>=0&&d<4.5&&rx>-1.85&&rx<2.75)h=Math.min(h,Fr-0.35);
+if(Math.abs(rx)<4.6&&Math.abs(rz)<2.5)h=Math.min(h,Fr-0.05);
+if(rx>-1.4&&rx<2.3&&rz>=2.4&&rz<4.1)h=Math.min(h,Fr-0.05);
+if(rx>-2.5&&rx<2.8&&rz>=4.0&&rz<7.1)h=Math.min(h,Fr-0.25);}
+// Södra bergknallen mellan röda stugan och vattnet (drönarbilder 2, 6, 10 och matchningar): en stor, rundad granitkupol som
+// håller sig hög (ca 5,5–6 m) ända ut mot vattnet och stupar brant ner i sjön längs hela fronten – med kattskalleklippan vid flytbryggan.
+if(x>-7&&x<19&&z>26&&z<50){const zs=shoreZ(x);if(zs!==null){const d=zs-z;if(d>=0&&d<9){const sm=(a,b,v)=>{const q=cl((v-a)/(b-a));return q*q*(3-2*q)};
+ const wx=sm(-7,-3,x)*(1-sm(15,19,x)),tgt=0.35+5.7*sm(0.25,2.6,d)+0.35*Math.sin(x*0.9+z*0.45)+0.2*Math.sin(x*2.3-z*1.7)*sm(0.3,1.5,d);
+ h=h+(Math.max(h,tgt)-h)*wx}}}
+// Grusplanen vid infarten, utgående från vattenpumpen (fast referens, Mark 4): plan grusyta runt pumpen,
+// från berget i söder (svarta förrådet och trappan) norrut mot vassen och österut förbi utedasset.
+{const g=gravelW(x,z);if(g>0)h=h+(Math.max(PUMP[2]-0.05,Math.min(h,PUMP[2]+0.25))-h)*g}
+return h}
+const PUMP=[11.8,-34.4,1.2];   // handpumpen/brunnen, läge från matchningen av drönarbilden över infarten (24 okt)
+const YARD=[15.5,-30.5,7.0,6.5];   // grusplanens mitt och halva bredd/djup (samma matchning)
+function gravelW(x,z){const sm=(a,b,v)=>{const q=Math.min(1,Math.max(0,(v-a)/(b-a)));return q*q*(3-2*q)};
+ const [cx,cz,hx,hz]=YARD;return sm(cx-hx-1.5,cx-hx+0.5,x)*(1-sm(cx+hx-0.5,cx+hx+1.5,x))*sm(cz-hz-1.5,cz-hz+0.5,z)*(1-sm(cz+hz-0.5,cz+hz+1.5,z))}
+const SHORE=(()=>{const a=[];for(let x=-7;x<=19.01;x+=0.5){let f=null;for(let z=26;z<52;z+=0.1){if(base(x,z)<0.3){f=z;break}}a.push(f)}return a})();
+function shoreZ(x){const i=(x+7)/0.5,i0=Math.max(0,Math.min(SHORE.length-2,Math.floor(i))),t=i-i0,a=SHORE[i0],b=SHORE[i0+1];if(a==null||b==null)return a==null?b:a;return a+(b-a)*t}
+const CLIFFZ=x=>(shoreZ(x)||41)-1.0;
+// Sprängstensfyllning framför attefallshusets nedre altan: ett trappsteg (ca 20 cm) under altangolvet, slänt ned mot vattnet
+// Gångväg: 0,9 m bred, 0,3 m över vattnet, från 4,5 m framför husets framkant 62,5 m bakåt längs bergsfoten/tomtgränsen,
+// 0,5 m längre ut från huset än bergsfoten (beslut 23 okt 2026)
+const PY=0.3,P0=3.55+4.5,PSTEP=0.5,POFF=-0.5;
+const PATH=(()=>{const a=[];for(let s=0;s<=62.51;s+=PSTEP){const lz=P0-s;let fx=-30;for(let lx=12;lx>-34;lx-=0.2){const w=L2W(lx,lz);if(raw(w[0],w[1])<0.6){fx=lx;break}}a.push(fx>=11.9&&a.length?a[a.length-1]:fx)}
+for(let k=0;k<6;k++)for(let i=1;i<a.length-1;i++)a[i]=(a[i-1]+a[i]+a[i+1])/3;return a.map(v=>v+POFF)})();
+function pathX(lz){const f=(P0-lz)/PSTEP;if(f<0||f>PATH.length-1)return null;const i=Math.floor(f),t=f-i;return PATH[i]*(1-t)+PATH[Math.min(i+1,PATH.length-1)]*t}
+function NECKX(z){return z>-32?16.5:16.5+(-32-z)*0.15}   // landtungans mittlinje
+function onPath(lx,lz){const px=pathX(lz);return px===null?null:Math.abs(lx-px)}
+// stigens fortsättning från norra änden genom vasskanten fram till den plana infartsytan där bilen står
+const PATH2=[[-24.8,-36.5],[-20,-39.5],[-12,-41],[-2,-39.5],[7,-36.5],[14,-34]];   // till infartsytan där bilen står
+function onPath2(x,z){let m=99;for(let i=0;i<PATH2.length-1;i++){const[a,b]=PATH2[i],[c,d]=PATH2[i+1],vx=c-a,vz=d-b,t=cl(((x-a)*vx+(z-b)*vz)/(vx*vx+vz*vz));m=Math.min(m,Math.hypot(x-a-vx*t,z-b-vz*t))}return m}
+// Sprängsten: från andra pelaren och bakåt i nivå med nedersta trappsteget, slänt ned mot vattnet,
+// och en ca 10 m lång stenramp nedåt-bakåt längs vattnet som möter gångvägen 6 m bakom husets bakkant
+const FL=F-0.8,RA_=[-3.3,-1.3,FL],RB_=(()=>{const lz=-3.55-6.0;return[pathX(lz),lz,PY]})();
+function fillW(lx,lz){
+// slänt av sprängsten från gångvägen upp till altanen och trappans fot; ingen sprängsten mellan gångvägen och vattnet
+const px=pathX(lz);if(px!==null&&lx<px-0.45)return -99;
+const pe=(px===null?-6:px)+0.45,xa=-3.1;          // gångvägens kant mot huset → altanens ytterkant
+let y;if(lx>=xa)y=FL-0.65*Math.max(0,lx+2.05);else y=PY+(FL-PY)*cl((lx-pe)/(xa-pe));   // begränsad till husets närhet (tidigare fel: band tvärs över ön)
+const dz=Math.max(0,-2.5-lz,lz-6.6);y-=0.65*dz;if(lx<pe-0.6||lx>3.5)y=-99;   // slänten finns bara mellan gångvägen och huset    // utanför trappan/altanen faller slänten av
+const vx=RB_[0]-RA_[0],vz=RB_[1]-RA_[1],L2=vx*vx+vz*vz,tt=((lx-RA_[0])*vx+(lz-RA_[1])*vz)/L2,tc=cl(tt);
+const qx=RA_[0]+vx*tc,qz=RA_[1]+vz*tc,perp=Math.hypot(lx-qx,lz-qz),ry=RA_[2]+(RB_[2]-RA_[2])*tc;y=Math.max(y,ry-0.65*Math.max(0,perp-0.8));return y}
+function shoreE(z){for(let x=0;x<60;x+=0.2)if(raw(x,z)<0.05)return x;return 60}
+function shoreS(x){for(let z=10;z<80;z+=0.2)if(raw(x,z)<0.05)return z;return 80}
+function terrain(x0,z0,w,d,sx,sz,off0,cover){const g=new THREE.PlaneGeometry(w,d,sx,sz);g.rotateX(-Math.PI/2);g.translate(x0+w/2,0,z0+d/2);const pa=g.attributes.position,col=[],offs=new Float32Array(pa.count);
+for(let i=0;i<pa.count;i++){const x=pa.getX(i),z=pa.getZ(i),h=ground(x,z),b=raw(x,z),off=cover&&x>cover[0]&&x<cover[1]&&z>cover[2]&&z<cover[3]?off0:0;offs[i]=off;pa.setY(i,h+off);const n=(rnd()-0.5)*0.08;const[lx,lz]=loc(x,z);const lich=0.5+0.5*Math.sin(x*1.3+z*0.7)*Math.sin(z*1.1-x*0.4);
+if(lx>-2.45&&lx<2.42&&lz>-5.4&&lz<3.8&&Math.abs(h-(F-0.1))<0.01)col.push(0.6+n,0.59+n,0.56+n);
+else if(((lx>=2.4&&lx<3.4&&lz>-5.8&&lz<3.9)||(lz<=-5.3&&lz>-6.0&&lx>-0.2&&lx<2.6))&&h>F+0.9&&h<F+2.2)col.push(0.52+n,0.5+n,0.47+n);
+else if((z<-86+nN(x)||x>eastEdge(z)||x<westEdge(z))&&h>0.4)col.push(0.27+n,0.3+n,0.2+n);
+else if(gravelW(x,z)>0.5||(z<-24&&Math.abs(x-NECKX(z))<12&&b>0.3&&b<2.2)){const r=(rnd()-0.5)*0.06;col.push(0.5+r,0.46+r,0.36+r)}   // landtungan: grus/jord vid väg och parkering
+else if((onPath(lx,lz)!==null&&onPath(lx,lz)<0.55)||onPath2(x,z)<0.55){const r=(rnd()-0.5)*0.05;col.push(0.74+r,0.7+r,0.62+r)}
+else if(fillW(lx,lz)>base(x,z)+0.05&&Math.abs(h-fillW(lx,lz))<0.02){const r=(rnd()-0.5)*0.14;col.push(0.55+r,0.52+r,0.5+r)}
+else if(marsh(x,z)&&b<0.3)col.push(0.66+n,0.57+n,0.38+n);
+else if(h<-0.05)col.push(0.36+n+h*0.12,0.38+n+h*0.08,0.3+n+h*0.04);   // botten: ljus sand/sten grunt, mörkare djupare
+else if(h<0.35)col.push(0.45+n,0.42+n,0.36+n);
+else{const e=0.35,hf=(x>-7&&x<19&&z>26&&z<50)?ground:raw,gx=(hf(x+e,z)-hf(x-e,z))/(2*e),gz=(hf(x,z+e)-hf(x,z-e))/(2*e),sl=Math.hypot(gx,gz),R=rockDetail(x,z),hol=R.hump<-0.38&&sl<0.45;
+ const lv=fbm(x*0.55,z*0.55),pink=fbm(x*0.08+11.3,z*0.08-4.2);   // oregelbundet brus i stället för sinusvågor (gav rutmönster)
+ if(R.cr>0.7&&sl<0.9)col.push(0.42+n,0.36+n,0.28+n);                                   // sprickor med barr och mossa
+ else if(hol&&h>0.8)col.push(0.44+n,0.43+n*0.8,0.28+n*0.6);                           // sänkor med mossa, ljung och gräs
+ else if(sl<0.55&&h>1.2&&fbm(x*0.21+7.7,z*0.21-3.3)>0.62)col.push(0.36+n,0.42+n,0.25+n);   // gröna fläckar: mossa, lingonris och ljung på flackare hällar
+ else if(sl>1.8){const st=0.07*Math.sin(x*3.1+h*6.3)+0.05*Math.sin(z*5.3-h*4.1),lc=fbm(x*0.9+h,z*0.9-h)>0.6?0.08:0;col.push(0.5+st+lc*0.4+n,0.47+st+lc+n,0.44+st+lc*0.6+n)}   // branta väggar: grå granit med mörka strimmor och lavfläckar (som kattskalleklippan)
+ else if(sl>1.1)col.push(0.6+pink*0.08+n,0.46+n,0.43+n);                              // branta klippväggar: mörkare rosa granit
+ else col.push(0.68+pink*0.06+n-lv*0.08,0.6+n-lv*0.03,0.56+n-lv*0.07+(lv>0.75?0.03:0))}}
+const colB=col.slice();for(let i=0;i<pa.count;i++){const y=pa.getY(i)-offs[i];if(y<0.02)continue;const f=y-Math.floor(y),five=Math.abs(y/5-Math.round(y/5))*5<0.08;if(f<0.07||f>0.97||five){const k=five?0.35:0.55;colB[i*3]*=k;colB[i*3+1]*=k;colB[i*3+2]*=k}else{colB[i*3]=colB[i*3]*0.7+0.25;colB[i*3+1]=colB[i*3+1]*0.7+0.25;colB[i*3+2]=colB[i*3+2]*0.7+0.24}}
+g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));g.computeVertexNormals();const m=new THREE.Mesh(g,M({vertexColors:true,flatShading:true}));m.receiveShadow=true;m.userData.terrain=true;m.userData.colA=new Float32Array(col);m.userData.colB=new Float32Array(colB);TERR.push(m);S.add(m)}
+const TERR=[];
+terrain(-32,-14,72,68,480,453,0);       // detaljyta över halvön: dubbel upplösning (15 cm)
+terrain(-42,-56,90,112,300,374,-0.05,[-31.5,39.5,-13.5,53.5]);
+terrain(-110,-130,220,390,150,265,-0.12,[-41.5,47.5,-55.5,55.5]);
+const WAVE=(()=>{const N=256,c=document.createElement('canvas');c.width=c.height=N;const g=c.getContext('2d'),im=g.createImageData(N,N),T2=Math.PI*2;
+ const h=(u,v)=>0.55*Math.sin(T2*(3*v+0.35*Math.sin(T2*u)))+0.3*Math.sin(T2*(5*v+u+0.2*Math.sin(T2*2*u)))+0.15*Math.sin(T2*(9*v-2*u));   // långa, låga krön
+ for(let y=0;y<N;y++)for(let x=0;x<N;x++){const u=x/N,v=y/N,e=1/N,dx=(h(u+e,v)-h(u-e,v))*0.06*N,dy=(h(u,v+e)-h(u,v-e))*0.06*N,l=Math.hypot(dx,dy,1),i=(y*N+x)*4;
+  im.data[i]=(-dx/l*0.5+0.5)*255;im.data[i+1]=(-dy/l*0.5+0.5)*255;im.data[i+2]=(1/l*0.5+0.5)*255;im.data[i+3]=255}
+ g.putImageData(im,0,0);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(220,220);return t})();
+// Spegelblankt, genomskinligt vatten som speglar ön, träden och himlen (three.js Water: realtidsspegling + mycket små krusningar)
+const sea=THREE.Water?new THREE.Water(new THREE.PlaneGeometry(900,900),{textureWidth:768,textureHeight:768,waterNormals:WAVE,
+  sunDirection:new THREE.Vector3(0.36,0.53,0.77).normalize(),sunColor:0xfff4e0,waterColor:0x1f5a72,distortionScale:0.06,alpha:0.62,fog:true})
+ :new THREE.Mesh(new THREE.PlaneGeometry(900,900),M({color:0x6aa6c6,roughness:0.28,metalness:0.05,normalMap:WAVE,normalScale:new THREE.Vector2(0.22,0.22)}));
+if(sea.material.uniforms){const m=sea.material;m.transparent=true;m.uniforms.size.value=14.0;
+ // säkerställ stöd för logaritmisk djupbuffert (används av hela scenen) så vattnet sorteras rätt mot land och båtar
+ if(!/logdepthbuf_vertex/.test(m.vertexShader)){m.vertexShader=m.vertexShader.replace('#include <common>','#include <common>\n#include <logdepthbuf_pars_vertex>').replace(/\}\s*$/,'\n#include <logdepthbuf_vertex>\n}')}
+ if(!/logdepthbuf_fragment/.test(m.fragmentShader)){m.fragmentShader=m.fragmentShader.replace('#include <common>','#include <common>\n#include <logdepthbuf_pars_fragment>').replace(/void main\(\)\s*\{/,'void main() {\n#include <logdepthbuf_fragment>')}
+ m.needsUpdate=true}
+sea.rotation.x=-Math.PI/2;sea.receiveShadow=true;S.add(sea);
+
+// ===== 20_attefall: attefallshuset, ute och inne (HOW Arkitekter, ändrad planlösning) =====
+// Lokala koordinater: x = mot berget (NO), z = mot altanen/entrén (SO), y = 0 vid färdigt golv (+3,2)
+// Ändringar: huset 0,5 m högre, platt tak över främre halvan mot berget (innertak 2,4 m),
+// sovnisch med resårbäddmadrass 1,2 x 2 x 0,3 m på golvet i bakre hörnet, gjuten grav 0,5 x 2,3 x 0,4 m i plattan,
+// sänkt loft (master bedroom) ovanför: takhöjd 1,4 m stående i graven. Trappa mot berget till ett vilplan,
+// glasdörr ut genom muren på 1,7 m med takkupa, och takterrass på det platta taket som går 3 m in över berget.
+const AG=new THREE.Group();AG.position.set(AX,F,AZ);AG.rotation.y=AT;S.add(AG);cur=AG;
+{
+const hx=2.05,hz=3.55,L=7.1,t=0.2,xi=hx-t,zi=hz-t,eave=2.3,rx=0.91,ry=3.8,bs=-1.6,cw=0.45;
+const a1=26.9*D,a2=52.8*D,t1=Math.tan(a1),t2=Math.tan(a2);
+const yr=x=>x<rx?ry-(rx-x)*t1:ry-(x-rx)*t2;   // takets ovansida
+const yc=x=>yr(x)-0.2;                          // innertak
+const CI=2.25,FT=CI+0.07;                       // platta takdelen: innertak 2,25 m, terrassen sänkt 15 cm
+const PIT={x0:0.15,x1:0.65,z0:-zi,z1:-zi+2.3,d:0.4};   // gjuten grav, 0,4 m djup
+// Vertikal grav (beslut 25 okt 2026): nisch 2,01 x 0,50 m genom väggen och muren mot berget, från golvet ända upp till murens topp,
+// i bakre hörnet. Murens översta del ersätts av en järnbalk från bakre hörnet till dörren. Den nedre sängen står i nischen.
+const NICHE={z0:-3.35,z1:-3.35+2.01,d:0.5},BEAMH=0.22;
+const LOFT={x0:-0.1,x1:xi,z0:-zi,z1:-1.0,top:PIT.d*-1+1.4+0.15};  // underkant 1,4 m över gravens botten
+const DY=1.5;        // tröskel i fönsterdörren mot berget (sänkt 20 cm)
+const STAIR={x0:0.0,x1:1.2,z0:-0.98,z1:-0.17,top:LOFT.top,n:6};   // trappa mot berget till vilplan i loftets golvnivå
+const TY=FT+0.14;   // takterrassens golv
+// --- material (väggar och tak kan göras genomskinliga)
+const clad=M({map:tex([142,138,128],0.5)}),plinth=M({map:tex([104,100,93],4)});
+const conc=M({map:ctex([1,1]),roughness:0.95});
+function blockTex(rep){const c=document.createElement('canvas');c.width=128;c.height=64;const x=c.getContext('2d');x.fillStyle='#8f8e8a';x.fillRect(0,0,128,64);for(let r=0;r<4;r++)for(let k=0;k<3;k++){const s=Math.random()*16-8;x.fillStyle=`rgb(${168+s},${166+s},${160+s})`;x.fillRect(k*43+(r%2)*21-21,r*16+1,41,14)}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rep[0],rep[1]);return t}
+const leca=M({map:blockTex([6,4]),roughness:0.95}),lecaS=M({map:blockTex([2,3]),roughness:0.95});
+const inW=M({map:tex([228,220,204],0.6,22),side:THREE.DoubleSide}),inBox=M({map:tex([228,220,204],2,22)});
+const floorM=M({map:tex([206,180,140],2.5,20)}),ceilM=M({map:tex([236,230,218],2,22),side:THREE.DoubleSide});
+const roofT=M({color:0xb7bcc0,metalness:0.55,roughness:0.4,side:THREE.DoubleSide}),seamT=M({color:0xc9cdd0,metalness:0.6,roughness:0.35});
+const oak=M({color:0xc9a678}),furn=M({color:0xf0eee8,roughness:0.6}),fabric=M({color:0x7d8579}),duvet=M({color:0x9fb2c0}),blk=M({color:0x1e1e1e}),steel=M({color:0xb8bcbf,metalness:0.7,roughness:0.3}),porc=M({color:0xfafafa,roughness:0.3}),doorM=M({map:tex([96,92,86],1.2)});
+const extMat=[clad,frame];
+ATRANS.push([clad,0.38],[inW,0.3],[ceilM,0.3],[roofT,0.35],[seamT,0.35]);
+[clad,inW,ceilM,roofT,seamT,inBox].forEach(m=>m.userData.wall=true);   // tonas extra när man är inomhus
+const noSh=o=>{o.userData.noShadow=true;return o};
+
+// --- betongplatta 8,5 x 4,2 (hus 7,1 + teknikrum 1,4) med urtag för graven
+const pz0=-hz-1.4,pz1=hz,px0=-hx-0.1,px1=hx;
+function slabAround(x0,x1,z0,z1,y,h,m){const pc=[[x0,PIT.x0,z0,z1],[PIT.x1,x1,z0,z1],[PIT.x0,PIT.x1,z0,PIT.z0],[PIT.x0,PIT.x1,PIT.z1,z1]];
+pc.forEach(([a,b,c,d])=>{if(b-a>0.001&&d-c>0.001){const o=box(b-a,h,d-c,(a+b)/2,y,(c+d)/2,m);o.receiveShadow=true}})}
+slabAround(px0,px1,pz0,pz1,-0.21,0.3,conc);
+// graven: botten och sidor i betong
+{const cx=(PIT.x0+PIT.x1)/2,cz=(PIT.z0+PIT.z1)/2,w=PIT.x1-PIT.x0,l=PIT.z1-PIT.z0;
+box(w,0.08,l,cx,-PIT.d-0.04,cz,conc);box(0.04,PIT.d,l,PIT.x0-0.02,-PIT.d/2,cz,conc);box(0.04,PIT.d,l,PIT.x1+0.02,-PIT.d/2,cz,conc);box(w+0.08,PIT.d,0.04,cx,-PIT.d/2,PIT.z1+0.02,conc);}
+// --- uppbyggd mur (Leca) längs bergsidan och halva bakre kortsidan; huset står mot murens insida
+const mt=0.35;
+[[pz0-mt,NICHE.z0-0.2,eave-BEAMH],[NICHE.z1,STAIR.z0,eave-BEAMH],[STAIR.z0,STAIR.z1,DY],[STAIR.z1,0,eave],[0,pz1,FT]].forEach(([z0,z1,top])=>box(mt,top-bs,z1-z0,hx+mt/2,(top+bs)/2,(z0+z1)/2,leca));
+box(0.2,eave-BEAMH-bs,NICHE.z1-NICHE.z0+0.4,hx+NICHE.d+0.1,(eave-BEAMH+bs)/2,(NICHE.z0+NICHE.z1)/2,leca);                 // nischens bakvägg i Leca
+[NICHE.z0-0.1,NICHE.z1+0.1].forEach(z=>box(NICHE.d+0.05,eave-BEAMH-bs,0.2,hx+NICHE.d/2,(eave-BEAMH+bs)/2,z,leca));        // nischens sidor
+{const st=M({color:0x3d4146,metalness:0.7,roughness:0.45}),z0=pz0-mt,z1=STAIR.z0,zc=(z0+z1)/2,L=z1-z0,y=eave-BEAMH/2;   // järnbalk (HEA-profil) från bakre hörnet till dörren
+ box(0.02,BEAMH-0.03,L,hx+0.12,y,zc,st);[-1,1].forEach(s=>box(0.24,0.018,L,hx+0.12,y+s*(BEAMH/2-0.009),zc,st));box(0.02,BEAMH-0.03,L,hx+mt-0.05,y,zc,st);[-1,1].forEach(s=>box(0.2,0.018,L,hx+mt-0.05,y+s*(BEAMH/2-0.009),zc,st))}
+{const capA=M({color:0xb7bcc0,metalness:0.55,roughness:0.4});[[pz0-mt,STAIR.z0],[STAIR.z1,0]].forEach(([a,b])=>box(mt+0.06,0.04,b-a,hx+mt/2,eave+0.02,(a+b)/2,capA))}
+box(hx+mt,1.15-bs,mt,(hx+mt)/2,(1.15+bs)/2,pz0-mt/2,lecaS);
+
+// --- ytterväggar med riktiga öppningar
+const winZ=[-2.78,-1.52,0.27,1.5],swHoles=[],up=0.1;
+const TW=[2.2,0.0,3.2,2.08];     // högt fönster i främre hörnet, centrerat i väggfältet, samma höjd som glasdörrarna
+const GW=[-1.84+0.01,0.0,-0.84,2.08]; // likadant fönster i främre gaveln mellan dörren och hörnet
+winZ.forEach(z=>{swHoles.push([z-0.56,1.52+up,z+0.56,1.72+up]);swHoles.push([z-0.56,0.99+up,z+0.56,1.41+up])});swHoles.push(TW);
+function longWall(xOut,holes,out,inn){const w=noSh(new THREE.Mesh(new THREE.ExtrudeGeometry(holeShape(out,holes),{depth:t,bevelEnabled:false}),extMat));w.rotation.y=-Math.PI/2;w.position.x=xOut<0?xOut+t:xOut;AG.add(w);
+const iw=noSh(new THREE.Mesh(new THREE.ShapeGeometry(holeShape(inn,holes)),inW));iw.rotation.y=-Math.PI/2;iw.position.x=xOut<0?-xi+0.004:xi-0.004;AG.add(iw)}
+longWall(-hx,swHoles,[[-hz,-0.05],[hz,-0.05],[hz,eave],[-hz,eave]],[[-zi,-0.02],[zi,-0.02],[zi,yc(-xi)],[-zi,yc(-xi)]]);
+{const BY=eave-BEAMH,BYi=Math.min(yc(xi),BY);longWall(hx,[[NICHE.z0,0.0,NICHE.z1,BYi-0.04]],[[-hz,-0.05],[hz,-0.05],[hz,FT],[0,FT],[0,eave],[STAIR.z1,eave],[STAIR.z1,DY],[STAIR.z0,DY],[STAIR.z0,BY],[-hz,BY]],[[-zi,-0.02],[zi,-0.02],[zi,CI],[0,CI],[0,yc(xi)],[STAIR.z1,yc(xi)],[STAIR.z1,DY],[STAIR.z0,DY],[STAIR.z0,BYi],[-zi,BYi]])}
+winZ.forEach(z=>[[1.52+up,1.72+up],[0.99+up,1.41+up]].forEach(([y0,y1])=>{const h=y1-y0,yc0=(y0+y1)/2,w=1.12;
+box(t+0.03,0.05,w+0.1,-hx+t/2,y1+0.025,z,frame);box(t+0.03,0.05,w+0.1,-hx+t/2,y0-0.025,z,frame);
+box(t+0.03,h,0.05,-hx+t/2,yc0,z-w/2-0.025,frame);box(t+0.03,h,0.05,-hx+t/2,yc0,z+w/2+0.025,frame);
+box(t+0.03,h,0.04,-hx+t/2,yc0,z,frame);box(0.01,h,w,-hx+0.07,yc0,z,glassT);
+box(0.22,0.03,w+0.1,-xi+0.1,y0-0.04,z,oak)}));
+{const[z0,y0,z1,y1]=TW,zc=(z0+z1)/2,w=z1-z0,h=y1-y0;box(t+0.03,0.06,w,-hx+t/2,y1+0.03,zc,frame);box(t+0.03,0.06,w,-hx+t/2,y0+0.03,zc,frame);
+box(t+0.03,h,0.06,-hx+t/2,(y0+y1)/2,z0+0.03,frame);box(t+0.03,h,0.06,-hx+t/2,(y0+y1)/2,z1-0.03,frame);box(t+0.03,0.05,w,-hx+t/2,y0+0.55,zc,frame);box(0.01,h,w-0.1,-hx+0.07,(y0+y1)/2,zc,glassT)}
+
+// --- gavlar: bakre (NV) hel, främre (SO) med glasdörrar = entré och platt takdel mot berget
+const doorSO=[-0.82,0.0,0.82,2.08];
+{const gB=[[-hx,-0.05],[hx,-0.05],[hx,eave],[rx,ry],[-hx,eave]],gBi=[[-xi,-0.02],[xi,-0.02],[xi,yc(xi)],[rx,ry-0.2],[-xi,yc(-xi)]];
+const gF=[[-hx,-0.05],[hx,-0.05],[hx,FT],[0,FT],[0,yr(0)],[-hx,eave]],gFi=[[-xi,-0.02],[xi,-0.02],[xi,CI],[0,CI],[0,yc(0)],[-xi,yc(-xi)]];
+const g1=noSh(new THREE.Mesh(new THREE.ExtrudeGeometry(holeShape(gB,[]),{depth:t,bevelEnabled:false}),extMat));g1.position.z=-hz;AG.add(g1);
+const i1=noSh(new THREE.Mesh(new THREE.ShapeGeometry(holeShape(gBi,[])),inW));i1.position.z=-zi+0.004;AG.add(i1);
+const g2=noSh(new THREE.Mesh(new THREE.ExtrudeGeometry(holeShape(gF,[doorSO,GW]),{depth:t,bevelEnabled:false}),extMat));g2.position.z=hz-t;AG.add(g2);
+const i2=noSh(new THREE.Mesh(new THREE.ShapeGeometry(holeShape(gFi,[doorSO,GW])),inW));i2.position.z=zi-0.004;AG.add(i2);}
+[-0.41,0.41].forEach(x=>{box(0.07,2.08,0.08,x-0.37,1.04,hz-0.1,frame);box(0.07,2.08,0.08,x+0.37,1.04,hz-0.1,frame);box(0.8,0.08,0.08,x,0.04,hz-0.1,frame);box(0.8,0.08,0.08,x,2.04,hz-0.1,frame);box(0.67,1.92,0.01,x,1.04,hz-0.1,glassT)});
+box(1.76,0.06,t+0.06,0,2.11,hz-t/2,frame);
+{const[x0,y0,x1,y1]=GW,xc=(x0+x1)/2,w=x1-x0,h=y1-y0,zc=hz-t/2;box(w,0.06,t+0.03,xc,y1+0.03,zc,frame);box(w,0.06,t+0.03,xc,y0+0.03,zc,frame);
+box(0.06,h,t+0.03,x0+0.03,(y0+y1)/2,zc,frame);box(0.06,h,t+0.03,x1-0.03,(y0+y1)/2,zc,frame);box(w,0.05,t+0.03,xc,y0+0.55,zc,frame);box(w-0.1,h,0.01,xc,(y0+y1)/2,hz-0.07,glassT)}box(0.04,0.22,0.04,0.06,1.05,hz-0.03,steel);
+box(2*hx+0.04,-0.05-bs,L+0.04,0,(bs-0.05)/2,0,plinth);
+// golv med urtag för graven
+{const pc=[[-xi,PIT.x0,-zi,zi],[PIT.x1,xi,-zi,zi],[PIT.x0,PIT.x1,PIT.z1,zi]];pc.forEach(([a,b,c,d])=>{const f=box(b-a,0.06,d-c,(a+b)/2,-0.03,(c+d)/2,floorM);f.receiveShadow=true})}
+
+// glasdörr ut genom vägg och mur på 1,7 m
+{const zc=(STAIR.z0+STAIR.z1)/2,w=STAIR.z1-STAIR.z0,y0=DY,y1=ry-0.35,h=y1-y0;
+box(0.08,0.06,w,hx-0.1,y1-0.03,zc,frame);box(0.08,h,0.06,hx-0.1,(y0+y1)/2,STAIR.z0+0.03,frame);box(0.08,h,0.06,hx-0.1,(y0+y1)/2,STAIR.z1-0.03,frame);
+box(0.06,h-0.12,w-0.14,hx-0.1,(y0+y1)/2,zc,frame);box(0.07,h-0.24,w-0.26,hx-0.1,(y0+y1)/2,zc,glassT);box(0.02,0.14,0.03,hx-0.16,y0+0.95,STAIR.z0+0.12,steel);
+box(mt+0.1,0.05,w,hx+mt/2,y0-0.02,zc,frame);}
+// --- tak: sadeltak över bakre halvan, främre halvan sadeltak mot sydväst och platt tak mot berget
+const R=[],hL=hz+0.3;
+const xA=-hx-0.45*Math.cos(a1),yA=eave-0.45*Math.sin(a1)+0.08;
+R.push(slab(xA,yA,rx,ry+0.08,hL,-hL/2,roofT,seamT));
+R.push(slab(xA,yA,0,yr(0)+0.08,hL,hL/2,roofT,seamT));
+const dz0=-1.15,rL=hL+dz0;R.push(slab(rx,ry+0.08,hx,eave+0.08,rL,(-hL+dz0)/2,roofT,seamT));
+R.push(box(0.14,0.08,hL,rx,ry+0.12,-hL/2,seamT));
+R.push(box(hx+0.4,0.1,hL,(hx+0.4)/2,FT+0.05,hL/2,roofT));
+for(let z=0.25;z<hL;z+=0.5)R.push(box(hx+0.4,0.04,0.03,(hx+0.4)/2,FT+0.12,z,seamT));
+// avsatsväggen mellan sadeltaket och terrassen, med ett fönsterband ut mot takterrassen
+{const y0=FT,y1=yr(0)+0.08,ws=FT+0.16,we=yr(0)-0.06,wz0=0.35,wz1=hz-0.25,n=3,pw=(wz1-wz0)/n;
+R.push(box(0.15,ws-y0,hz,0,(y0+ws)/2,hz/2,clad));R.push(box(0.15,y1-we,hz,0,(we+y1)/2,hz/2,clad));
+R.push(box(0.15,we-ws,wz0,0,(ws+we)/2,wz0/2,clad));R.push(box(0.15,we-ws,hz-wz1,0,(ws+we)/2,(wz1+hz)/2,clad));
+for(let i=0;i<=n;i++)R.push(box(0.17,we-ws,0.06,0,(ws+we)/2,wz0+i*pw,frame));R.push(box(0.17,0.06,wz1-wz0,0,ws+0.03,(wz0+wz1)/2,frame));R.push(box(0.17,0.06,wz1-wz0,0,we-0.03,(wz0+wz1)/2,frame));
+for(let i=0;i<n;i++)R.push(box(0.01,we-ws-0.12,pw-0.1,0,(ws+we)/2,wz0+(i+0.5)*pw,glassT));
+R.push(box(0.2,0.04,wz1-wz0+0.1,0.06,ws-0.02,(wz0+wz1)/2,frame));}
+{const xq=rx+(ry-FT)/t2,sh=new THREE.Shape();sh.moveTo(0,FT);sh.lineTo(0,yr(0));sh.lineTo(rx,ry);sh.lineTo(xq,FT);sh.lineTo(0,FT);
+const m=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:0.15,bevelEnabled:false}),clad);m.position.z=-0.075;AG.add(m);R.push(m)}
+R.push(slab(-xi,yc(-xi),rx,ry-0.2,zi,-zi/2,ceilM));R.push(slab(rx,ry-0.2,xi,yc(xi),zi+dz0,(-zi+dz0)/2,ceilM));
+R.push(slab(-xi,yc(-xi),0,yc(0),zi,zi/2,ceilM));R.push(box(xi,0.04,zi,xi/2,CI+0.02,zi/2,ceilM));
+R.push(box(0.12,0.2,zi,rx,ry-0.32,-zi/2,oak));
+[-2.8,-1.6,-0.4].forEach(z=>R.push(slab(-xi,yc(-xi)-0.08,rx,ry-0.28,0.08,z,oak)));[0.8,2.0,3.1].forEach(z=>R.push(slab(-xi,yc(-xi)-0.08,0,yc(0)-0.08,0.08,z,oak)));
+const gx1=xA-0.04,gy1=yA-0.1,gx2=hx+0.35*Math.cos(a2)+0.04,gy2=eave-0.35*Math.sin(a2)-0.02;
+{const g=cyl(0.065,L+0.6,gx1,gy1,0,roofT,10);g.rotation.x=Math.PI/2;R.push(g)}
+[-hz-0.15,hz+0.15].forEach(z=>R.push(cyl(0.045,gy1-bs,gx1,(gy1+bs)/2,z,roofT,8)));
+// takkupa (pulpettak i aluzink, i linje med platta takdelen) över vilplanet och glasdörren
+{const kb=0.97,ky=ry-0.08,kf=hx+0.15,kyf=ry-0.2,kz0=dz0,kz1=0;
+R.push(slab(kb,ky+0.08,kf,kyf+0.08,kz1-kz0+0.15,(kz0+kz1)/2-0.05,roofT,seamT));
+R.push(slab(kb,ky-0.15,xi,kyf-0.12,kz1-kz0,(kz0+kz1)/2,ceilM));
+[kz0,kz1-0.001].forEach(z=>{const sh=new THREE.Shape();sh.moveTo(kb,ky);sh.lineTo(hx,eave);sh.lineTo(hx,kyf);sh.lineTo(kb,ky);
+const m=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:0.12,bevelEnabled:false}),extMat);m.position.z=z-(z<-0.5?0:0.12);AG.add(m);R.push(m)});
+const fo=[[kz0,eave],[STAIR.z0,eave],[STAIR.z0,ry-0.35],[STAIR.z1,ry-0.35],[STAIR.z1,eave],[kz1,eave],[kz1,kyf],[kz0,kyf]];
+const fw=new THREE.Mesh(new THREE.ExtrudeGeometry(holeShape(fo,[]),{depth:t,bevelEnabled:false}),extMat);fw.rotation.y=-Math.PI/2;fw.position.x=hx;AG.add(fw);R.push(fw);
+const fi=new THREE.Mesh(new THREE.ShapeGeometry(holeShape(fo,[])),inW);fi.rotation.y=-Math.PI/2;fi.position.x=xi-0.004;AG.add(fi);R.push(fi);
+R.push(box(0.06,0.06,kz1-kz0+0.2,kf+0.02,kyf+0.02,(kz0+kz1)/2,frame));}
+R.forEach(o=>{tag('roof',o);o.traverse(c=>{if(c.isMesh&&c.material!==oak)c.userData.noShadow=true})});
+
+// --- teknikrum bakom bakre gaveln: lågt, snedtak som faller bakåt mot berget, dörr på västra sidan
+{const tx0=-1.45,tx1=hx,tz0=pz0,tz1=-hz,hHi=1.7,hLo=1.12,y0=-0.06;
+const prof=new THREE.Shape();prof.moveTo(tz0,y0);prof.lineTo(tz1,y0);prof.lineTo(tz1,hHi);prof.lineTo(tz0,hLo);prof.lineTo(tz0,y0);
+const dH=[tz1-0.95,0.0,tz1-0.15,1.55];prof.holes.push((()=>{const p=new THREE.Path();p.moveTo(dH[0],dH[1]);p.lineTo(dH[0],dH[3]);p.lineTo(dH[2],dH[3]);p.lineTo(dH[2],dH[1]);p.lineTo(dH[0],dH[1]);return p})());
+const ww=new THREE.Mesh(new THREE.ExtrudeGeometry(prof,{depth:0.2,bevelEnabled:false}),lecaS);ww.rotation.y=-Math.PI/2;ww.position.x=tx0+0.2;AG.add(ww);
+box(tx1-tx0,hLo-y0,0.2,(tx0+tx1)/2,(hLo+y0)/2,tz0+0.1,lecaS);
+const z0=tz1+0.08,z1=tz0-0.3,yA=hHi+0.08,yB=hLo-0.02+((hLo-hHi)/(tz1-tz0))*(z1-tz0)*-1*0;const drop=yA-(hLo-0.06),run=z0-z1;
+const rf=box(tx1-tx0+0.55,0.07,Math.hypot(run,drop),(tx0+tx1)/2+0.05,(yA+hLo-0.06)/2,(z0+z1)/2,M({color:0x8d9295,metalness:0.45,roughness:0.45}));rf.rotation.x=-Math.atan2(drop,run);
+box(0.06,1.53,0.78,tx0-0.02,0.77,(dH[0]+dH[2])/2,doorM);box(0.07,0.04,0.1,tx0-0.06,0.8,(dH[0]+dH[2])/2+0.28,steel);
+cyl(0.55,1.0,0.9,0.48,(tz0+tz1)/2-0.05,M({color:0xd9dcd6,roughness:0.5}),24);
+cyl(0.22,1.15,1.75,0.56,tz1-0.32,M({color:0xf2f2f2,roughness:0.4}),18);
+box(0.45,0.55,0.12,-0.5,1.05,tz1-0.07,M({color:0xe8e8e8}));
+box(0.45,0.28,0.35,-0.6,0.1,(tz0+tz1)/2+0.15,M({color:0x2f5d8a}));
+cyl(0.03,1.3,0.25,0.62,tz0+0.3,M({color:0x2d2d2d}));}
+
+// --- planlösning
+function iw(x0,z0,x1,z1,h){const w=Math.abs(x1-x0)||0.08,d=Math.abs(z1-z0)||0.08;box(w,h,d,(x0+x1)/2,h/2,(z0+z1)/2,inBox)}
+// badrum i bakre sydvästra hörnet, väggen går ända fram till och emot loftet; dörr mot vardagsrummet
+// Badrummet (beslut 23 okt 2026): platt innertak i höjd med där ytterväggen möter taket på badrummets långsida (yc(−xi) ≈ 2,10 m),
+// mellanväggen mitt i huset, väggar och tak i eget material som INTE tonas bort inomhus (man ska se att rummet är slutet).
+{const BH=yc(-xi),WX=-0.05,bathW=M({map:tex([236,232,224],2,10)});
+const bw=(x0,z0,x1,z1,h)=>{const w=Math.abs(x1-x0)||0.08,d=Math.abs(z1-z0)||0.08;box(w,h,d,(x0+x1)/2,h/2,(z0+z1)/2,bathW)};
+bw(WX,-zi,WX,-0.9,BH);                                   // mellanväggen mitt i huset
+bw(-xi,-0.9,-1.05,-0.9,BH);bw(-0.25,-0.9,WX,-0.9,BH);     // framvägg med dörröppning
+box(0.8,BH-1.9,0.08,-0.65,(BH+1.9)/2,-0.9,bathW);        // överstycke ovanför dörren
+box(xi+WX+0.04,0.05,zi-0.9,(-xi+WX)/2,BH+0.025,(-zi-0.9)/2,bathW);}   // platt innertak
+// badrum
+box(xi+LOFT.x0-0.08,0.006,2.45,(-xi+LOFT.x0-0.08)/2,0.004,-2.125,M({map:tileFloorTex()}));
+box(0.78,0.05,0.78,-1.44,0.025,-2.94,porc);
+{const g1=box(0.01,1.9,0.78,-1.05,1.0,-2.94,glassT),g2=box(0.42,1.9,0.01,-1.26,1.0,-2.56,glassT);g1.castShadow=g2.castShadow=false}
+cyl(0.015,1.1,-1.82,1.35,-3.2,steel);cyl(0.09,0.02,-1.74,1.95,-3.2,steel);
+box(0.45,0.78,0.6,-1.62,0.39,-2.0,oak);box(0.42,0.1,0.46,-1.6,0.83,-2.0,porc);box(0.02,0.62,0.5,-1.84,1.45,-2.0,M({color:0xdde4e8,metalness:0.9,roughness:0.05}));
+cyl(0.19,0.4,-1.52,0.2,-1.25,porc,18);box(0.18,0.42,0.38,-1.76,0.55,-1.25,porc);box(0.38,0.03,0.36,-1.52,0.42,-1.25,porc);
+// dörr till badrummet (stängd)
+{const dg=new THREE.Group();dg.position.set(-0.25,0,-0.9);dg.rotation.y=Math.PI;AG.add(dg);const lf=new THREE.Mesh(new THREE.BoxGeometry(0.72,1.84,0.04),furn);lf.position.set(0.36,0.92,0);dg.add(lf)}
+// --- sovnisch i bakre hörnet mot berget: resårbäddmadrass på golvet och grav att stå i
+{const mx1=hx+NICHE.d-0.02,mx0=mx1-2.0,mz0=NICHE.z0+0.005,mz1=mz0+1.2,mcx=(mx0+mx1)/2,mcz=(mz0+mz1)/2;   // nedre sängen vriden 90°: huvudändan inne i graven, fotändan ut i rummet
+box(2.0,0.3,1.2,mcx,0.15,mcz,porc);box(1.4,0.07,1.22,mcx-0.3,0.335,mcz,duvet);[mcz-0.3,mcz+0.3].forEach(z=>box(0.32,0.12,0.5,mx1-0.2,0.36,z,porc));
+cyl(0.08,0.02,mx1-0.1,0.9,mz1+0.12,M({color:0xfff6e0,emissive:0xffe2b0,emissiveIntensity:0.5}),12);}
+// trappa (där garderoben stod) som löper mot berget upp till vilplanet vid glasdörren
+{const{x0,x1,z0,z1,top,n}=STAIR,w=z1-z0,zc=(z0+z1)/2,rise=top/n,go=(x1-x0)/(n-1);
+for(let k=1;k<n;k++){const xa=x0+go*(k-1);box(go,rise*k,w,xa+go/2,rise*k/2,zc,oak);box(go,0.02,w,xa+go/2,rise*k+0.01,zc,M({color:0xb8925f}))}
+box(xi-x1,top,w,(x1+xi)/2,top/2,zc,oak);box(xi-x1,0.02,w,(x1+xi)/2,top+0.01,zc,M({color:0xb8925f}));
+const ang=Math.atan2(top,x1-x0),len=Math.hypot(top,x1-x0);
+const hr=new THREE.Mesh(new THREE.BoxGeometry(len,0.05,0.05),oak);hr.position.set((x0+x1)/2,top/2+0.9,z1+0.02);hr.rotation.z=ang;AG.add(hr);
+for(let k=1;k<n;k+=2){const xa=x0+go*(k-0.5);box(0.04,0.9,0.04,xa,rise*k+0.45,z1+0.02,oak)}
+box(xi-x1,0.05,0.05,(x1+xi)/2,top+0.9,z1+0.02,oak);box(0.04,0.9,0.04,x1+0.02,top+0.45,z1+0.02,oak);}
+
+// kök längs fönsterväggen
+box(0.6,1.8,0.6,-1.55,0.9,-0.55,furn);box(0.02,0.5,0.03,-1.24,1.1,-0.3,steel);
+box(0.6,0.86,2.3,-1.55,0.43,0.95,furn);box(0.64,0.04,2.34,-1.53,0.88,0.95,oak);
+[0.1,0.7,1.3,1.9].forEach(z=>box(0.01,0.8,0.01,-1.245,0.42,z-0.3,dark));
+box(0.42,0.02,0.46,-1.53,0.905,0.55,steel);box(0.36,0.01,0.4,-1.53,0.91,0.55,M({color:0x6a6e70,metalness:0.6}));
+{const f=cyl(0.015,0.3,-1.74,1.05,0.55,steel);const s=cyl(0.012,0.18,-1.66,1.18,0.55,steel);s.rotation.z=Math.PI/2}
+box(0.52,0.012,0.56,-1.53,0.905,1.45,blk);[[-0.12,-0.13],[0.12,-0.13],[-0.12,0.13],[0.12,0.13]].forEach(([dx,dz])=>{const r=cyl(0.08,0.004,-1.53+dx,0.913,1.45+dz,M({color:0x3a3a3a}),16)});
+// bord (15 cm lägre än bardisken var), utan barstolar (beslut 24 okt 2026)
+box(0.9,0.05,1.95,0.5,0.77,1.58,oak);box(0.06,0.75,0.7,0.5,0.375,0.85,oak);box(0.06,0.75,0.7,0.5,0.375,2.3,oak);
+// soffa: rak, totalt 3,0 m längs väggen mot berget, från fönstret i framgaveln bakåt (beslut 25 okt 2026)
+{const sd=0.68,sh=0.42,xb=xi,zf=zi-0.02,zc=zf-3.0,cush=M({color:0x8b9387}),pil=M({color:0xd9cdb4});
+box(sd,sh,zf-zc,xb-sd/2,sh/2,(zf+zc)/2,fabric);box(0.18,0.48,zf-zc,xb-0.09,sh+0.24,(zf+zc)/2,fabric);
+[zf-0.07,zc+0.07].forEach(z=>box(sd,0.6,0.14,xb-sd/2,0.3,z,fabric));
+for(let k=0;k<4;k++)box(sd-0.22,0.12,0.64,xb-sd/2+0.06,sh+0.06,zc+0.14+0.68*(k+0.5),cush);
+[zc+0.4,(zf+zc)/2,zf-0.4].forEach(z=>box(0.12,0.34,0.34,xb-0.3,sh+0.3,z,pil))}
+box(0.9,0.01,1.4,0.95,0.006,1.6,M({color:0x8d7b66}));
+// taklampa och ljus
+cyl(0.006,0.22,0.5,CI-0.1,1.6,blk);{const sh=new THREE.Mesh(new THREE.SphereGeometry(0.16,16,10),M({color:0xfffaf0,emissive:0xfff1d6,emissiveIntensity:0.6}));sh.position.set(0.5,CI-0.35,1.6);AG.add(sh)}
+const pl=new THREE.PointLight(0xffe6c4,0.55,7,2);pl.position.set(0.5,CI-0.45,1.6);AG.add(pl);
+
+// --- sänkt loft = master bedroom ovanför sovnischen
+const LF=[];
+{const lw=LOFT.x1-LOFT.x0,ld=LOFT.z1-LOFT.z0,lcx=(LOFT.x0+LOFT.x1)/2,lcz=(LOFT.z0+LOFT.z1)/2,ly=LOFT.top;
+LF.push(box(lw,0.15,ld,lcx,ly-0.075,lcz,floorM));
+LF.push(box(1.6,0.25,2.0,0.9,ly+0.125,-zi+1.05,oak));LF.push(box(1.56,0.2,1.96,0.9,ly+0.35,-zi+1.05,porc));LF.push(box(1.58,0.07,1.4,0.9,ly+0.48,-zi+1.35,duvet));
+[0.5,1.3].forEach(x=>LF.push(box(0.6,0.13,0.35,x,ly+0.52,-zi+0.25,porc)));
+const rx1=STAIR.x1-0.02;for(let x=LOFT.x0;x<=rx1+0.01;x+=(rx1-LOFT.x0)/2)LF.push(box(0.05,0.85,0.05,x,ly+0.42,LOFT.z1-0.03,oak));
+LF.push(box(rx1-LOFT.x0,0.05,0.06,(rx1+LOFT.x0)/2,ly+0.85,LOFT.z1-0.03,oak));LF.push(box(rx1-LOFT.x0,0.04,0.04,(rx1+LOFT.x0)/2,ly+0.45,LOFT.z1-0.03,oak));
+{const lg=new THREE.Group();lg.position.set(0,0,(STAIR.z0+STAIR.z1)/2);AG.add(lg);const bx=xi-0.32,tx=xi-0.05,by=ly,tyy=DY+0.35,ang=Math.atan2(tx-bx,tyy-by),len=Math.hypot(tx-bx,tyy-by);
+[-0.22,0.22].forEach(z=>{const r=new THREE.Mesh(new THREE.BoxGeometry(0.05,len,0.06),oak);r.position.set((bx+tx)/2,(by+tyy)/2,z);r.rotation.z=-ang;lg.add(r)});
+for(let k=1;k<=3;k++){const f=k/4;const g=new THREE.Mesh(new THREE.BoxGeometry(0.035,0.035,0.44),oak);g.position.set(bx+(tx-bx)*f,by+(tyy-by)*f,0);lg.add(g)}LF.push(lg)}
+const pl2=new THREE.PointLight(0xffe6c4,0.35,4,2);pl2.position.set(0.9,ly+1.6,-2.2);AG.add(pl2);LF.push(pl2);}
+LF.forEach(o=>tag('loft',o));
+
+// --- takterrass på platta taket, 3 m in över berget, vilplan utanför glasdörren och trappa upp
+{const tx1=hx+3.0,dk=deckNew;
+function deckOn(x0,x1,z0,z1,y){box(x1-x0,0.05,z1-z0,(x0+x1)/2,y-0.025,(z0+z1)/2,dk)}
+function posts(pts,y){pts.forEach(([x,z])=>{const w=L2W(x,z),b=ground(w[0],w[1])-F;if(b<y-0.15)box(0.12,y-0.06-b,0.12,x,(y-0.06+b)/2,z,post)})}
+deckOn(0,tx1,0,hz,TY);box(tx1-hx-mt,0.18,hz,(hx+mt+tx1)/2,TY-0.14,hz/2,dk);
+posts([[3.4,0.3],[3.4,1.8],[3.4,hz-0.1],[tx1-0.1,0.3],[tx1-0.1,1.8],[tx1-0.1,hz-0.1]],TY);
+const ly=DY;deckOn(hx+mt,3.2,STAIR.z0-0.02,STAIR.z1+0.1,ly+0.02);posts([[3.1,STAIR.z0+0.1],[3.1,STAIR.z1-0.1]],ly);
+// svängd trappa (kvartsvarv) från vilplanet upp till takterrassen
+{const cx=3.2,cz=-0.05,Rr=0.98,ns=6,rs=(TY-ly)/ns,sw=Math.PI/2/ns;
+for(let k=1;k<=ns;k++){const a0=-Math.PI/2+sw*(k-1),a1=a0+sw,sh=new THREE.Shape();sh.moveTo(0,0);for(let i=0;i<=6;i++){const a=a0+(a1-a0)*i/6;sh.lineTo(Math.cos(a)*Rr,-Math.sin(a)*Rr)}sh.lineTo(0,0);
+const h=rs*k,m=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:h,bevelEnabled:false}),dk);m.rotation.x=-Math.PI/2;m.position.set(cx,ly,cz);AG.add(m)}
+cyl(0.07,TY-ly+1.0,cx,(ly+TY+1.0)/2,cz,wood);
+const pts=[];for(let i=0;i<=12;i++){const a=-Math.PI/2+Math.PI/2*i/12;pts.push(new THREE.Vector3(cx+Math.cos(a)*(Rr-0.03),ly+(TY-ly)*i/12+0.95,cz+Math.sin(a)*(Rr-0.03)))}
+AG.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),24,0.025,6),wood));
+for(let i=1;i<12;i+=2){const p=pts[i];box(0.04,0.95,0.04,p.x,p.y-0.47,p.z,wood)}}
+function rail(xa,za,xb,zb){const L=Math.hypot(xb-xa,zb-za),n=Math.max(1,Math.round(L/1.3));for(let i=0;i<=n;i++){const x=xa+(xb-xa)*i/n,z=za+(zb-za)*i/n;box(0.1,1.0,0.1,x,TY+0.5,z,wood);box(0.13,0.04,0.13,x,TY+1.02,z,capM)}
+const g=new THREE.Mesh(new THREE.BoxGeometry(L,0.06,0.12),wood);g.position.set((xa+xb)/2,TY+0.97,(za+zb)/2);g.rotation.y=-Math.atan2(zb-za,xb-xa);AG.add(g);
+const g2=new THREE.Mesh(new THREE.BoxGeometry(L,0.08,0.03),wood);g2.position.set((xa+xb)/2,TY+0.55,(za+zb)/2);g2.rotation.y=-Math.atan2(zb-za,xb-xa);AG.add(g2)}
+rail(-0.05,hz+0.05,tx1,hz+0.05);   // räcke bara mot vattnet
+[[1.0,2.4],[1.8,2.4]].forEach(([x,z])=>{box(0.5,0.05,0.5,x,TY+0.42,z,white);box(0.5,0.45,0.05,x,TY+0.65,z+0.25,white)});box(0.9,0.04,0.9,1.4,TY+0.72,1.7,white);box(0.06,0.7,0.06,1.4,TY+0.36,1.7,white);
+box(1.9,0.4,0.5,3.6,TY+0.2,hz-0.4,wood);}
+
+// --- altan (SO) framför entrén
+box(4.4,0.08,3.0,-0.2,-0.12,hz+1.5,deckNew);
+// altanen löper 1 m ut längs långsidan fram till mitten, där en trappa med fyra steg
+box(0.65,0.08,hz+3.0,-2.725,-0.12,(hz+3.0)/2,deckNew);box(0.35,0.08,hz,-2.225,-0.12,hz/2,deckNew);
+[[-3.0,0.1],[-3.0,1.8],[-3.0,hz],[-3.0,hz+2.9],[-2.1,0.1]].forEach(p=>{const w=L2W(p[0],p[1]);const bot=ground(w[0],w[1])-F;if(bot<-0.2)box(0.12,-0.16-bot,0.12,p[0],(-0.16+bot)/2,p[1],frame)});
+{const w=L2W(-2.55,-1.3),g=Math.min(-0.5,ground(w[0],w[1])-F),rs=(-0.08-g)/4;for(let k=1;k<=4;k++){const y=-0.08-rs*k;box(0.98,rs*(5-k)*0+0.05,0.3,-2.56,y-0.025,-0.3*k+0.15,deckNew);box(0.98,rs,0.03,-2.56,y+rs/2,-0.3*k+0.3,deckNew)}
+[-3.04,-2.08].forEach(x=>box(0.05,rs*4+0.1,1.2,x,-0.08-rs*2,-0.6,deckNew))}
+[[-2.3,hz+0.2],[1.9,hz+0.2],[-2.3,hz+2.9],[1.9,hz+2.9],[-0.2,hz+2.9]].forEach(p=>{const w=L2W(p[0],p[1]);const bot=ground(w[0],w[1])-F;if(bot<-0.2)box(0.12,-0.16-bot,0.12,p[0],(-0.16+bot)/2,p[1],frame)});
+box(1.0,0.05,1.0,-0.2,0.62,hz+1.6,deckNew);box(0.08,0.66,0.08,-0.2,0.28,hz+1.6,frame);
+[[-0.9,1.6],[0.5,1.6]].forEach(([x,z])=>{box(0.42,0.04,0.42,x,0.42,hz+z,white);box(0.04,0.42,0.42,x+(x<0?-0.2:0.2),0.62,hz+z,white)});
+}
+
+// ===== 30_rodastugan: röda stugan (1965), utbyggnad med entré, altaner =====
+// Lokala koordinater: x = mot söder (stora fönstret), z = mot väster (utbyggnaden)
+const RG=new THREE.Group();S.add(RG);cur=RG;RG.position.set(RX,Fr,RZ);RG.rotation.y=RA;
+const rg=(lx,lz)=>{const w=R2W(lx,lz);return ground(w[0],w[1])-Fr};
+{const red=M({map:tex([146,38,30],4.5,12)}),redS=M({map:tex([146,38,30],1.6,12)}),redG=M({map:tex([146,38,30],0.6,12),side:THREE.DoubleSide}),fasc=M({color:0x3a2a22});
+const tileM=M({map:tileTex([6,2]),roughness:0.7}),tileW=M({map:tileTex([2,1.2]),roughness:0.7}),stone=M({map:stoneTex(),flatShading:true}),brick=M({color:0x8a3b2c});
+const brown=M({map:tex([108,72,46],1.2,10),roughness:0.7});
+box(9.1,3,4.95,0,-1.5,0,stone);
+// Röda stugan har nu ett inre (matchning Mark 12): väggar med fönsteröppningar, furupanel invändigt, vitt golv och snedtak
+const KEEP=o=>{o.userData.keep=true;return o};
+{const pine=M({map:tex([196,140,88],1.0,12),roughness:0.7}),pineD=M({map:tex([196,140,88],1.0,12),roughness:0.7,side:THREE.DoubleSide});
+ // vägg längs x (gavlar) eller z (långsidor) med hål: holes=[[mitt,bredd,y0,y1],...]
+ const wall=(ax,pos,len,th,holes,mat,keep)=>{const cuts=holes.slice().sort((a,b)=>a[0]-b[0]);let s0=-len/2;const put=(w,h,c,y)=>{if(w<=0.01||h<=0.01)return;const o=ax==='x'?box(th,h,w,pos,y,c,mat):box(w,h,th,c,y,pos,mat);if(keep)KEEP(o)};
+  cuts.forEach(([c,w,y0,y1])=>{put(c-w/2-s0,2.3,(s0+c-w/2)/2,1.15);put(w,y0,c,y0/2);put(w,2.3-y1,c,(y1+2.3)/2);s0=c+w/2});put(len/2-s0,2.3,(s0+len/2)/2,1.15)};
+ const S=[[0,2.56,0.52,2.05]],N=[[-0.4,1.1,0.8,1.9]],W=[[3.3,1.1,0.85,1.9],[-3.2,1.1,0.8,1.9]],E=[[-3.0,1.1,0.8,1.9],[-0.2,1.1,0.8,1.9]];
+ wall('x',4.45,4.85,0.1,S,red);wall('x',-4.45,4.85,0.1,N,red);wall('z',2.375,9.0,0.1,W,red);wall('z',-2.375,9.0,0.1,E,red);
+ wall('x',4.38,4.65,0.03,S,pine,true);wall('x',-4.38,4.65,0.03,N,pine,true);wall('z',2.31,8.8,0.03,W,pine,true);wall('z',-2.31,8.8,0.03,E,pine,true);
+ KEEP(box(8.8,0.04,4.65,0,0.02,0,M({map:tex([236,232,222],0.9,24),roughness:0.6})));                 // vitt brädgolv
+ const pc=30*D,rh2=2.3+2.33*Math.tan(pc),sl=2.33/Math.cos(pc),ceil=M({map:tex([244,242,236],0.9,30),roughness:0.7,side:THREE.DoubleSide});
+ [-1,1].forEach(s=>{const c=KEEP(box(8.76,0.03,sl,0,(2.3+rh2)/2-0.03,s*1.165,ceil));c.rotation.x=s*pc});                       // vitt snedtak
+ [1.6,-1.6].forEach(x=>KEEP(box(0.12,0.12,4.6,x,2.85,0,ceil)));                                                                   // hanbjälkar
+ [4.36,-4.36].forEach(x=>KEEP(tri([[-2.31,2.3],[2.31,2.3],[0,rh2-0.05]],pineD,x,0,Math.PI/2)));
+ // vardagsrummet i södra änden (foto Mark 12): soffa, soffbord, matbord med stolar, ljuskrona, tavlor
+ const sof=M({color:0x8c877e,roughness:0.95}),wood=M({color:0xc9a77c,roughness:0.6}),grn=M({color:0x6f8f7a,roughness:0.7}),blk=M({color:0x222222});
+ KEEP(box(2.4,0.42,0.9,2.6,0.21,-1.82,sof));KEEP(box(2.4,0.45,0.18,2.6,0.62,-2.18,sof));[1.5,3.7].forEach(x=>KEEP(box(0.2,0.3,0.9,x,0.55,-1.82,sof)));
+ [2.0,2.6,3.2].forEach(x=>KEEP(box(0.45,0.3,0.12,x,0.62,-2.02,M({color:0xb9b2a4}))));
+ KEEP(box(1.0,0.04,0.55,2.7,0.45,-0.7,wood));[[-0.45,-0.22],[0.45,-0.22],[-0.45,0.22],[0.45,0.22]].forEach(([a,b])=>KEEP(box(0.04,0.43,0.04,2.7+a,0.22,-0.7+b,wood)));
+ KEEP(box(1.5,0.05,0.85,3.25,0.75,1.65,wood));[[-0.68,-0.36],[0.68,-0.36],[-0.68,0.36],[0.68,0.36]].forEach(([a,b])=>KEEP(box(0.06,0.72,0.06,3.25+a,0.37,1.65+b,wood)));
+ [[2.65,0.95],[3.4,0.95],[2.2,1.65],[4.0,1.65]].forEach(([x,z])=>{KEEP(box(0.42,0.04,0.42,x,0.46,z,grn));KEEP(box(0.42,0.5,0.04,x,0.72,z+(z<1.2?-0.2:0.2)*(x<3?1:1),grn));[[-0.18,-0.18],[0.18,-0.18],[-0.18,0.18],[0.18,0.18]].forEach(([a,b])=>KEEP(box(0.03,0.45,0.03,x+a,0.22,z+b,grn)))});
+ {const cx=2.7;KEEP(box(0.015,0.5,0.015,cx,2.6,0,blk));[[0.2,0],[-0.2,0],[0,0.2],[0,-0.2],[0.12,0.12]].forEach(([a,b])=>{const g=KEEP(new THREE.Mesh(new THREE.SphereGeometry(0.075,12,8),M({color:0xf2efe6,emissive:0x8a8370})));g.position.set(cx+a,2.33,b);cur.add(g)})}
+ KEEP(box(0.03,0.5,0.4,4.34,1.45,1.75,M({color:0x6b4b3a})));KEEP(box(0.5,0.45,0.03,2.6,1.6,-2.28,M({color:0x5d6a74})))}
+const RR=new THREE.Group();RG.add(RR);RR.rotation.y=Math.PI/2;cur=RR;
+const pit=30*D,hs=2.425,ov=0.45,rh=2.3+hs*Math.tan(pit);
+slab(-hs-ov*Math.cos(pit),2.3-ov*Math.sin(pit)+0.06,0,rh+0.06,9.8,0,tileM);
+slab(0,rh+0.06,hs+ov*Math.cos(pit),2.3-ov*Math.sin(pit)+0.06,9.8,0,tileM);
+box(0.2,0.12,9.8,0,rh+0.1,0,M({color:0x6e2d22}));
+[-1,1].forEach(s=>box(0.05,0.18,9.8,s*(hs+ov*Math.cos(pit)),2.3-ov*Math.sin(pit),0,fasc));
+[-1,1].forEach(s=>{const g=cyl(0.06,9.8,s*(hs+ov*Math.cos(pit)+0.05),2.3-ov*Math.sin(pit)-0.06,0,M({color:0x5a2a20}),8);g.rotation.x=Math.PI/2});
+cur=RG;
+[4.5,-4.5].forEach(x=>tri([[-hs,2.3],[hs,2.3],[0,rh]],redG,x,0,Math.PI/2));
+[4.9,-4.9].forEach(x=>{const g=new THREE.Group();g.position.set(x,0,0);RG.add(g);[-1,1].forEach(s=>{const b=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.16,(hs+ov)/Math.cos(pit)),fasc);b.position.set(0,2.3+(hs-ov)/2*Math.tan(pit)+0.08,s*(hs-ov)/2);b.rotation.x=s*pit;g.add(b)})});
+function casement(ax,x,y,z,cols,rows,cw,ch){const W=cols*cw,H=rows*ch;if(ax==='x'){[-1,1].forEach(q=>{box(0.08,0.08,W+0.16,x,y+q*(H/2+0.04),z,white);box(0.08,H+0.16,0.08,x,y,z+q*(W/2+0.04),white)});box(0.09,H,W,x,y,z,glassT);for(let i=0;i<=cols;i++)box(0.11,H,i%cols===0?0.02:0.07,x,y,z-W/2+i*cw,white);for(let j=1;j<rows;j++)box(0.11,0.045,W,x,y-H/2+j*ch,z,white);box(0.16,0.05,W+0.24,x+0.06,y-H/2-0.08,z,white)}else{[-1,1].forEach(q=>{box(W+0.16,0.08,0.08,x,y+q*(H/2+0.04),z,white);box(0.08,H+0.16,0.08,x+q*(W/2+0.04),y,z,white)});box(W,H,0.09,x,y,z,glassT);for(let i=0;i<=cols;i++)box(i%cols===0?0.02:0.07,H,0.11,x-W/2+i*cw,y,z,white);for(let j=1;j<rows;j++)box(W,0.045,0.11,x,y-H/2+j*ch,z,white);box(W+0.24,0.05,0.16,x,y-H/2-0.08,z+0.06*Math.sign(z),white)}}
+casement('x',4.53,1.28,0,4,3,0.60,0.455);                     // fönstret mot vattnet: 12 rutor, synligt glas 530 x 410 mm per ruta
+casement('z',3.3,1.38,2.47,2,2,0.5,0.5);casement('z',-3.2,1.35,2.47,2,2,0.5,0.5);
+casement('z',-3.0,1.35,-2.47,2,2,0.5,0.5);casement('z',-0.2,1.35,-2.47,2,2,0.5,0.5);   // östra långsidan (fönstret närmast vattnet borttaget)
+casement('x',-4.53,1.35,-0.4,2,2,0.5,0.5);
+// utbyggnad med entré
+const wx=0,ww=3.6,wl=1.6,wz0=2.43,wz1=wz0+wl,wr=2.3+ww/2*Math.tan(pit);
+box(ww,2.3,wl,wx,1.15,wz0+wl/2,redS);box(ww+0.1,3,wl,wx,-1.5,wz0+wl/2,stone);
+tri([[-ww/2,2.3],[ww/2,2.3],[0,wr]],redG,wx,wz1+0.01);
+const rz0=1.2,rz1=wz1+0.42,rc=(rz0+rz1)/2,rd=rz1-rz0;
+slab(wx-ww/2-0.4*Math.cos(pit),2.3-0.4*Math.sin(pit)+0.06,wx,wr+0.06,rd,rc,tileW);
+slab(wx,wr+0.06,wx+ww/2+0.4*Math.cos(pit),2.3-0.4*Math.sin(pit)+0.06,rd,rc,tileW);
+box(0.18,0.1,rd,wx,wr+0.1,rc,M({color:0x6e2d22}));
+[-1,1].forEach(s=>{const b=new THREE.Mesh(new THREE.BoxGeometry((ww/2+0.4)/Math.cos(pit),0.16,0.05),fasc);b.position.set(wx+s*(ww/2-0.4)/2,2.3+(ww/2-0.4)/2*Math.tan(pit)+0.08,rz1);b.rotation.z=-s*pit;RG.add(b)});
+casement('z',wx+0.4,1.4,wz1+0.02,2,2,0.45,0.45);
+const dX=wx-ww/2-0.035,dZ=wz0+0.85;
+box(0.08,2.12,1.02,dX-0.01,1.04,dZ,white);box(0.07,2.0,0.88,dX-0.03,1.0,dZ,brown);
+box(0.08,0.5,0.5,dX-0.05,1.55,dZ,glass);box(0.09,0.04,0.5,dX-0.06,1.55,dZ,white);box(0.09,0.5,0.04,dX-0.06,1.55,dZ,white);
+{const k=new THREE.Mesh(new THREE.SphereGeometry(0.04,8,6),M({color:0xd0c090,metalness:0.6}));k.position.set(dX-0.1,1.0,dZ+0.32);RG.add(k)}
+box(0.06,2.25,0.1,dX-0.05,1.1,dZ-0.6,M({color:0x6e2a20}));
+box(2.2,0.1,1.75,dX-1.1,-0.08,wz0+0.85,deckNew);
+for(let i=0;i<4;i++)box(0.42,0.12,2.6,dX-2.41-i*0.42,-0.24-i*0.18,wz0+1.2,deckNew);
+// gamla altanen med utekök vid entrén
+const dx0=-2.4,dx1=2.7,dz0=wz1,dz1=wz1+3.0;
+box(dx1-dx0,0.1,dz1-dz0,(dx0+dx1)/2,-0.08,(dz0+dz1)/2,deckOld);
+{const sp2=M({color:0x8e8a82,roughness:0.9});for(let y=0.1;y<0.95;y+=0.11){box(dx1-dx0,0.065,0.025,(dx0+dx1)/2,y,dz1,sp2);box(0.025,0.065,dz1-dz0-2.5,dx0,y,(dz0+2.5+dz1)/2,sp2)}
+ [dx0,(dx0+dx1)/2,dx1].forEach(x=>box(0.07,1.0,0.07,x,0.45,dz1,sp2));box(dx1-dx0,0.05,0.1,(dx0+dx1)/2,0.97,dz1,sp2)}   // räcken med liggande spaljéribbor
+const kz=dz0+1.55;box(0.85,0.05,1.85,dx0-0.12,0.85,kz,wood);
+box(0.4,0.05,0.35,dx0-0.12,0.88,kz-0.3,M({color:0xb8bcbf,metalness:0.6}));cyl(0.015,0.3,dx0-0.28,1.0,kz-0.3,M({color:0xb8bcbf,metalness:0.6}));
+box(0.1,1.6,0.1,dx0-0.45,0.4,kz+0.9,wood);
+box(1.3,0.04,0.8,0.3,0.72,dz0+1.6,white);[[-0.3,1.1],[0.9,1.1],[-0.3,2.2],[0.9,2.2]].forEach(p=>{box(0.45,0.05,0.45,p[0],0.42,dz0+p[1],white);box(0.45,0.45,0.05,p[0],0.66,dz0+p[1]+(p[1]>1.5?0.22:-0.22),white)});
+{const g=new THREE.Mesh(new THREE.SphereGeometry(0.28,12,8,0,6.3,0,1.6),M({color:0x1e1e1e}));g.position.set(1.9,0.75,dz1-0.5);RG.add(g);box(0.05,0.7,0.05,1.9,0.38,dz1-0.5,dark)}
+[[dx0,dz0+1.1],[dx0,dz1],[dx1,dz1],[0.15,dz1]].forEach(p=>{const b=rg(p[0],p[1]);if(b<-0.2)box(0.14,-0.1-b,0.14,p[0],(b-0.1)/2,p[1],post)});
+// nya altanen (bild 1): fasta bänkar, räcke, stolpar med lock
+// Altanen (foto 24 okt + matchning Mark 1): däcket ligger väster om stugan söder om entréutbyggnaden, i golvnivå med bord och stolar och trappa ned mot vattnet.
+// Framför södra gaveln finns INGET stort däck – bara berg och en smal trallremsa (0,9 m) längs gaveln.
+const ay=-0.27,ax0=1.8,ax1=5.5,az0=-2.43,az1=dz1;
+box(ax1-4.6,0.1,az1-az0,(4.6+ax1)/2,ay,(az0+az1)/2,deckAlt);
+box(4.6-ax0,0.1,az1-wz0-0.05,(ax0+4.6)/2,ay,(wz0+0.05+az1)/2,deckAlt);
+box(ax1-ax0,0.18,0.05,(ax0+ax1)/2,ay-0.12,az1+0.02,deckAlt);box(0.05,0.18,az1-az0,ax1+0.02,ay-0.12,(az0+az1)/2,deckAlt);
+function cpost(x,z,h){box(0.12,h,0.12,x,ay+h/2,z,wood);box(0.15,0.04,0.15,x,ay+h+0.02,z,capM)}
+for(let x=ax0+0.4;x<=ax1+0.01;x+=1.37)cpost(x,az1-0.06,1.05);
+box(ax1-ax0-0.3,0.06,0.14,(ax0+ax1)/2+0.15,ay+1.02,az1-0.06,wood);box(ax1-ax0-0.3,0.1,0.04,(ax0+ax1)/2+0.15,ay+0.72,az1-0.04,wood);
+const bz=az1-0.42;box(ax1-ax0-0.6,0.06,0.48,(ax0+ax1)/2+0.15,ay+0.47,bz,wood);
+for(let x=ax0+0.6;x<ax1;x+=1.37){box(0.1,0.45,0.1,x,ay+0.23,bz-0.15,wood);box(0.1,0.45,0.1,x,ay+0.23,bz+0.18,wood)}
+{const bk=new THREE.Mesh(new THREE.BoxGeometry(ax1-ax0-0.6,0.42,0.05),wood);bk.position.set((ax0+ax1)/2+0.15,ay+0.82,az1-0.17);bk.rotation.x=-0.25;RG.add(bk)}
+cpost(ax1-0.06,az1-1.6,1.05);cpost(ax1-0.06,az1-3.0,1.05);
+box(0.14,0.06,1.6,ax1-0.06,ay+1.02,az1-0.83,wood);
+for(let i=0;i<3;i++)box(0.45,0.1,1.6,ax1+0.25+i*0.42,ay-0.18-i*0.18,(wz0+az1)/2-0.6,deckAlt);   // trappa ned från altanen mot vattnet
+for(let x=ax0+0.3;x<=ax1;x+=1.4)for(const z of [az0+0.2,2.6,az1-0.1]){if(x<4.6&&z<wz0)continue;const b=rg(x,z);if(b<ay-0.2)box(0.12,ay-0.05-b,0.12,x,(ay-0.05+b)/2,z,post)}
+// skorsten (mitt på östra takfallet), vedbod, flaggstång
+box(0.55,1.75,0.55,0.5,3.3,-1.3,brick);box(0.68,0.08,0.68,0.5,4.2,-1.3,M({color:0x555555}));   // skorsten på östra takfallet, tills vidare 0,5 m söder om långsidans mitt (beslut 23 okt 2026)
+// ny utbyggnad mot öster (berget), 4,5 x 4,5 m, mitt emot den befintliga, taket upp till nocken – PLANERAD (finns inte på några foton)
+var PLAN_EXT=new THREE.Group();RG.add(PLAN_EXT);cur=PLAN_EXT;
+{const ew=4.5,el=4.5,exc=0,ez0=-2.43,ez1=ez0-el,hw=ew/2,ep=Math.atan2(rh-2.3,hw),eo=0.4;
+const redE=M({map:tex([146,38,30],2.2,12)}),tileE=M({map:tileTex([2.4,2.6]),roughness:0.7});
+box(ew,2.3,el,exc,1.15,(ez0+ez1)/2,redE);box(ew+0.1,3,el,exc,-1.5,(ez0+ez1)/2,stone);
+tri([[-hw,2.3],[hw,2.3],[0,rh]],redG,exc,ez1-0.01);
+const rz0=-1.0,rz1=ez1-0.42,rc=(rz0+rz1)/2,rd=rz0-rz1;
+slab(exc-hw-eo*Math.cos(ep),2.3-eo*Math.sin(ep)+0.06,exc,rh+0.06,rd,rc,tileE);
+slab(exc,rh+0.06,exc+hw+eo*Math.cos(ep),2.3-eo*Math.sin(ep)+0.06,rd,rc,tileE);
+box(0.2,0.12,rd,exc,rh+0.1,rc,M({color:0x6e2d22}));
+[-1,1].forEach(s=>{const b=new THREE.Mesh(new THREE.BoxGeometry((hw+eo)/Math.cos(ep),0.16,0.05),fasc);b.position.set(exc+s*(hw-eo)/2,2.3+(hw-eo)/2*Math.tan(ep)+0.08,rz1);b.rotation.z=-s*ep;PLAN_EXT.add(b)});
+[[exc-hw,ez0],[exc+hw,ez0],[exc-hw,ez1],[exc+hw,ez1]].forEach(p=>box(0.1,2.3,0.1,p[0]+Math.sign(p[0]-exc)*0.01,1.15,p[1]-0.01,redE));
+casement('x',exc+hw+0.03,1.35,ez0-2.6,2,2,0.5,0.5);casement('x',exc-hw-0.03,1.35,ez0-1.4,2,2,0.5,0.5);
+casement('z',exc,2.0,ez1-0.03,2,1,0.45,0.4);}
+cur=RG;
+// nuläge: berget där den planerade utbyggnaden ska stå (naturlig häll, visas när utbyggnaden är dold)
+var NOW_ROCK=(()=>{const N=40,g=new THREE.PlaneGeometry(6.2,6.2,N,N);g.rotateX(-Math.PI/2);const p=g.attributes.position;
+ for(let i=0;i<p.count;i++){const lx=p.getX(i),lz=-2.43-2.25+p.getZ(i),w=R2W(lx,lz);p.setY(i,Math.max(base(w[0],w[1]),Fr-0.3)-Fr+0.02);p.setZ(i,lz)}
+ g.computeVertexNormals();const m=new THREE.Mesh(g,M({color:0x9d8f86,roughness:0.95,flatShading:true}));m.receiveShadow=true;m.visible=false;RG.add(m);return m})();
+window.setPlanned=function(on){PLAN_EXT.visible=on;NOW_ROCK.visible=!on};
+// --- detaljer från bilderna (okt 2026) ---
+// murad skorstensstock av tegel mot östra långsidan, ända från marken
+{const gy=Math.min(-0.3,rg(0.5,-2.75));box(0.95,2.3-gy,0.5,0.5,(2.3+gy)/2,-2.68,brick);box(1.0,0.05,0.55,0.5,2.32,-2.68,M({color:0x777777}))}
+// stege mot taket på östra sidan
+{const lg=new THREE.Group();lg.position.set(2.5,0,-2.75);RG.add(lg);const gy=rg(2.5,-3.3),len=Math.hypot(2.5-gy,0.55),a=Math.atan2(0.55,2.5-gy);
+[-0.22,0.22].forEach(x=>{const r=new THREE.Mesh(new THREE.BoxGeometry(0.05,len,0.05),M({color:0x5a3a28}));r.position.set(x,(2.5+gy)/2,-0.28);r.rotation.x=a;lg.add(r)});
+for(let k=1;k<9;k++){const f=k/9;const g=new THREE.Mesh(new THREE.BoxGeometry(0.44,0.03,0.03),M({color:0x5a3a28}));g.position.set(0,gy+(2.5-gy)*f,-0.55+0.55*f);lg.add(g)}}
+// påbyggt skjul på främre (södra) delen av östra långsidan
+{const sx0=2.85,sx1=4.6,sz0=-4.1,sz1=-2.45,gy=Math.min(-0.2,rg((sx0+sx1)/2,(sz0+sz1)/2)),h=2.05;
+box(sx1-sx0,h-gy,sz1-sz0,(sx0+sx1)/2,(h+gy)/2,(sz0+sz1)/2,M({map:tex([146,38,30],1.8,12)}));
+const rf=box(sx1-sx0+0.3,0.06,sz1-sz0+0.3,(sx0+sx1)/2,h+0.05,(sz0+sz1)/2,M({color:0x5c2a22}));rf.rotation.x=0.06;
+box(0.9,1.8,0.04,(sx0+sx1)/2,gy+0.95,sz0-0.03,M({map:tex([150,42,34],0.6,12)}));box(0.04,0.04,0.12,(sx0+sx1)/2+0.35,gy+1.0,sz0-0.08,M({color:0x999999,metalness:0.6}))}
+// Uteköket är klätt med spaljé (Tomas 24 okt): liggande ribbor på köksstommens utsidor, från däcket upp till bänkskivan.
+{const kx=dx0-0.12,kz2=dz0+1.55,hw=0.39,hd=0.865,sp=M({color:0x8e8a82,roughness:0.9}),dk=M({color:0x2a2622});
+ const face=(x0,z0,x1,z1)=>{const L=Math.hypot(x1-x0,z1-z0),a=Math.atan2(x1-x0,z1-z0);
+  for(let y=2.2;y>-0.04;y-=0.1){const b=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.065,L),sp);b.position.set((x0+x1)/2,y,(z0+z1)/2);b.rotation.y=a;cur.add(b)}};
+ box(0.72,2.28,1.66,kx,1.1,kz2,dk);box(0.86,0.06,1.82,kx,2.27,kz2,sp);   // mörk stomme bakom ribborna + lock (foto 27, 32: hög ribbad kökshylla)
+ face(kx-hw,kz2-hd,kx-hw,kz2+hd);face(kx-hw,kz2-hd,kx+hw,kz2-hd);face(kx-hw,kz2+hd,kx+hw,kz2+hd);[[kx-hw,kz2-hd],[kx-hw,kz2+hd]].forEach(([x,z])=>box(0.06,2.3,0.06,x,1.1,z,sp));
+ // ram med stolpe och överliggare framför uteköket (foto 27, 32)
+ box(0.1,2.45,0.1,kx+0.2,1.17,kz2+hd+1.1,sp);box(0.14,0.16,hd*2+1.25,kx+0.2,2.42,kz2+0.55,sp)}
+// svängd trappa från entrétrappan ner mot sundet (bild: solfjädersformade steg) – ligger under spaljén
+{const lx=dX-0.035-2.41-3*0.42-0.42,ly=-0.24-3*0.18-0.18;box(0.5,0.1,2.6,lx-0.04,ly,wz0+1.2,deckNew);
+const px=lx-0.29,pz=wz0+1.2,R=1.35,n=6,gEnd=Math.min(ly-0.6,rg(px-0.4,pz+1.0)),rs=Math.max(0.12,(ly-gEnd)/n),sw=Math.PI/2/n;
+for(let k=1;k<=n;k++){const a0=Math.PI-sw*(k-1),a1=a0-sw,sh=new THREE.Shape();sh.moveTo(0,0);for(let i=0;i<=6;i++){const a=a0+(a1-a0)*i/6;sh.lineTo(Math.cos(a)*R,-Math.sin(a)*R)}sh.lineTo(0,0);
+const m=new THREE.Mesh(new THREE.ExtrudeGeometry(sh,{depth:0.1,bevelEnabled:false}),deckNew);m.rotation.x=-Math.PI/2;m.position.set(px,ly-rs*k-0.05,pz);RG.add(m)}
+cyl(0.07,ly-gEnd+1.0,px,(ly+gEnd+1.0)/2,pz,post);[[px-R-0.05,pz],[px,pz+R+0.05]].forEach(([x,z])=>{const b=rg(x,z);box(0.09,1.1+Math.max(0,ly-b),0.09,x,(ly+1.0+b)/2,z,post);box(0.12,0.03,0.12,x,ly+1.02,z,capM)})}
+// lång spång från nordost fram till den befintliga norra gaveln, med ett trappsteg
+{const sx=-5.0,sz=-1.2,dx=-0.75,dz=-0.66,al=Math.atan2(-dz,dx),G=new THREE.Group();G.position.set(sx,0,sz);G.rotation.y=al;RG.add(G);const pc=cur;cur=G;
+[[15,26]].forEach(([i0,i1])=>{   // spången börjar ca 9 m norr om gaveln (drönarbild uppifrån, Tomas markering 24 okt)
+let mx=-9;for(let i=i0;i<i1;i++)mx=Math.max(mx,rg(sx+dx*i*0.42,sz+dz*i*0.42));const yy=mx+0.2;
+for(let i=i0;i<i1;i++){box(0.4,0.05,1.25,i*0.42,yy,0,deckOld);if(i%4===0){const b=rg(sx+dx*i*0.42,sz+dz*i*0.42);[-0.55,0.55].forEach(o=>box(0.08,Math.max(0.1,yy-b),0.08,i*0.42,(yy+b)/2,o,post))}}});cur=pc}
+// sittplats på hällen framför stugan (söder om skjulet): runt bord, svarta stolar, staket och stort block
+{const cx=6.6,cz=-4.4,gy=rg(cx,cz);const tb=new THREE.Mesh(new THREE.CylinderGeometry(0.55,0.55,0.04,24),white);tb.position.set(cx,gy+0.72,cz);RG.add(tb);cyl(0.04,0.7,cx,gy+0.36,cz,dark);
+const blackM=M({color:0x1f2224});[[0.85,0],[-0.85,0],[0,0.85]].forEach(([dx,dz],i)=>{const c=new THREE.Group();c.position.set(cx+dx,gy,cz+dz);c.rotation.y=Math.atan2(-dx,-dz);RG.add(c);
+const s1=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.05,0.5),blackM);s1.position.set(0,0.44,0);c.add(s1);const b1=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.75,0.05),blackM);b1.position.set(0,0.82,-0.25);b1.rotation.x=-0.15;c.add(b1);
+[[-0.25,-0.22],[0.25,-0.22],[-0.25,0.22],[0.25,0.22]].forEach(([a,b])=>{const l=new THREE.Mesh(new THREE.BoxGeometry(0.04,0.44,0.04),blackM);l.position.set(a,0.22,b);c.add(l)})});
+for(let k=0;k<9;k++)box(0.08,0.85,0.03,cx-1.3+k*0.13,gy+0.42,cz-1.3,blackM);box(1.2,0.05,0.03,cx-0.78,gy+0.6,cz-1.3,blackM);
+const bl=new THREE.Mesh(new THREE.DodecahedronGeometry(0.95,1),M({color:0x8e8a83,flatShading:true}));bl.scale.set(1.1,0.95,1.0);bl.position.set(cx-0.6,gy+0.6,cz+2.4);RG.add(bl)}
+// litet trädäck med svart smidesräcke framför södra gaveln (syns genom stora fönstret)
+{const cx=11.2,cz=-3.2,gy=rg(cx,cz),dy=gy+0.25,iron=M({color:0x1c1c1c,metalness:0.6,roughness:0.5});box(2.6,0.06,2.0,cx,dy,cz,deckOld);
+[[cx-1.25,cz-0.95],[cx+1.25,cz-0.95],[cx-1.25,cz+0.95],[cx+1.25,cz+0.95]].forEach(([x,z])=>{const b=rg(x,z);box(0.1,Math.max(0.1,dy-b),0.1,x,(dy+b)/2,z,post)});
+for(let i=0;i<=20;i++)box(0.02,0.8,0.02,cx-1.28+i*0.128,dy+0.42,cz-0.98,iron);box(2.6,0.03,0.03,cx,dy+0.82,cz-0.98,iron);box(2.6,0.03,0.03,cx,dy+0.3,cz-0.98,iron);
+for(let i=0;i<=15;i++)box(0.02,0.8,0.02,cx+1.28,dy+0.42,cz-0.98+i*0.13,iron);box(0.03,0.03,2.0,cx+1.28,dy+0.82,cz,iron);
+for(let k=0;k<5;k++){const t=new THREE.Mesh(new THREE.TorusGeometry(0.12,0.012,6,16,Math.PI),iron);t.position.set(cx-1.0+k*0.5,dy+0.56,cz-0.98);RG.add(t)}
+box(1.9,0.18,0.9,cx-0.2,dy+0.12,cz+0.3,M({color:0x6f6b66}))}
+// träramp med tvärslåar över hällen norr om gaveln (drönarbild uppifrån, Tomas markering "Trä ramp")
+{const A=[-8.0,-2.1],B=[-6.2,1.9],L=Math.hypot(B[0]-A[0],B[1]-A[1]),n=Math.ceil(L/0.3),a=Math.atan2(B[0]-A[0],B[1]-A[1]),pl=M({color:0x9a8c78,roughness:0.9});
+ for(let i=0;i<n;i++){const t=(i+0.5)/n,x=A[0]+(B[0]-A[0])*t,z=A[1]+(B[1]-A[1])*t,y=rg(x,z)+0.07;const b=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.04,L/n+0.02),pl);b.position.set(x,y,z);b.rotation.y=a;cur.add(b);
+  if(i%2===0){const c=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.035,0.04),pl);c.position.set(x,y+0.035,z);c.rotation.y=a;cur.add(c)}}}
+// lösa spänger med tvärslåar ner över hällen mot attefallshuset (bild vid röda stugans gavel)
+{const P=[[-6.4,6.0],[-7.1,8.1],[-7.7,10.2]];for(let k=0;k<P.length-1;k++){const[a1,b1]=P[k],[a2,b2]=P[k+1],L=Math.hypot(a2-a1,b2-b1),ya=rg(a1,b1)+0.06,yb=rg(a2,b2)+0.06,G=new THREE.Group();
+G.position.set((a1+a2)/2,(ya+yb)/2,(b1+b2)/2);G.rotation.y=-Math.atan2(b2-b1,a2-a1);G.rotation.z=Math.atan2(yb-ya,L);RG.add(G);
+const pl=new THREE.Mesh(new THREE.BoxGeometry(L,0.04,0.9),deckOld);G.add(pl);for(let t=-L/2+0.25;t<L/2;t+=0.45){const cl2=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.04,0.86),deckOld);cl2.position.set(t,0.04,0);G.add(cl2)}}}
+// utedusch under nya altanens kant, skärmar av ribbor och skifferplattor
+{const sx=7.2,sz=8.2,gy=rg(sx,sz);[[0,0],[1.1,0],[0,1.1],[1.1,1.1]].forEach(([a,b])=>{box(0.08,2.1,0.08,sx+a,gy+1.05,sz+b,wood);box(0.11,0.03,0.11,sx+a,gy+2.12,sz+b,capM)});
+for(let k=0;k<11;k++){box(1.1,0.07,0.03,sx+0.55,gy+0.35+k*0.13,sz,wood);box(0.03,0.07,1.1,sx,gy+0.35+k*0.13,sz+0.55,wood)}
+[[0.3,0.3],[0.8,0.3],[0.3,0.8],[0.8,0.8]].forEach(([a,b])=>box(0.46,0.03,0.46,sx+a,gy+0.02,sz+b,M({color:0x4d5458})));
+cyl(0.015,1.9,sx+0.1,gy+0.95,sz+0.1,M({color:0xc8c8c8,metalness:0.7}));{const hd=cyl(0.07,0.02,sx+0.3,gy+1.95,sz+0.3,M({color:0xd0d0d0,metalness:0.8}),14)}}
+cyl(0.05,9,-7.2,4.5,2.2,white);{const k=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,6),M({color:0x2f2f2f}));k.position.set(-7.2,9.05,2.2);RG.add(k)}
+// svensk vimpel i flaggstången: blå med gult kors vid stången, kluven stjärt (blå över, gul under), vajar i vinden
+{const c=document.createElement('canvas');c.width=512;c.height=64;const g=c.getContext('2d');g.fillStyle='#006aa7';g.fillRect(0,0,512,64);g.fillStyle='#fecc00';g.fillRect(0,26,512,12);g.fillRect(28,0,12,64);g.fillStyle='#fecc00';g.fillRect(150,32,362,32);
+ const L=4.2,geo=new THREE.PlaneGeometry(L,0.42,40,2),pa=geo.attributes.position;for(let i=0;i<pa.count;i++){const x=pa.getX(i)+L/2,y=pa.getY(i),u=x/L;pa.setX(i,x);pa.setY(i,y*(1-0.82*u)+(u>0.8&&Math.abs(y)<0.01?0:0))}
+ const base=Float32Array.from(pa.array),mesh=new THREE.Mesh(geo,M({map:new THREE.CanvasTexture(c),side:THREE.DoubleSide,roughness:0.7}));mesh.position.set(-7.2,8.72,2.2);RG.add(mesh);
+ window.PENN=()=>{const t=performance.now()/1000;for(let i=0;i<pa.count;i++){const x=base[i*3],u=x/L;pa.setZ(i,0.35*u*Math.sin(t*3.2-x*1.7)+0.08*u*Math.sin(t*7-x*4));pa.setY(i,base[i*3+1]-0.25*u*u)}pa.needsUpdate=true;geo.computeVertexNormals();mesh.rotation.y=0.9+0.25*Math.sin(t*0.4)}}
+}
+
+// ===== 40_sjostugan: sjöstugan, bryggan, pontonen, båtarna, spångarna =====
+// Enligt drönarbilden rakt uppifrån: bryggan går rakt ut från klippan (söderut), ca 4,3 x 7,4 m.
+// Sjöstugan står ytterst på bryggan med långsidan längs bryggan och gaveln med fönsterpartiet mot sjön.
+// Pontonen ligger parallellt på västra sidan av den yttre delen, båten mellan pontonen och bryggan.
+const JX=12.5,JZ=46.6,JR=0.244;   // kalibrerad mot sparade fotomatchningar: bryggan parallell med husen (ca 166°)
+const JG=new THREE.Group();JG.position.set(JX,0,JZ);JG.rotation.y=JR;S.add(JG);cur=JG;
+{const dw=6.2,dl=10.6;   // ca 6 x 10,5 m enligt drönarbilden rakt uppifrån
+box(dw,0.22,dl,0,0.45,0,deckNew);box(dw+0.1,0.25,0.08,0,0.3,dl/2+0.02,deckNew);box(0.08,0.25,dl,dw/2+0.02,0.3,0,deckNew);box(0.08,0.25,dl,-dw/2-0.02,0.3,0,deckNew);
+for(let x=-dw/2+0.15;x<=dw/2;x+=(dw-0.3)/2)[-dl/2+0.2,-1.8,1.6,dl/2-0.15].forEach(z=>cyl(0.13,2.4,x,-0.7,z,white));
+[[-dw/2+0.12,dl/2-0.12],[dw/2-0.12,dl/2-0.12],[dw/2-0.12,-0.6],[-dw/2+0.12,-0.6]].forEach(p=>cyl(0.11,0.4,p[0],0.75,p[1],M({color:0xc9b48e})));
+box(2.4,0.14,2.4,1.2,0.43,-dl/2-1.1,deckNew);
+// ponton med kanoten uppochner, båten mellan pontonen och bryggan
+const px=-dw/2-1.9-1.15;   // ponton ca 2,3 x 5 m, 1,9 m väster om bryggan
+const PZ=-1.0;   // flytbryggan väster om bryggan, flyttad närmare land (beslut 23 okt 2026)
+box(2.3,0.32,5.0,px,0.3,PZ,deckNew);box(2.2,0.28,4.9,px,0.06,PZ,M({color:0x2f4f3c}));
+{const can=new THREE.Mesh(new THREE.SphereGeometry(1,18,10),M({color:0xc7c9c8,metalness:0.4,roughness:0.4}));can.scale.set(0.42,0.2,2.4);can.position.set(px-0.4,0.55,PZ);JG.add(can)}
+// spång från flytbryggans inre ände upp till land nära kattskallen
+{const c=Math.cos(JR),s=Math.sin(JR),W=(lx,lz)=>[JX+lx*c+lz*s,JZ-lx*s+lz*c];
+const sx=px+0.5,sz=PZ-2.45,tx=-2.4,tz=-6.6;let ex=tx,ez=tz;
+for(let t=0.05;t<=1.6;t+=0.02){const lx=sx+(tx-sx)*t,lz=sz+(tz-sz)*t,w=W(lx,lz);if(base(w[0],w[1])>0.45){ex=lx;ez=lz;break}}
+const we=W(ex,ez),sy=0.47,ey=Math.max(base(we[0],we[1])+0.06,0.55),dx=ex-sx,dz=ez-sz,Lh=Math.hypot(dx,dz),L=Math.hypot(Lh,ey-sy);
+const g=new THREE.Group();g.position.set((sx+ex)/2,(sy+ey)/2,(sz+ez)/2);g.rotation.y=Math.atan2(dx,dz);JG.add(g);
+const p=new THREE.Group();p.rotation.x=-Math.atan2(ey-sy,Lh);g.add(p);
+p.add(new THREE.Mesh(new THREE.BoxGeometry(1.05,0.05,L),deckNew));   // 105 cm bred (uppmätt 23 okt 2026)
+for(let t=-L/2+0.2;t<L/2;t+=0.4){const sl=new THREE.Mesh(new THREE.BoxGeometry(1.01,0.03,0.05),deckNew);sl.position.set(0,0.04,t);p.add(sl)}
+[-0.5,0.5].forEach(o=>{const r=new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,L),wood);r.position.set(o,0.85,0);p.add(r);[-L/2+0.1,L/2-0.1].forEach(t=>{const st=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.85,0.06),wood);st.position.set(o,0.42,t);p.add(st)})})}
+{const hs=new THREE.Shape();hs.moveTo(-0.9,-2.3);hs.lineTo(0.9,-2.3);hs.lineTo(0.9,0.9);hs.quadraticCurveTo(0.6,2.0,0,2.5);hs.quadraticCurveTo(-0.6,2.0,-0.9,0.9);hs.lineTo(-0.9,-2.3);
+const hull=new THREE.Mesh(new THREE.ExtrudeGeometry(hs,{depth:0.7,bevelEnabled:true,bevelSize:0.06,bevelThickness:0.06,bevelSegments:2}),M({color:0xf6f6f4,roughness:0.4}));hull.rotation.x=-Math.PI/2;hull.position.set(-dw/2-0.95,-0.15,1.4);JG.add(hull);
+const bx0=-dw/2-0.95;box(1.4,0.08,2.6,bx0,0.58,1.7,M({color:0xe4e2dc}));box(0.7,0.55,0.5,bx0,0.85,0.9,M({color:0xf0f0ee}));box(0.6,0.35,0.06,bx0,1.25,0.65,glass);
+box(0.35,0.8,0.35,bx0,0.55,3.85,M({color:0x1c1c1c}));box(0.5,0.12,1.2,bx0,0.65,2.6,M({color:0x223a66}))}
+// sjöstugan ytterst
+const bw=M({map:tex([206,212,216],2.4)}),bwG=M({map:tex([206,212,216],0.4),side:THREE.DoubleSide}),corr=M({color:0x9aa7a0,metalness:0.45,roughness:0.45}),corS=M({color:0xb3beb7,metalness:0.4,roughness:0.4});
+const bx=0,bz=1.25,by=0.56,bl=4.25,bd=3.25,   // sjöstugan 4,25 x 3,25 m (uppmätt 23 okt 2026), ytterst på bryggan
+p=22*D,rise=bd/2*Math.tan(p);
+const BR=new THREE.Group();BR.position.set(bx,by,bz);JG.add(BR);cur=BR;
+box(bd,2.2,bl,0,1.1,0,bw);
+[bl/2,-bl/2].forEach(z=>tri([[-bd/2,0],[bd/2,0],[bd/2,2.2],[0,2.2+rise],[-bd/2,2.2]],bwG,0,z));
+slab(-bd/2-0.4*Math.cos(p),2.2-0.4*Math.sin(p)+0.05,0,2.2+rise+0.05,bl+0.7,0,corr,corS,0.12);
+slab(0,2.2+rise+0.05,bd/2+0.4*Math.cos(p),2.2-0.4*Math.sin(p)+0.05,bl+0.7,0,corr,corS,0.12);
+[[-bd/2,-bl/2],[bd/2,-bl/2],[-bd/2,bl/2],[bd/2,bl/2]].forEach(q=>box(0.1,2.2,0.1,q[0],1.1,q[1],white));
+box(1.5,0.8,0.06,0,1.45,bl/2+0.02,white);box(1.4,0.68,0.07,0,1.45,bl/2+0.03,glass);box(0.05,0.68,0.09,-0.45,1.45,bl/2+0.04,white);box(0.05,0.68,0.09,0.45,1.45,bl/2+0.04,white);
+box(0.06,0.6,0.7,-bd/2-0.02,1.5,0.6,white);box(0.07,0.5,0.6,-bd/2-0.03,1.5,0.6,glass);
+box(0.06,0.6,0.7,bd/2+0.02,1.5,0.8,white);box(0.07,0.5,0.6,bd/2+0.03,1.5,0.8,glass);
+box(0.85,1.95,0.06,0.3,0.98,-bl/2-0.02,M({color:0xb9c1c4}));
+// bänk mot gaveln med fönstret och bord framför (Mark 17–18)
+{const bm=M({color:0x7a6a55}),cu=M({color:0x8c7f78});box(1.7,0.08,0.45,0,0.48,bl/2+0.3,bm);[-0.75,0.75].forEach(o=>box(0.08,0.44,0.4,o,0.22,bl/2+0.3,bm));box(1.6,0.08,0.4,0,0.56,bl/2+0.3,cu);
+ box(1.2,0.05,0.7,0,0.74,bl/2+1.2,bm);[[-0.5,-0.25],[0.5,-0.25],[-0.5,0.25],[0.5,0.25]].forEach(([a,b])=>box(0.06,0.72,0.06,a,0.36,bl/2+1.2+b,bm))}
+cyl(0.08,1.6,0.6,2.25,-0.9,M({color:0x777777,metalness:0.6}));
+cyl(0.04,1.9,-bd/2-0.05,1.0,-bl/2+0.1,M({color:0x9aa0a3}));
+cur=JG;}
+cur=S;
+const bwPts=[];for(let z=42.5;z>14;z-=0.55){const x=shoreE(z)+0.9;bwPts.push([x,z])}
+bwPts.forEach((p,i)=>{box(0.9,0.06,0.5,p[0],0.55,p[1],deckOld);if(i%4===0){box(0.1,1.4,0.1,p[0]-0.4,-0.1,p[1],post);box(0.1,1.4,0.1,p[0]+0.4,-0.1,p[1],post)}});
+{const e=bwPts[bwPts.length-1];box(2.2,0.4,2.0,e[0]+0.2,0.3,e[1]-1.2,M({color:0xa8a49c}))}
+for(let x=7.5;x>-6;x-=0.55){const z=shoreS(x)-0.3;const y=Math.max(0.55,base(x,z-0.4)+0.15);box(0.5,0.06,1.0,x,y,z,deckOld)}
+for(let i=0;i<8;i++){const x=-6.3,z=shoreS(-6)-0.8-i*0.45;box(1.0,0.08,0.4,x,0.7+i*0.32,z,deckOld)}
+
+// tallkrona: platta, oregelbundna barrskivor i våningar högt upp på stammen (inte runda bollar)
+const PAD=(()=>{const g=new THREE.CylinderGeometry(0.62,1,1,9,1);const p=g.attributes.position;for(let i=0;i<p.count;i++){const a=Math.atan2(p.getZ(i),p.getX(i)),k=1+0.22*Math.sin(a*3+1.3)+0.12*Math.sin(a*5);p.setX(i,p.getX(i)*k);p.setZ(i,p.getZ(i)*k)}g.computeVertexNormals();return g})();
+// ===== 50_natur_detaljer: skog runt om, block, vass, detaljer från bilderna =====
+const NT=1500,trunkI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1,0.18,1,6),M({color:0x9a5a38}),NT),crownI=new THREE.InstancedMesh(PAD,M({color:0xffffff,flatShading:true,transparent:true,opacity:0.6,depthWrite:false}),NT*6);
+const dm=new THREE.Object3D(),cc=new THREE.Color();let nt=0,nc=0;
+function pine(x,z,s){if(nt>=NT)return;const y=base(x,z);const H=(8+rnd()*5)*s;dm.position.set(x,y+H*0.42,z);dm.rotation.set((rnd()-0.5)*0.12,0,(rnd()-0.5)*0.12);dm.scale.set(s,H*0.84,s);dm.updateMatrix();trunkI.setMatrixAt(nt++,dm.matrix);
+const k=5+Math.floor(rnd()*2);for(let i=0;i<k&&nc<NT*6;i++){const f=i/(k-1||1),r=(2.1-f*1.0+rnd()*0.6)*s;dm.position.set(x+(rnd()-0.5)*1.4*s,y+H*(0.5+f*0.46),z+(rnd()-0.5)*1.4*s);dm.rotation.set((rnd()-0.5)*0.15,rnd()*6.3,(rnd()-0.5)*0.15);dm.scale.set(r,(0.45+rnd()*0.25)*s,r*(0.8+rnd()*0.3));dm.updateMatrix();crownI.setMatrixAt(nc,dm.matrix);cc.setRGB(0.15+rnd()*0.05,0.25+rnd()*0.07,0.17+rnd()*0.04);crownI.setColorAt(nc++,cc)}}
+// tallbälte runt grusplanen på landtungan (drönarbilden över infarten: träd på alla sidor innan vassen tar vid)
+for(let i=0,c=0;i<6000&&c<55&&nt<NT;i++){const z=-46+rnd()*26,x=NECKX(z)+(rnd()*2-1)*13;if(gravelW(x,z)>0.02||(Math.abs(x-NECKX(z))<3.5&&z<-36)||raw(x,z)<0.6||(x<12&&z>-30))continue;   // inte på spången/trappan från grusplanen
+ pine(x,z,0.85+rnd()*0.5);c++}
+// skog bara på fast mark runt om (aldrig i vassen, vattnet eller på halvön – den har egna träd)
+for(let i=0;i<40000&&nt<NT;i++){const x=rnd()*220-110,z=rnd()*390-130;if((raw(x,z)<0.3||(z<-24&&Math.abs(x-NECKX(z))<16))&&(!marsh(x,z)||raw(x,z)>=0.3)&&base(x,z)>0.9&&!(gravelW(x,z)>0.02||(Math.abs(x-NECKX(z))<3.5&&z<-36&&z>-95)))pine(x,z,0.9+rnd()*0.5)}
+// glänta runt boden på östra udden: träd där tas bort i efterhand (slumpföljden och resten av skogen ändras inte)
+{const v=new THREE.Vector3(),m4=new THREE.Matrix4(),z0=new THREE.Matrix4().makeScale(0,0,0);[[trunkI,nt],[crownI,nc]].forEach(([im,n])=>{for(let i=0;i<n;i++){im.getMatrixAt(i,m4);v.setFromMatrixPosition(m4);if(Math.hypot(v.x-EBOD[0],v.z-EBOD[1])<6)im.setMatrixAt(i,z0)}})}
+window.AIR_MATS=[[crownI.material,1],[trunkI.material,2.2]];trunkI.userData.air=crownI.userData.air=true;trunkI.count=nt;crownI.count=nc;trunkI.userData.noShadow=crownI.userData.noShadow=true;S.add(trunkI,crownI);
+function yardFree(x,z){return gravelW(x,z)<0.01&&!(z<-22&&Math.abs(x-NECKX(z))<12)}   // inga stenar, buskar eller döda träd på grusplanen/landtungan
+function far(x,z){if(!yardFree(x,z))return false;const[rx,rz]=rloc(x,z);if(rx>-8&&rx<10&&rz>-10&&rz<10)return false;return !(Math.hypot(x-AX,z-AZ)<7||Math.hypot(x-JX,z-JZ)<7)}
+const bo=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1,1),M({color:0xffffff,flatShading:true}),220);let nb=0;
+// rundade flyttblock och lösa stenar på hällarna, som på bilderna (fler och mer varierade)
+for(let i=0;i<6000&&nb<220;i++){const x=rnd()*60-28,z=rnd()*92-44,h=raw(x,z);if(h>0.1&&far(x,z)){const big=rnd()<0.05,r=big?0.6+rnd()*0.5:0.15+rnd()*0.4;dm.position.set(x,ground(x,z)+r*0.35,z);dm.rotation.set(rnd()*3,rnd()*3,rnd()*3);dm.scale.set(r*(1.1+rnd()*0.4),r*(0.6+rnd()*0.3),r*(0.9+rnd()*0.3));dm.updateMatrix();bo.setMatrixAt(nb,dm.matrix);const t=rnd();cc.setRGB(0.58+t*0.1,0.53+t*0.08,0.5+t*0.07);bo.setColorAt(nb++,cc)}}bo.count=nb;bo.castShadow=true;bo.receiveShadow=true;S.add(bo);
+// enbuskar i skrevor och sänkor (tänds/släcks med Träd)
+{const jn=new THREE.InstancedMesh(new THREE.ConeGeometry(1,1,7),M({color:0xffffff,flatShading:true}),170);let nj=0;
+for(let i=0;i<9000&&nj<170;i++){const x=rnd()*56-26,z=rnd()*88-42,h=raw(x,z);if(h>0.6&&h<8.5&&far(x,z)&&Math.hypot(x-RX,z-RZ)>15&&Math.hypot(x-AX,z-AZ)>14&&rockDetail(x,z).hump<-0.08){const r=0.35+rnd()*0.5,hh=0.6+rnd()*1.4;dm.position.set(x,ground(x,z)+hh*0.45,z);dm.rotation.set(0,rnd()*3,0);dm.scale.set(r,hh,r);dm.updateMatrix();jn.setMatrixAt(nj,dm.matrix);cc.setRGB(0.18+rnd()*0.05,0.26+rnd()*0.06,0.2+rnd()*0.05);jn.setColorAt(nj++,cc)}}
+jn.userData.air=true;jn.count=nj;jn.castShadow=true;S.add(jn);tag('trad',jn)}
+const NR=24000,reeds=new THREE.InstancedMesh(new THREE.ConeGeometry(0.044,1,4),M({color:0xffffff}),NR);let nr=0;
+for(let i=0;i<420000&&nr<NR;i++){const x=rnd()*200-100,z=rnd()*210-90;if(marsh(x,z)&&raw(x,z)<0.15&&base(x,z)<0.3&&gravelW(x,z)<0.01&&(()=>{const[a,b]=loc(x,z),d=onPath(a,b);return (d===null||d>2.2)&&onPath2(x,z)>2.0})()){const hh=1.4+rnd()*1.0;dm.position.set(x,hh/2,z);dm.rotation.set((rnd()-0.5)*0.2,rnd()*3,(rnd()-0.5)*0.2);dm.scale.set(1,hh,1);dm.updateMatrix();reeds.setMatrixAt(nr,dm.matrix);const t=rnd();cc.setRGB(0.72+t*0.12,0.6+t*0.1,0.38+t*0.08);reeds.setColorAt(nr++,cc)}}
+for(let i=0;i<5000&&nr<NR;i++){const x=24+rnd()*16,z=36+rnd()*12;if(raw(x,z)<0&&raw(x,z)>-1.2&&Math.hypot(x-JX,z-JZ)>8){dm.position.set(x,0.6,z);dm.scale.set(1,1.2+rnd()*0.6,1);dm.updateMatrix();reeds.setMatrixAt(nr,dm.matrix);cc.setRGB(0.75,0.62,0.4);reeds.setColorAt(nr++,cc)}}
+reeds.userData.air=true;reeds.count=nr;reeds.userData.noShadow=true;S.add(reeds);
+
+// Den målade kattskallen på klippan ovanför bryggan
+cur=S;{const cx=9.1,cz=CLIFFZ(cx)+0.75;   // kattskallen högt upp på klippan ca 4 m över vattnet, vänd mot flytbryggan
+const s=new THREE.Shape();[[-0.35,0],[0.35,0],[0.46,0.5],[0.4,0.88],[0.2,0.62],[-0.2,0.62],[-0.4,0.88],[-0.46,0.5]].forEach((p,i)=>i?s.lineTo(p[0],p[1]):s.moveTo(p[0],p[1]));
+const m=new THREE.Mesh(new THREE.ShapeGeometry(s),M({color:0xf4f2ec,side:THREE.DoubleSide}));m.position.set(cx,3.55,cz+0.35);m.rotation.set(-0.2,-0.35,0,'YXZ');S.add(m);
+[-0.15,0.15].forEach(dx=>{const e=new THREE.Mesh(new THREE.CircleGeometry(0.06,10),M({color:0x222222,side:THREE.DoubleSide}));e.position.set(cx+dx*0.94,3.4,cz+0.37+dx*0.34);e.rotation.y=-0.35;S.add(e)})}
+// Vimpelgirland längs spången
+{const idx=[4,12,20,28,36,44].filter(i=>i<bwPts.length);const tops=idx.map(i=>{const p=bwPts[i];const x=p[0]-0.7,y=Math.max(base(x,p[1]),0.55)+2.3;cyl(0.04,2.3,x,y-1.15,p[1],post);return[x,y,p[1]]});
+for(let k=0;k<tops.length-1;k++){const a=tops[k],b=tops[k+1];for(let j=1;j<9;j++){const f=j/9,sag=Math.sin(f*Math.PI)*0.35;const t=new THREE.Mesh(new THREE.ConeGeometry(0.1,0.22,3),M({color:[0xe8e4da,0x2c3e66][j%2]}));t.rotation.x=Math.PI;t.position.set(a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f-sag-0.1,a[2]+(b[2]-a[2])*f);S.add(t)}}}
+// Eldkorg och sittplats på hällen norr om röda stugan
+{const w=R2W(-5.8,-3.2),y=base(w[0],w[1]);const fb=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.25,0.3,14,1,true),M({color:0x2a2622,side:THREE.DoubleSide}));fb.position.set(w[0],y+0.45,w[1]);S.add(fb);cyl(0.03,0.3,w[0],y+0.15,w[1],dark);
+[[1.4,0],[-1.4,0.3],[0.2,1.5]].forEach(([dx,dz])=>{const c=box(0.5,0.45,0.5,w[0]+dx,base(w[0]+dx,w[1]+dz)+0.22,w[1]+dz,M({color:0x3d4a3f}))})}
+
+// ===== Tallar på halvön (kan tändas/släckas med knappen Träd) =====
+{const NP=170,tI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.13,0.26,1,7),M({color:0x8a5a3e}),NP),cI=new THREE.InstancedMesh(PAD,M({color:0xffffff,flatShading:true,transparent:true,opacity:0.45,depthWrite:false}),NP*6);
+let a=0,b=0;
+function okSpot(x,z){if(!yardFree(x,z))return false;if(Math.hypot(x-RX,z-RZ)<15||Math.hypot(x-AX,z-AZ)<18)return false;   // inga slumpade träd som skymmer attefallshuset
+{const q=rloc(x,z);if(q[0]>3&&Math.hypot(q[0],q[1])<34)return false}   // framför röda stugan ner mot vattnet: bara träd som finns på bilderna   // runt husen bara träden som syns på bilderna
+const[lx,lz]=loc(x,z);if(lx>-5.2&&lx<6&&lz>-7.5&&lz<8)return false;const[rx,rz]=rloc(x,z);if(rx>-7.2&&rx<9.2&&rz>-7.5&&rz<9.5)return false;
+if(Math.hypot(x-JX,z-JZ)<6.5)return false;const d=onPath(lx,lz);if(d!==null&&d<1.6)return false;return true}
+function tall(x,z,s,lean){if(a>=NP)return;const y=ground(x,z),H=(9+rnd()*5)*s;dm.position.set(x,y+H*0.45,z);dm.rotation.set((rnd()-0.5)*lean,rnd()*3,(rnd()-0.5)*lean);dm.scale.set(s*1.1,H*0.9,s*1.1);dm.updateMatrix();tI.setMatrixAt(a++,dm.matrix);
+const k=5+Math.floor(rnd()*3),tx=x+Math.sin(dm.rotation.z)*-H*0.4,tz=z+Math.sin(dm.rotation.x)*H*0.4;for(let i=0;i<k&&b<NP*6;i++){const f=i/(k-1),r=(1.9-f*1.0+rnd()*0.6)*s,ang=rnd()*6.3,off=(0.4+rnd()*1.3)*s*(1-f*0.5);dm.position.set(tx+Math.cos(ang)*off,y+H*(0.62+f*0.36),tz+Math.sin(ang)*off);dm.rotation.set((rnd()-0.5)*0.18,rnd()*6.3,(rnd()-0.5)*0.18);dm.scale.set(r,(0.42+rnd()*0.25)*s,r*(0.75+rnd()*0.35));dm.updateMatrix();cI.setMatrixAt(b,dm.matrix);cc.setRGB(0.14+rnd()*0.05,0.24+rnd()*0.07,0.16+rnd()*0.05);cI.setColorAt(b++,cc)}}
+// tallar som syns på bilderna (röda stugans lokala koordinater)
+[[9.6,4.2,0.95],[-3.0,-8.4,1.0],[-10.6,-2.6,0.9],[-11.2,4.6,1.05],[2.6,-8.0,0.85],[-7.0,7.6,0.95],[1.5,10.6,1.0]].forEach(([lx,lz,s])=>{const w=R2W(lx,lz);tall(w[0],w[1],s,0.18)});
+// tallar längs kanterna, några krokiga mot vattnet
+let n=0;for(let i=0;i<12000&&n<95;i++){const x=rnd()*64-30,z=rnd()*100-56,h=raw(x,z);const rim=h>0.4&&h<6.2,top=h>=6.2&&rnd()<0.3;if((rim||top)&&okSpot(x,z)){const old=rnd()<0.45;tall(x,z,(old?0.95:0.65)+rnd()*0.5,h<2?0.5:(old?0.3:0.15));n++}}
+// gamla, förfallna träd: torrakor, avbrutna stammar och nedfallna lågor (ön är full av gamla men fina träd)
+{const NS=6,sI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.09,0.22,1,6),M({color:0x9b958a,roughness:0.95}),NS*5),lI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.16,0.2,1,7),M({color:0x7a6a58,roughness:1}),8);let s=0,l=0;
+for(let i=0;i<6000&&s<NS*5;i++){const x=rnd()*60-28,z=rnd()*96-52,h=raw(x,z);if(h<0.6||!okSpot(x,z)||Math.hypot(x-RX,z-RZ)<28||Math.hypot(x-AX,z-AZ)<22)continue;const y=ground(x,z),H=(rnd()<0.4?2+rnd()*3:6+rnd()*6),lx=(rnd()-0.5)*0.5,lz=(rnd()-0.5)*0.5;
+dm.position.set(x,y+H*0.5,z);dm.rotation.set(lx,rnd()*3,lz);dm.scale.set(1,H,1);dm.updateMatrix();sI.setMatrixAt(s++,dm.matrix);
+const nb=H>5?3:1;for(let k=0;k<nb&&s<NS*5;k++){const hh=H*(0.45+k*0.17),ang=rnd()*6.3,L=0.8+rnd()*1.2;dm.position.set(x+Math.cos(ang)*L*0.45,y+hh,z+Math.sin(ang)*L*0.45);dm.rotation.set(Math.sin(ang)*1.2,0,-Math.cos(ang)*1.2);dm.scale.set(0.35,L,0.35);dm.updateMatrix();sI.setMatrixAt(s++,dm.matrix)}}
+for(let i=0;i<4000&&l<8;i++){const x=rnd()*60-28,z=rnd()*96-52,h=raw(x,z);if(h<0.8||!okSpot(x,z)||Math.hypot(x-RX,z-RZ)<22||Math.hypot(x-AX,z-AZ)<18)continue;const L=3+rnd()*6,a=rnd()*3.14;dm.position.set(x,ground(x,z)+0.2,z);dm.rotation.set(0,a,Math.PI/2);dm.scale.set(1,L,1);dm.updateMatrix();lI.setMatrixAt(l++,dm.matrix)}
+sI.count=s;lI.count=l;sI.castShadow=lI.castShadow=true;sI.receiveShadow=lI.receiveShadow=true;S.add(sI,lI);tag('trad',sI);tag('trad',lI);sI.userData.air=true}
+AIR_MATS.push([cI.material,1.15],[tI.material,2.2]);tI.userData.air=cI.userData.air=true;tI.count=a;cI.count=b;tI.castShadow=cI.castShadow=true;S.add(tI,cI);tag('trad',tI);tag('trad',cI);}
+
+// ===== 55_omgivning: grannhus, utedass, öar och båtar utanför tomten (ungefärligt efter satellit- och drönarbilder) =====
+cur=S;
+function hus(x,z,w,d,rot,wall,roofC,tw){const y=base(x,z);const g=new THREE.Group();g.position.set(x,y,z);g.rotation.y=rot;S.add(g);const pc=cur;cur=g;
+box(w,2.6,d,0,1.3,0,M({color:wall}));const rh=d/2*Math.tan(30*D);
+[-1,1].forEach(s=>{const sl=new THREE.Mesh(new THREE.BoxGeometry(w+0.6,0.08,(d/2+0.4)/Math.cos(30*D)),M({color:roofC}));sl.position.set(0,2.6+rh/2,s*d/4);sl.rotation.x=s*30*D;g.add(sl)});
+tri([[-d/2,2.6],[d/2,2.6],[0,2.6+rh]],M({color:wall,side:THREE.DoubleSide}),w/2,0,Math.PI/2);tri([[-d/2,2.6],[d/2,2.6],[0,2.6+rh]],M({color:wall,side:THREE.DoubleSide}),-w/2,0,Math.PI/2);
+if(tw)[-w/4,w/4].forEach(o=>box(0.9,0.9,0.05,o,1.4,d/2+0.03,M({color:tw})));cur=pc;return g}
+// gårdar och fritidshus norr och nordost om vassängen
+[[60,-78,9,6,0.3,0x8e2a22,0x3a3a3a],[78,-104,10,7,-0.2,0x8e2a22,0x7b3b2c],[96,-86,8,6,0.5,0xc8c3b5,0x444444],[100,-66,7,5,0.1,0x8e2a22,0x7b3b2c],[44,-98,6,5,-0.4,0x6f7a6e,0x3a3a3a],
+ [-22,-92,8,6,0.2,0x8e2a22,0x7b3b2c],[-38,-98,6,5,-0.3,0x8e2a22,0x3a3a3a]].forEach(([x,z,w,d,r,c,rc])=>hus(x,z,w,d,r,c,rc,0xf2f0ea));
+// litet vitt utedass vid vassen väster om halvön (syns på bilderna)
+hus(-59.5,9,1.3,1.3,0.4,0xf0eee6,0x5a5a5a,null);
+// liten vit bod med brygga på östra udden, där vassranden slutar (EBOD i 10_terrain); gaveln med fönster mot viken i väster
+{const[bx,bz]=EBOD,xe=eastEdge(bz),y0=base(bx,bz),fh=Math.max(0,y0-base(bx-1.3,bz))+0.3;box(2.6,fh,3.0,bx,y0+0.05-fh/2,bz,M({color:0x8d877f}));   // stenfot mot sluttningen
+ hus(bx,bz,2.2,2.6,-Math.PI/2,0xf2f0ea,0x4a4a4a,0x2a3440).scale.y=0.85;
+ const L=8,x1=xe+0.8,x0=x1-L;box(L,0.08,1.2,(x0+x1)/2,0.6,bz,deckOld);   // bryggan ut i viken
+ for(let x=x0+0.2;x<x1;x+=2)[-0.5,0.5].forEach(o=>cyl(0.09,1.5,x,-0.2,bz+o,M({color:0x5b4a3a})))}
+// öar ute i havet söderut och fjärden mellan uddarna
+{const isl=M({color:0x2e3f30,flatShading:true}),rock=M({color:0x8d877f,flatShading:true});
+[].forEach(([x,z,r,h])=>{
+const b=new THREE.Mesh(new THREE.SphereGeometry(1,16,8,0,Math.PI*2,0,Math.PI/2),rock);b.scale.set(r*1.08,h*0.25,r*0.62);b.position.set(x,-0.2,z);S.add(b);
+const t=new THREE.Mesh(new THREE.SphereGeometry(1,16,8,0,Math.PI*2,0,Math.PI/2),isl);t.scale.set(r,h,r*0.55);t.position.set(x,0.6,z);S.add(t)})}
+// några båtar vid grannbryggorna på andra sidan sundet
+{const bm=M({color:0xf2f2f2,roughness:0.4});[[-50,58,-0.5]].forEach(([x,z,r])=>{const h=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),bm);h.scale.set(0.9,0.3,2.4);h.position.set(x,0.15,z);h.rotation.y=r;S.add(h);box(2.0,0.15,6,x+2.2,0.5,z,deckOld)})}
+
+// ===== 57_rutnat: referensrutnät SWEREF 99 18 00 (som nybyggnadskartan) + tomtgräns =====
+// Georeferens (23 okt 2026): modellens origo = N 6 548 098,0 / E 174 904,8 i SWEREF 99 18 00.
+// x = E − 174904,8 ; z = 6548098,0 − N. Kontroll: röda stugans östkoordinat från nybyggnadskartan (174 903,9)
+// och från Lantmäteriets karta (SWEREF 99 TM, omräknad 174 904,4) skiljer 0,5 m. SWEREF 99 TM-norr är vriden 2,6° mot modellens norr.
+const GE0=174904.8,GN0=6548098.0;
+const GRID=new THREE.Group();GRID.visible=false;S.add(GRID);
+{const lm=new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0.55,depthTest:true}),lm2=new THREE.LineBasicMaterial({color:0xffe14d,transparent:true,opacity:0.95});
+const gy=(x,z)=>Math.max(ground(x,z),0.02)+0.12;
+function drape(pts,mat){const a=[];for(let i=0;i<pts.length-1;i++){const[x1,z1]=pts[i],[x2,z2]=pts[i+1],n=Math.max(1,Math.ceil(Math.hypot(x2-x1,z2-z1)/0.5));for(let k=0;k<=n;k++){const x=x1+(x2-x1)*k/n,z=z1+(z2-z1)*k/n;a.push(new THREE.Vector3(x,gy(x,z),z))}}GRID.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(a),mat))}
+function label(t,x,z){const c=document.createElement('canvas');c.width=256;c.height=64;const g=c.getContext('2d');g.fillStyle='rgba(20,24,28,0.72)';g.fillRect(0,0,256,64);g.fillStyle='#fff';g.font='600 30px system-ui,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(t,128,33);
+const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),depthTest:false,transparent:true}));sp.scale.set(4,1,1);sp.position.set(x,gy(x,z)+1.2,z);sp.renderOrder=5;GRID.add(sp)}
+const X0=-40,X1=45,Z0=-50,Z1=60;
+for(let E=Math.ceil((GE0+X0)/10)*10;E<=GE0+X1;E+=10){const x=E-GE0;drape([[x,Z0],[x,Z1]],lm);if(E%20===0)label('E '+String(E).replace(/(\d{3})$/,' $1'),x,Z0+3)}
+for(let N=Math.ceil((GN0-Z1)/10)*10;N<=GN0-Z0;N+=10){const z=GN0-N;drape([[X0,z],[X1,z]],lm);if(N%20===0)label('N '+String(N).replace(/(\d)(\d{3})(\d{3})$/,'$1 $2 $3'),X0+3,z)}
+// tomtgräns 7:130 enligt Lantmäteriets karta (ungefärlig, ej juridiskt gällande); norra delen fortsätter utanför bilden
+drape([[-33.8,-24.0],[9.7,-43.6]],lm2);
+drape([[29.7,-42.7],[32.1,26.8],[19.7,43.8],[13.1,53.7],[2.7,48.3],[-7.9,38.5],[-20.3,23.6],[-33.8,-24.0]],lm2);
+label('Tomtgräns 7:130',-24,4)}
+
+// ===== 58_infart: den plana infartsytan på landtungan (presenningstält, brunn med handpump, utedass, förråd, trappa upp på berget) =====
+// Lägen från flygbilden (den öppna grusytan och tältet) och dina foton 23 okt (Mark 2–5, 9) med uppmätta mått. Placeringar runt tältet är ungefärliga.
+{const G=new THREE.Group();S.add(G);const g=(x,z)=>ground(x,z);
+ const bx=(w,h,d,x,y,z,m,ry)=>{const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.rotation.y=ry||0;o.castShadow=o.receiveShadow=true;G.add(o);return o};
+ // plåtboden på ben vid grusplanens norra kant och virkeshögen vid lilla boden (drönarbilden över infarten)
+ {const x=22.3,z=-33,y=g(x,z),pl=M({color:0xb9bcbd,metalness:0.4,roughness:0.5}),wd=M({color:0x6d5a45});[[-1.1,-1.4],[1.1,-1.4],[-1.1,1.4],[1.1,1.4]].forEach(([a,b])=>bx(0.1,0.8,0.1,x+a,y+0.4,z+b,wd,0.4));bx(2.4,1.6,3.2,x,y+1.6,z,wd,0.4);bx(2.8,0.08,3.6,x,y+2.5,z,pl,0.4);
+  for(let i=0;i<9;i++)bx(0.12,0.1,2.4+Math.sin(i)*0.6,23+Math.sin(i*2.3)*0.6,g(23,-18.5)+0.06+0.1*(i%3),-18.5+Math.cos(i*1.7)*0.5,wd,0.3+0.2*Math.sin(i))}
+ // brunn med handpump på trädäck 1,6 x 1,57 m (Mark 4) och utedasset intill
+ {const x=PUMP[0],z=PUMP[1],y=g(x,z),d=M({color:0x6d5a45,roughness:0.9});bx(1.6,0.3,1.57,x,y+0.15,z,d,0.45);
+  const p=new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.06,1.1,8),M({color:0x2e4a3a}));p.position.set(x,y+0.85,z);G.add(p);
+  const ring=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.3,0.15,16),M({color:0x9a9790}));ring.position.set(x-0.4,y+0.38,z+0.3);G.add(ring);
+  const ox=PUMP[0]+1.7,oz=PUMP[1]-0.5,oy=g(ox,oz),wh=M({color:0xe8e6e0});bx(1.1,2.1,1.1,ox,oy+1.05,oz,wh,0.45);bx(1.3,0.08,1.3,ox,oy+2.15,oz,M({color:0x6b6b6b}),0.45)}
+ // svarta förrådet 4,5 x 2,3 m vid bergfoten där trappan går upp (Mark 5)
+ {const x=14.6,z=-23.8,y=g(x,z),bk=M({color:0x2a2724,roughness:0.9});bx(4.5,2.2,2.3,x,y+1.1,z,bk,0.2);   // verkstadsboden (drönarbild + matchning)
+  const r=bx(4.8,0.08,1.45,x,y+2.45,z-0.6,M({color:0x3b3b3b}),0.2);r.rotation.x=0.35;const r2=bx(4.8,0.08,1.45,x,y+2.45,z+0.6,M({color:0x3b3b3b}),0.2);r2.rotation.x=-0.35}
+ // lilla mörka boden 1,45 x 1,6 m vid vasskanten, dit stigen från förrådet leder (Mark 6, 9)
+ {const x=21,z=-15.5,y=g(x,z);bx(1.45,1.9,1.6,x,y+0.95,z,M({color:0x26302b,roughness:0.9}),0.3);bx(1.65,0.07,1.8,x,y+1.95,z,M({color:0x333333}),0.3)}
+ // Den långa trappan och den långa spången mitt på ön (Mark 1–2, nybyggnadskartan, flygbilden): från grusplanen upp på berget
+ // och vidare över hällarna söderut tills den möter spången som går fram till röda stugans norra gavel.
+ {const R=[[11.5,-29.0],[9.5,-26.9],[6.5,-23.2],[5.8,-15.5],[3.5,-10.9],[2.3,3.3]],   // spången från grusplanen, vilplanet, långa trappan och spången mot huset (drönarbild + matchning)
+ ds=0.3,S_=[];
+  for(let k=0;k<R.length-1;k++){const[a,b]=R[k],[c,d]=R[k+1],L=Math.hypot(c-a,d-b),n=Math.ceil(L/ds);for(let i=0;i<n;i++){const t=i/n;S_.push([a+(c-a)*t,b+(d-b)*t,Math.atan2(c-a,d-b)])}}
+  const gs=S_.map(([x,z])=>g(x,z)),wood=M({color:0x8b7b66,roughness:0.9}),rail=M({color:0x9a8a72,roughness:0.85});let prevPost=null;
+  for(let i=0;i<S_.length;i++){const[x,z,a]=S_[i],sl=Math.abs(gs[Math.min(i+1,gs.length-1)]-gs[Math.max(i-1,0)])/(2*ds),stair=sl>0.22;
+   let mx=-9;for(let j=Math.max(0,i-2);j<=Math.min(gs.length-1,i+2);j++)mx=Math.max(mx,gs[j]);
+   const y=stair?Math.round((gs[i]+0.14)/0.18)*0.18:mx+0.14,w=stair?1.5:1.0;
+   bx(w,0.05,ds+0.03,x,y,z,wood,a);
+   if(i%6===0){[-1,1].forEach(sg=>{const px=x+Math.cos(a)*sg*(w/2-0.05),pz=z-Math.sin(a)*sg*(w/2-0.05),b=g(px,pz);if(y-b>0.08)bx(0.08,y-b,0.08,px,(y+b)/2,pz,wood,a)})}
+   if(stair&&i%5===0){const ps=[-1,1].map(sg=>[x+Math.cos(a)*sg*0.75,y+0.9,z-Math.sin(a)*sg*0.75]);ps.forEach(q=>bx(0.07,0.9,0.07,q[0],q[1]-0.45,q[2],rail,a));
+    if(prevPost&&prevPost.i>=i-6)ps.forEach((q,k)=>{const o=prevPost.p[k],dx=q[0]-o[0],dy=q[1]-o[1],dz=q[2]-o[2],L=Math.hypot(dx,dy,dz),r=new THREE.Mesh(new THREE.BoxGeometry(0.06,0.06,L),rail);r.position.set((q[0]+o[0])/2,(q[1]+o[1])/2,(q[2]+o[2])/2);r.lookAt(q[0],q[1],q[2]);G.add(r)});
+    prevPost={i,p:ps}}}}
+}
+// ===== 90_ui: vyer, knappar, styrning, dubbeltryck =====
+S.traverse(o=>{if(o.isMesh&&!o.userData.terrain&&!o.userData.noShadow&&o!==sea&&o.material!==glassT){o.castShadow=true;o.receiveShadow=true}});
+function fromEye(e,l){const dx=e[0]-l[0],dy=e[1]-l[1],dz=e[2]-l[2];const r=Math.hypot(dx,dy,dz);return{t:l,r,th:Math.atan2(dx,dz),ph:Math.acos(dy/r)}}
+const altC=R2W(5.4,3.0);
+const V={
+ oversikt:{n:'Översikt',g:'ute',t:[4,4,22],r:80,th:-0.15,ph:1.15},
+ attefall:{n:'Attefallshuset',g:'ute',t:AW(0,1.2,0),r:15,th:-1.2,ph:1.15,roof:true},
+ terrass:{n:'Takterrassen',g:'ute',t:AW(2.4,2.9,1.6),r:13,th:-0.35,ph:0.95,roof:true},
+ takkupa:{n:'Takkupan',g:'ute',t:AW(2.0,2.7,-0.6),r:10,th:1.955,ph:1.1,roof:true},
+ gangvag:(()=>{const lz=-6,w=L2W(pathX(lz),lz);return{n:'Gångvägen',g:'ute',t:[w[0],1.0,w[1]],r:26,th:-1.6,ph:1.05}})(),
+ teknikrum:{n:'Teknikrummet',g:'ute',t:AW(0.2,0.9,-4.2),r:10,th:-1.97,ph:1.05},
+ dockskap:{n:'Utan tak',g:'ute',t:AW(0,0.8,0),r:12,th:-0.9,ph:0.62,roof:false,loft:false},
+ roda:{n:'Röda stugan',g:'ute',t:[RX-1.5,Fr+1.3,RZ-1],r:15,th:-1.75,ph:1.1},
+ utbyggnad:(()=>{const w=R2W(0.45,-4.7);return{n:'Nya utbyggnaden',g:'ute',t:[w[0],Fr+1.4,w[1]],r:15,th:1.135,ph:1.05}})(),
+ dusch:(()=>{const w=R2W(7.7,8.7);return{n:'Duschen',g:'ute',t:[w[0],Fr-1.0,w[1]],r:7,th:-0.4,ph:1.15}})(),
+ trappa:(()=>{const w=R2W(-5.8,4.3);return{n:'Trappan vid entrén',g:'ute',t:[w[0],Fr-0.6,w[1]],r:9,th:-1.9,ph:1.05}})(),
+ altan:{n:'Nya altanen',g:'ute',t:[altC[0],Fr+0.5,altC[1]],r:11,th:Math.PI-0.5,ph:1.05},
+ sjostugan:{n:'Sjöstugan',g:'ute',t:[JX,1.5,JZ],r:18,th:0.35,ph:1.2},
+ sundet:{n:'Mot sundet',g:'ute',t:[6,4,60],r:34,th:Math.PI-0.15,ph:1.3},
+ uppifran:{n:'Uppifrån',g:'ute',t:[2,0,12],r:120,th:0.0001,ph:0.05},
+ vardagsrum:Object.assign({n:'Vardagsrum',g:'inne',roof:true,loft:true},fromEye(AW(1.0,1.55,3.05),AW(-1.0,1.05,0.2))),
+ kok:Object.assign({n:'Köket',g:'inne',roof:true,loft:true},fromEye(AW(0.55,1.6,1.0),AW(-1.6,1.0,1.1))),
+ graven:Object.assign({n:'Graven ovanifrån',g:'inne',roof:false,loft:false},fromEye(AW(0.0,3.2,-0.4),AW(0.7,-0.2,-2.3))),
+ utsikt:Object.assign({n:'Mot altanen',g:'inne',roof:true,loft:true},fromEye(AW(-0.3,1.6,-0.2),AW(0,1.2,3.6))),
+ sovrum:Object.assign({n:'Sovnischen',g:'inne',roof:true,loft:true},fromEye(AW(0.4,0.85,-1.3),AW(1.3,0.2,-3.0))),
+ trappan:Object.assign({n:'Trappan',g:'inne',roof:true,loft:true},fromEye(AW(-1.1,1.6,-0.4),AW(1.7,2.3,-0.6))),
+ badrum:Object.assign({n:'Badrummet',g:'inne',roof:true,loft:true},fromEye(AW(-0.45,1.55,-1.8),AW(-1.7,1.0,-2.6))),
+ loft:Object.assign({n:'Loftet (master)',g:'inne',roof:true,loft:true},fromEye(AW(0.4,2.75,-0.6),AW(1.0,1.45,-2.8))),
+ hallen:Object.assign({n:'Hallen',g:'inne',roof:true,loft:true},fromEye(AW(-0.5,1.6,-2.3),AW(0.2,1.2,1.5))),
+ rodainne:{n:'Röda stugan inne',g:'inne',roof:true,t:[3.846,8.808,34.193],r:16.312,th:3.4118,ph:1.4605}
+};
+const vis={roof:true,loft:true};
+const AF=new THREE.Vector3(...AW(0,1.2,0));
+// zoom: mjuk och följsam; vid nära håll stannar avståndet på ~1,2 m och i stället flyttas hela vyn framåt,
+// så man kan "flyga" igenom väggar, träd och tak utan att fastna. Ingen dragning mot attefallshuset längre.
+const _fw=new THREE.Vector3();
+function zoomBy(f){f=Math.min(1.6,Math.max(0.6,f));if(f>=1){r=Math.min(180,r*f);return}
+let nr=r*f;const MINR=1.2;if(nr<MINR){const adv=r>=MINR?Math.max(MINR-nr,MINR*(1-f)):r*(1-f)*1.6;_fw.subVectors(T,C.position).normalize();T.addScaledVector(_fw,adv);nr=Math.min(r,MINR)}r=nr}
+function setVis(k,v){vis[k]=v;TAG[k].forEach(o=>o.visible=v);const b=document.querySelector(`[data-tog="${k}"]`);if(b)b.setAttribute('aria-pressed',String(v))}
+const T=new THREE.Vector3(...V.oversikt.t);let th=V.oversikt.th,ph=V.oversikt.ph,r=V.oversikt.r,spin=false,goal=null;
+function go(k){const v=V[k];if(!v)return;goal=v;spin=false;if(v.roof!==undefined)setVis('roof',v.roof);if(v.loft!==undefined)setVis('loft',v.loft);
+document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===k)));const sb=document.querySelector('[data-tog="spin"]');if(sb)sb.setAttribute('aria-pressed','false')}
+function mk(row,label,attrs,fn){const b=document.createElement('button');b.type='button';b.textContent=label;Object.entries(attrs).forEach(([a,v])=>b.setAttribute(a,v));b.addEventListener('click',fn);document.getElementById(row).appendChild(b);return b}
+Object.entries(V).forEach(([k,v])=>mk(v.g==='ute'?'rowUte':'rowInne',v.n,{'data-view':k,'aria-pressed':'false'},()=>go(k)));
+// --- husen blir mer genomskinliga ju närmare kameran kommer
+// Bara själva huskropparna (väggar, tak, fönster, skorsten, utbyggnader, innehåll) tonas – altaner, trappor, bryggor, spänger och möbler ute förblir hela.
+const BODY=new Map([[AG,p=>p.x>-2.2&&p.x<2.5&&p.z>-5.45&&p.z<3.65&&p.y>-0.4],
+[RG,p=>p.y>-0.4&&((Math.abs(p.x)<4.95&&Math.abs(p.z)<2.9)||(Math.abs(p.x)<2.25&&p.z>=2.4&&p.z<4.5)||(Math.abs(p.x)<2.7&&p.z<=-2.4&&p.z>-7.4))],
+[JG,p=>p.y>0.5&&Math.abs(p.x)<2.15&&Math.abs(p.z-1.25)<2.8]]);
+const FADE=[AG,RG,JG].map(g=>{const map=new Map(),mats=[],box=new THREE.Box3(),inv=new THREE.Matrix4(),v=new THREE.Vector3(),test=BODY.get(g);g.updateMatrixWorld(true);inv.copy(g.matrixWorld).invert();
+g.traverse(o=>{if(!o.isMesh||o.userData.keep)return;if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();o.geometry.boundingBox.getCenter(v).applyMatrix4(o.matrixWorld).applyMatrix4(inv);if(!test(v))return;box.expandByObject(o);
+const one=m=>{if(m===glassT||(m.emissive&&m.emissive.r+m.emissive.g+m.emissive.b>0.05))return m;if(!map.has(m)){const c=m.clone();c.userData.baseOp=1;map.set(m,c);mats.push(c)}return map.get(m)};o.material=Array.isArray(o.material)?o.material.map(one):one(o.material)});
+ATRANS.forEach(e=>{if(map.has(e[0]))e[0]=map.get(e[0])});return{g,mats,box,f:-1,inside:-1}});
+let fadeOn=true;
+function inAttefall(p){const[lx,lz]=loc(p.x,p.z),ly=p.y-F;return Math.abs(lx)<2.05&&Math.abs(lz)<3.55&&ly>-0.6&&ly<3.9}
+function applyFade(F,force){const d=F.box.distanceToPoint(C.position),q=fadeOn?cl((d-0.3)/(5-0.3)):1,f=Math.round((0.28+0.72*q*q*(3-2*q))*50)/50,ins=fadeOn&&F.g===AG&&inAttefall(C.position)?1:0;if(f===F.f&&ins===F.inside&&!force)return;F.f=f;F.inside=ins;
+F.mats.forEach(m=>{const op=(m.userData.baseOp??1)*(ins?(m.userData.wall?0.12:1):f),tr=op<0.995;if(m.transparent!==tr){m.transparent=tr;m.depthWrite=!tr;m.needsUpdate=true}m.opacity=op})}
+function setTransp(v){vis.transp=v;ATRANS.forEach(([m,o])=>{m.userData.baseOp=v?o:1});FADE.forEach(F=>applyFade(F,true));const b=document.querySelector('[data-tog="transp"]');if(b)b.setAttribute('aria-pressed',String(v))}
+mk('rowVisa','Tona nära',{'data-tog':'fade','aria-pressed':'true'},e=>{fadeOn=!fadeOn;e.currentTarget.setAttribute('aria-pressed',String(fadeOn));FADE.forEach(F=>applyFade(F,true))});
+mk('rowVisa','Genomskinligt',{'data-tog':'transp','aria-pressed':'true'},()=>setTransp(!vis.transp));setTransp(true);
+mk('rowVisa','Träd',{'data-tog':'trad','aria-pressed':'true'},()=>setVis('trad',!vis.trad));vis.trad=true;
+let contour=false;mk('rowVisa','Höjdkurvor',{'data-tog':'hk','aria-pressed':'false'},e=>{contour=!contour;TERR.forEach(m=>{const a=m.geometry.attributes.color;a.array.set(contour?m.userData.colB:m.userData.colA);a.needsUpdate=true});e.currentTarget.setAttribute('aria-pressed',String(contour))});
+mk('rowVisa','Planerad utbyggnad',{'data-tog':'plan','aria-pressed':'true'},e=>{setPlanned(!PLAN_EXT.visible);e.currentTarget.setAttribute('aria-pressed',String(PLAN_EXT.visible))});
+mk('rowVisa','Rutnät',{'data-tog':'grid','aria-pressed':'false'},e=>{GRID.visible=!GRID.visible;e.currentTarget.setAttribute('aria-pressed',String(GRID.visible))});
+const SUN=[{n:'Sol: middag',p:[36,53,82],c:0xffe2b8,i:0.95},{n:'Sol: kväll',p:[-70,22,40],c:0xffc48a,i:0.85},{n:'Sol: morgon',p:[70,25,-20],c:0xffe9cf,i:0.8}];let si=0;
+mk('rowVisa',SUN[0].n,{'data-tog':'sun','aria-pressed':'false'},e=>{si=(si+1)%SUN.length;const q=SUN[si];sun.position.set(-4+q.p[0],3+q.p[1],22+q.p[2]);sun.color.setHex(q.c);sun.intensity=q.i;e.currentTarget.textContent=q.n});
+let measure=false,mA=null,mB=null;const mMat=new THREE.MeshBasicMaterial({color:0xd8322a,depthTest:false}),mkA=new THREE.Mesh(new THREE.SphereGeometry(0.12,12,8),mMat),mkB=mkA.clone();mkA.renderOrder=mkB.renderOrder=9;mkA.visible=mkB.visible=false;S.add(mkA,mkB);
+const mLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineBasicMaterial({color:0xd8322a,depthTest:false}));mLine.renderOrder=9;mLine.visible=false;S.add(mLine);
+const mlabel=document.getElementById('mlabel');
+mk('rowVisa','Mät',{'data-tog':'mat','aria-pressed':'false'},e=>{measure=!measure;e.currentTarget.setAttribute('aria-pressed',String(measure));mA=mB=null;mkA.visible=mkB.visible=mLine.visible=false;mlabel.hidden=true;if(hint){hint.style.opacity=measure?'1':'0';hint.textContent=measure?'Tryck på två punkter för att mäta avstånd och höjdskillnad.':hint.textContent}});
+function pick(x,y){const b=cvs.getBoundingClientRect();nd.set((x-b.left)/b.width*2-1,-(y-b.top)/b.height*2+1);rc.setFromCamera(nd,C);const h=rc.intersectObjects(S.children,true).filter(h=>{let o=h.object;while(o){if(!o.visible)return false;o=o.parent}return h.object.material!==glassT&&h.object!==mkA&&h.object!==mkB&&h.object!==mLine});return h.length?h[0].point.clone():null}
+function measureTap(x,y){const p=pick(x,y);if(!p)return;if(!mA||mB){mA=p;mB=null;mkA.position.copy(p);mkA.visible=true;mkB.visible=mLine.visible=false;mlabel.hidden=true;return}
+mB=p;mkB.position.copy(p);mkB.visible=true;mLine.geometry.setFromPoints([mA,mB]);mLine.visible=true;const d=mA.distanceTo(mB),dh=mB.y-mA.y,dhz=Math.hypot(mB.x-mA.x,mB.z-mA.z);
+mlabel.innerHTML=`Avstånd ${d.toFixed(2)} m<br>Vågrätt ${dhz.toFixed(2)} m, höjd ${dh>=0?'+':'−'}${Math.abs(dh).toFixed(2)} m<br>Punkt B: +${mB.y.toFixed(2)} m ö.h.`;mlabel.hidden=false}
+// fotojämförelse: lägg ett eget foto halvgenomskinligt över modellen och vrid/zooma tills de stämmer
+const ovl=document.getElementById('ovl'),pBar=document.getElementById('photoBar'),pFile=document.getElementById('phFile'),gal=document.getElementById('phGal');
+function showPhoto(src){ovl.src=src;ovl.hidden=false;if(hint){hint.style.opacity='1';hint.textContent='Vrid, zooma och ändra brännvidd tills modellen ligger som fotot. Reglaget Foto styr genomskinligheten.'}}
+let galDone=false;function openBar(){pBar.hidden=false;document.querySelector('[data-tog="foto"]').setAttribute('aria-pressed','true');
+if(!galDone){galDone=true;PHOTOS.forEach((p,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',p.n);b.setAttribute('aria-pressed','false');b.innerHTML=`<img src="${p.t}" alt="${p.n}">`;
+b.dataset.key='foto'+i;b.addEventListener('click',()=>{gal.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');curKey='foto'+i;curName=p.n;showPhoto(p.s);applySaved(curKey)});gal.appendChild(b)});markThumbs()}size()}
+mk('rowVisa','Foton',{'data-tog':'foto','aria-pressed':'false'},()=>{if(pBar.hidden)openBar();else document.getElementById('phClose').click()});
+function readFile(f){if(!f||!f.type||!f.type.startsWith('image/'))return;const rd=new FileReader();rd.onload=()=>{openBar();curKey='egen-'+(f.name||'bild').replace(/[^A-Za-z0-9._-]/g,'_').slice(0,80);curName=f.name||'Egen bild';showPhoto(rd.result);applySaved(curKey);
+ uploadPhoto(f).then(id=>{if(id){curKey=id;gal.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.key===id)))}})};rd.readAsDataURL(f)}
+// --- sparade matchningar: kamera, brännvidd, genomskinlighet per foto (delad lagring i artefakten, annars i webbläsaren)
+let curKey=null,curName='',DB=null;const saved={};const LSK='kattskallen-matchningar';
+try{Object.assign(saved,JSON.parse(localStorage.getItem(LSK)||'{}'))}catch(e){}
+function markThumbs(){gal.querySelectorAll('button').forEach(b=>{if(saved[b.dataset.key])b.dataset.saved='1';else delete b.dataset.saved})}
+function applySaved(k){const m=saved[k];if(!m)return;goal={t:m.t,r:m.r,th:m.th,ph:m.ph};setFov(m.fov);
+setOp(m.op);setFit(m.fit);if(hint){hint.style.opacity='1';hint.textContent='Sparad matchning för '+(m.photo||'fotot')+' är återställd.'}}
+async function saveMatch(){const btn=document.getElementById('phSave');if(!curKey){if(hint){hint.style.opacity='1';hint.textContent='Välj ett foto först.'}return}
+const rec={photo:curName,t:[+T.x.toFixed(3),+T.y.toFixed(3),+T.z.toFixed(3)],th:+th.toFixed(4),ph:+ph.toFixed(4),r:+r.toFixed(3),fov:+C.fov.toFixed(1),op:+document.getElementById('opSl').value,fit:ovl.style.objectFit||'contain',savedAt:new Date().toISOString()};
+saved[curKey]=rec;let where='i den här webbläsaren';try{localStorage.setItem(LSK,JSON.stringify(saved))}catch(e){}
+if(DB){try{await DB.collection('matches').doc(curKey).set(rec);where='i modellen'}catch(e){}}markThumbs();btn.textContent='Sparad ✓';setTimeout(()=>btn.textContent='Spara matchning',1600);
+if(hint){hint.style.opacity='1';hint.textContent='Matchningen för '+curName+' är sparad '+where+'. Nästa gång du väljer fotot ställs vyn in automatiskt.'}}
+document.getElementById('phSave').addEventListener('click',saveMatch);
+(window.claude&&window.claude.use?window.claude.use('db'):Promise.resolve(null)).then(db=>{DB=db;if(!db)return;db.collection('matches').get().then(qs=>{qs.docs.forEach(d=>{if(d.exists)saved[d.id]=d.data()});markThumbs()}).catch(()=>{})}).catch(()=>{});
+pFile.addEventListener('change',async()=>{const fs=[...(pFile.files||[])];pFile.value='';if(!fs.length)return;for(let i=0;i<fs.length-1;i++)await uploadPhoto(fs[i]);readFile(fs[fs.length-1])});
+window.addEventListener('paste',e=>{const it=[...(e.clipboardData?.items||[])].find(i=>i.type.startsWith('image/'));if(it)readFile(it.getAsFile())});
+stage.addEventListener('dragover',e=>e.preventDefault());stage.addEventListener('drop',e=>{e.preventDefault();readFile(e.dataTransfer.files[0])});
+const opOut=document.getElementById('opOut'),fovOut=document.getElementById('fovOut'),fitBtn=document.getElementById('phFit');
+function setFov(v){v=Math.round(v);C.fov=v;C.updateProjectionMatrix();document.getElementById('fovSl').value=v;fovOut.textContent=v+'°'}
+function setOp(v){ovl.style.opacity=v/100;document.getElementById('opSl').value=v;opOut.textContent=Math.round(v)+' %'}
+function setFit(f){ovl.style.objectFit=f;fitBtn.textContent=f==='cover'?'Bilden fyller skärmen':'Hela bilden syns'}
+document.getElementById('opSl').addEventListener('input',e=>setOp(+e.target.value));
+document.getElementById('fovSl').addEventListener('input',e=>setFov(+e.target.value));
+document.getElementById('prDrone').addEventListener('click',()=>{setFit('cover');setFov(56);if(hint){hint.style.opacity='1';hint.textContent='Inställt för drönarbild: bilden fyller skärmen och kamerans bildvinkel är 56°. Vrid och flytta nu tills modellen ligger som fotot.'}});
+document.getElementById('prPhone').addEventListener('click',()=>{setFit('cover');setFov(72);if(hint){hint.style.opacity='1';hint.textContent='Inställt för stående mobilbild: bilden fyller skärmen och kamerans bildvinkel är 72°.'}});
+document.getElementById('phFit').addEventListener('click',()=>setFit(ovl.style.objectFit==='cover'?'contain':'cover'));
+document.getElementById('phClose').addEventListener('click',()=>{ovl.hidden=true;ovl.removeAttribute('src');pBar.hidden=true;gal.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));size();document.querySelector('[data-tog="foto"]').setAttribute('aria-pressed','false');size()});
+mk('rowVisa','Tak',{'data-tog':'roof','aria-pressed':'true'},()=>setVis('roof',!vis.roof));
+mk('rowVisa','Loft',{'data-tog':'loft','aria-pressed':'true'},()=>setVis('loft',!vis.loft));
+mk('rowVisa','Snurra',{'data-tog':'spin','aria-pressed':'false'},e=>{spin=!spin;goal=null;e.currentTarget.setAttribute('aria-pressed',String(spin))});
+function cam(){if(T.y<0.15)T.y=0.15;C.position.set(T.x+r*Math.sin(ph)*Math.sin(th),T.y+r*Math.cos(ph),T.z+r*Math.sin(ph)*Math.cos(th));if(C.position.y<0.4)C.position.y=0.4;C.lookAt(T);WAVE.offset.set(performance.now()*0.0000035,performance.now()*0.000012)}   // aldrig under vattenytan
+// styrning: dra = vrid, nyp/hjul = zoom, dubbeltryck = zooma dit
+const cvs=Rn.domElement,pts=new Map();let pd=0,downT=0,downP=null,lastTap=0,moved=false;
+const hint=document.getElementById('hint');const cmp=document.querySelector('#compass span');
+let lpT=null,lpDone=false;const pivM=new THREE.Mesh(new THREE.RingGeometry(0.18,0.26,24),new THREE.MeshBasicMaterial({color:0xd8322a,depthTest:false,transparent:true,side:THREE.DoubleSide}));pivM.renderOrder=10;pivM.visible=false;S.add(pivM);let pivT=0;
+function longPress(x,y){const p=pick(x,y);if(!p)return;lpDone=true;AF.copy(p);goal={t:[p.x,p.y,p.z],r:Math.max(1.2,Math.min(r,p.distanceTo(C.position))),th,ph};pivM.position.copy(p);pivM.visible=true;pivT=performance.now();if(navigator.vibrate)navigator.vibrate(30);if(hint){hint.style.opacity='1';hint.textContent='Ny zoompunkt satt. Nyp eller scrolla för att zooma mot den.'}}
+cvs.addEventListener('contextmenu',e=>e.preventDefault());
+cvs.addEventListener('pointerdown',e=>{cvs.setPointerCapture(e.pointerId);pts.set(e.pointerId,[e.clientX,e.clientY]);goal=null;downT=performance.now();downP=[e.clientX,e.clientY];moved=false;lpDone=false;if(hint)hint.style.opacity='0';clearTimeout(lpT)});
+cvs.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const p=pts.get(e.pointerId);if(downP&&Math.hypot(e.clientX-downP[0],e.clientY-downP[1])>8)moved=true;
+if(moved||pts.size>1)clearTimeout(lpT);if(pts.size===1&&!lpDone&&(e.shiftKey||e.buttons===2)){clearTimeout(lpT);panBy(e.clientX-p[0],e.clientY-p[1])}else if(pts.size===1&&!lpDone){const k=r<2?0.004:0.008;th-=(e.clientX-p[0])*k;ph=Math.min(2.7,Math.max(0.03,ph-(e.clientY-p[1])*k*0.75))}
+pts.set(e.pointerId,[e.clientX,e.clientY]);if(pts.size===2){const v=[...pts.values()],d=Math.hypot(v[0][0]-v[1][0],v[0][1]-v[1][1]),mx=(v[0][0]+v[1][0])/2,my=(v[0][1]+v[1][1])/2;if(pd)zoomBy(pd/d);pd=d;if(pmid){panBy(mx-pmid[0],my-pmid[1])}pmid=[mx,my]}});
+const rc=new THREE.Raycaster(),nd=new THREE.Vector2();
+function focusAt(x,y){const b=cvs.getBoundingClientRect();nd.set((x-b.left)/b.width*2-1,-(y-b.top)/b.height*2+1);rc.setFromCamera(nd,C);
+const hits=rc.intersectObjects(S.children,true).filter(h=>{let o=h.object;while(o){if(!o.visible)return false;o=o.parent}return h.object.material!==glassT&&!h.object.userData.air});
+if(!hits.length)return;const p=hits[0].point,dist=hits[0].distance;goal={t:[p.x,p.y,p.z],r:Math.max(0.6,Math.min(r,dist*0.45)),th,ph}}
+const up=e=>{clearTimeout(lpT);pts.delete(e.pointerId);pd=0;pmid=null;const now=performance.now();if(lpDone){lpDone=false;return}if(!moved&&now-downT<300&&pts.size===0){if(measure){measureTap(e.clientX,e.clientY);return}if(now-lastTap<350){focusAt(e.clientX,e.clientY);lastTap=0}else lastTap=now}};
+cvs.addEventListener('pointerup',up);cvs.addEventListener('pointercancel',e=>{pts.delete(e.pointerId);pd=0;pmid=null});
+let pmid=null;const _rv=new THREE.Vector3(),_uv=new THREE.Vector3();
+function panBy(dx,dy){goal=null;const h=cvs.getBoundingClientRect().height||1,wpp=2*r*Math.tan(C.fov*Math.PI/360)/h;C.updateMatrix();_rv.setFromMatrixColumn(C.matrix,0);_uv.setFromMatrixColumn(C.matrix,1);T.addScaledVector(_rv,-dx*wpp).addScaledVector(_uv,dy*wpp);AF.copy(T)}
+
+cvs.addEventListener('dblclick',e=>{if(!measure)focusAt(e.clientX,e.clientY)});
+cvs.addEventListener('wheel',e=>{e.preventDefault();zoomBy(1+e.deltaY*0.001)},{passive:false});
+// bredare vy: på smala/stående skärmar ökas bildvinkeln så att minst ca 64° syns i sidled (ej i fotoläget)
+function size(){const w=stage.clientWidth,h=stage.clientHeight;Rn.setSize(w,h,false);C.aspect=w/h;if(pBar.hidden){const v=2*Math.atan(Math.tan(32*Math.PI/180)/C.aspect)*180/Math.PI;C.fov=Math.min(78,Math.max(46,v))}C.updateProjectionMatrix()}
+window.addEventListener('resize',size);size();
+function fromHash(){const k=location.hash.slice(1);if(V[k])go(k)}
+window.addEventListener('hashchange',fromHash);fromHash();
+// --- återställ läget efter omladdning: kamera och knappar sparas löpande i webbläsaren ---
+const SKEY='kattskallen-vy-v1',NOREST=['foto','sun','radera','matchade','fs'];
+function saveState(){try{const tg=[...document.querySelectorAll('[data-tog][aria-pressed="true"]')].map(b=>b.getAttribute('data-tog')).filter(t=>!NOREST.includes(t));
+localStorage.setItem(SKEY,JSON.stringify({t:[T.x,T.y,T.z],th,ph,r,tg,at:Date.now()}))}catch(e){}}
+let START=null;   // fast startvy (sätts av Claude i databasen settings/start)
+(function restoreState(){if(location.hash.length>1)return;try{const st=JSON.parse(localStorage.getItem(SKEY)||'null');if(!st||Date.now()-st.at>7*864e5)return;
+if(!localStorage.getItem('kattskallen-har-startvy')){T.set(...st.t);th=st.th;ph=st.ph;r=st.r}(st.tg||[]).forEach(t=>{const b=document.querySelector(`[data-tog="${t}"]`);if(b&&b.getAttribute('aria-pressed')!=='true')b.click()})}catch(e){}})();
+setInterval(saveState,2000);document.addEventListener('visibilitychange',()=>{if(document.hidden)saveState()});window.addEventListener('pagehide',saveState);
+// om grafikminnet tar slut tappar webbläsaren 3D-ytan: spara läget och ladda om direkt i stället för att lämna en tom sida
+cvs.addEventListener('webglcontextlost',e=>{e.preventDefault();saveState();const h=document.getElementById('hint');if(h){h.textContent='Grafikminnet tog slut – laddar om och fortsätter där du var …';h.style.opacity=1}setTimeout(()=>location.reload(),400)});
+// helskärm (fungerar när sidan får gå i helskärm, annars visas en hänvisning)
+mk('rowVisa','Helskärm',{'data-tog':'fs','aria-pressed':'false'},e=>{const b=e.currentTarget,el=document.documentElement;
+if(document.fullscreenElement){document.exitFullscreen();return}
+const rq=el.requestFullscreen||el.webkitRequestFullscreen;if(!rq){b.textContent='Helskärm: öppna länken i Chrome';return}
+Promise.resolve(rq.call(el)).catch(()=>{b.textContent='Helskärm stöds inte här – öppna länken i Chrome'})});
+document.addEventListener('fullscreenchange',()=>{const b=document.querySelector('[data-tog="fs"]');if(b)b.setAttribute('aria-pressed',String(!!document.fullscreenElement));size()});
+// träden är "luft": går inte att träffa med dubbeltryck, och blir genomskinligare ju närmare man kommer
+let _tf=-1;function treeFade(){const q=cl((r-6)/70),o=Math.round((0.06+0.46*q*q)*40)/40;if(o===_tf)return;_tf=o;
+AIR_MATS.forEach(([m,k])=>{m.opacity=Math.min(1,o*k);const tr=m.opacity<0.995;if(m.transparent!==tr){m.transparent=tr;m.needsUpdate=true}m.depthWrite=!tr})}
+// ===== 75_liv: två svanar som simmar och dyker efter mat, och Tomas som alltid vänder sig mot kameran och vinkar =====
+TAG.liv=[];vis.liv=true;
+const LIV=new THREE.Group();S.add(LIV);TAG.liv.push(LIV);
+const swW=M({color:0xf6f4ee,roughness:0.55}),swB=M({color:0xe0682a,roughness:0.5}),swK=M({color:0x1b1b1b});
+function mkSwan(){const g=new THREE.Group(),bd=new THREE.Group();g.add(bd);
+ const body=new THREE.Mesh(new THREE.SphereGeometry(0.32,16,12),swW);body.scale.set(1,0.62,1.75);body.position.y=0.12;bd.add(body);
+ const tail=new THREE.Mesh(new THREE.ConeGeometry(0.15,0.32,8),swW);tail.rotation.x=-Math.PI/2-0.55;tail.position.set(0,0.25,-0.58);bd.add(tail);
+ [-1,1].forEach(s=>{const w=new THREE.Mesh(new THREE.SphereGeometry(0.26,12,8),swW);w.scale.set(0.38,0.55,1.45);w.position.set(0.2*s,0.25,-0.06);w.rotation.z=0.4*s;bd.add(w)});
+ const nk=new THREE.Group();nk.position.set(0,0.2,0.42);bd.add(nk);
+ const neck=new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.075,0.62,8),swW);neck.position.set(0,0.29,-0.03);neck.rotation.x=-0.12;nk.add(neck);
+ const hd=new THREE.Group();hd.position.set(0,0.6,0.02);nk.add(hd);
+ const h=new THREE.Mesh(new THREE.SphereGeometry(0.075,12,8),swW);h.scale.set(0.9,0.9,1.3);hd.add(h);
+ const bk=new THREE.Mesh(new THREE.ConeGeometry(0.036,0.15,8),swB);bk.rotation.x=Math.PI/2;bk.position.set(0,-0.015,0.15);hd.add(bk);
+ const kn=new THREE.Mesh(new THREE.SphereGeometry(0.028,8,6),swK);kn.position.set(0,0.005,0.085);hd.add(kn);
+ [-1,1].forEach(s=>{const e=new THREE.Mesh(new THREE.SphereGeometry(0.012,6,4),swK);e.position.set(0.055*s,0.02,0.03);hd.add(e)});
+ const ring=new THREE.Mesh(new THREE.RingGeometry(0.9,1,40),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide}));
+ ring.rotation.x=-Math.PI/2;ring.position.y=0.015;LIV.add(ring);
+ g.traverse(o=>{if(o.isMesh)o.castShadow=true});LIV.add(g);
+ return{g,bd,nk,ring,dip:0,next:4+Math.random()*6,dipStart:-1,s:0}}
+// öppet vatten nära Sjöstugan: inga grund, ingen vass, ingen brygga
+const SWC=(()=>{const ok=(cx,cz,lim)=>{for(let k=0;k<16;k++){const a=k*Math.PI/8;for(const R of [0,3,6.5]){if(raw(cx+R*Math.cos(a),cz+R*Math.sin(a))>lim)return false}}return Math.hypot(cx-JX,cz-JZ)>9};
+ for(const lim of [-1.3,-0.9,-0.5,-0.2]){let best=null,bd=1e9;for(let x=-30;x<=50;x+=1.5)for(let z=30;z<=130;z+=1.5){if(!ok(x,z,lim))continue;const d=Math.hypot(x-(JX+2),z-(JZ+14));if(d<bd){bd=d;best=[x,z]}}if(best)return best}
+ return[JX+2,JZ+16]})();
+const SW=[mkSwan(),mkSwan()];
+// Tomas: står på berghällen mellan röda stugan och vattnet, vänd mot kameran, vinkar
+const TP=(()=>{let best=null,bs=1e9;for(let i=0;i<=50;i++){const t=0.12+i*0.012,x=RX+(JX-RX)*t,z=RZ+(JZ-RZ)*t,[rx,rz]=rloc(x,z);if(Math.abs(rx)<6.5&&Math.abs(rz)<6.5)continue;const y=ground(x,z);if(y<1.5)continue;
+ const sl=Math.abs(ground(x+0.4,z)-ground(x-0.4,z))+Math.abs(ground(x,z+0.4)-ground(x,z-0.4)),sc=sl*4+Math.abs(t-0.3);if(sc<bs){bs=sc;best=[x,y,z]}}return best||[RX+4,ground(RX+4,RZ+7),RZ+7]})();
+const TOM=new THREE.Group();{const w=R2W(5.0,5.6);TOM.position.set(w[0],Fr-0.27+0.06,w[1])}LIV.add(TOM);   // längst ut på nya altanen
+{const jk=M({color:0x9b9384,roughness:0.85}),jn=M({color:0x3b5578,roughness:0.9}),sk=M({color:0xe6c2a4,roughness:0.7}),hr=M({color:0xb7a080,roughness:0.85}),sh=M({color:0x2a2622});
+ const add=(geo,m,x,y,z,p)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);(p||TOM).add(o);o.castShadow=true;return o};
+ [-1,1].forEach(s=>{add(new THREE.CylinderGeometry(0.075,0.065,0.82,24),jn,0.1*s,0.45,0);add(new THREE.SphereGeometry(0.075,16,10),sh,0.1*s,0.05,0.06).scale.set(1,0.6,1.8)});
+ add(new THREE.CylinderGeometry(0.19,0.2,0.62,40),jk,0,1.15,0).scale.set(1,1,0.82);
+ add(new THREE.SphereGeometry(0.2,32,20),jk,0,1.0,0.045).scale.set(0.98,0.78,0.88);   // +10 kg runt midjan
+ // omlottjacka som på avataren: vit krage som korsar i ett V, ljusare beige omslag
+ {const wc=M({color:0xf4f1ea,roughness:0.7}),lap=M({color:0xc9bfa9,roughness:0.85});[1,-1].forEach(s=>{const c=add(new THREE.BoxGeometry(0.034,0.24,0.012),wc,0.045*s,1.385,0.163);c.rotation.z=-0.42*s;const l=add(new THREE.BoxGeometry(0.055,0.26,0.01),lap,0.075*s,1.375,0.158);l.rotation.z=-0.42*s})}   // V-ringad krage
+ add(new THREE.TorusGeometry(0.07,0.025,10,24),jk,0,1.5,0).rotation.x=Math.PI/2;   // krage
+ add(new THREE.SphereGeometry(0.19,32,16,0,Math.PI*2,0,Math.PI/2),jk,0,1.45,0).scale.set(1,0.5,0.72);
+ add(new THREE.CylinderGeometry(0.05,0.06,0.1,8),sk,0,1.55,0);
+ // Huvud byggt efter avataren (bild 24 okt): rosa hy, gråbrunt/askblont långt hår uppsatt i en knut på hjässan med slingor ner längs sidorna,
+ // ögonbryn, helskägg, leende mun, svarta solglasögon med mörkt turkosa glas
+ {const skin=M({color:0xe08a78,roughness:0.55}),hair=M({color:0x7d6656,roughness:0.7}),brd=M({color:0x6e5b4c,roughness:0.95});
+  const head=add(new THREE.SphereGeometry(0.118,48,36),skin,0,1.69,0.01);head.scale.set(0.97,1.1,1.0);
+  // hår: kalott, knut på hjässan, slingor ner längs sidorna till axlarna
+  add(new THREE.SphereGeometry(0.126,48,28,0,Math.PI*2,0,Math.PI*0.42),hair,0,1.722,-0.01).scale.set(1.04,1.05,1.1);
+  add(new THREE.SphereGeometry(0.122,40,28,Math.PI*0.55,Math.PI*0.9,Math.PI*0.25,Math.PI*0.5),hair,0,1.69,-0.012).scale.set(1.07,1.12,1.08);
+  add(new THREE.SphereGeometry(0.055,28,20),hair,0,1.84,-0.025).scale.set(1.0,0.8,1.0);                 // knut
+  {const t=add(new THREE.TorusGeometry(0.035,0.014,12,24),hair,0,1.815,-0.02);t.rotation.x=Math.PI/2}
+  [-1,1].forEach(s=>{const lk=add(new THREE.CylinderGeometry(0.028,0.012,0.24,14),hair,0.118*s,1.6,0.0);lk.rotation.z=0.12*s;lk.scale.set(1,1,1.6)});   // slingor ner längs sidorna
+  add(new THREE.SphereGeometry(0.05,24,16),hair,-0.03,1.79,0.08).scale.set(1.6,0.5,0.8);              // svepande lugg
+  [-1,1].forEach(s=>{const eb=add(new THREE.BoxGeometry(0.05,0.014,0.012),hair,0.046*s,1.752,0.112);eb.rotation.z=-0.12*s});   // ögonbryn
+  // skägg och leende mun
+  add(new THREE.SphereGeometry(0.121,48,28,-Math.PI*0.12,Math.PI*1.24,Math.PI*0.53,Math.PI*0.47),brd,0,1.683,0.014).scale.set(1.04,1.12,1.08);
+  add(new THREE.SphereGeometry(0.058,28,18),brd,0,1.588,0.07).scale.set(1.3,0.9,0.85);
+  {const mu=add(new THREE.CylinderGeometry(0.014,0.014,0.1,16),brd,0,1.654,0.119);mu.rotation.z=Math.PI/2}
+  add(new THREE.BoxGeometry(0.056,0.022,0.012),M({color:0xb85a56}),0,1.633,0.121);add(new THREE.BoxGeometry(0.044,0.009,0.012),M({color:0xf7f5f0}),0,1.637,0.1265);   // leende mun med tänder
+  add(new THREE.SphereGeometry(0.029,24,16),skin,0,1.682,0.124).scale.set(1,0.95,1.1);                // näsa
+  [-1,1].forEach(s=>add(new THREE.SphereGeometry(0.026,16,12),skin,0.11*s,1.69,0.005).scale.set(0.45,1,0.8));   // öron
+  // svarta solglasögon (rundad rektangel) med mörkt turkosa glas
+  {const fr=M({color:0x111111,roughness:0.35,side:THREE.DoubleSide}),gl=M({color:0x1e6e74,roughness:0.06,metalness:0.4,side:THREE.DoubleSide});
+   const rr=(w,h,r)=>{const sh=new THREE.Shape();sh.moveTo(-w/2+r,-h/2);sh.lineTo(w/2-r,-h/2);sh.quadraticCurveTo(w/2,-h/2,w/2,-h/2+r);sh.lineTo(w/2,h/2-r);sh.quadraticCurveTo(w/2,h/2,w/2-r,h/2);sh.lineTo(-w/2+r,h/2);sh.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r);sh.lineTo(-w/2,-h/2+r);sh.quadraticCurveTo(-w/2,-h/2,-w/2+r,-h/2);return new THREE.ShapeGeometry(sh,8)};
+   [-1,1].forEach(s=>{add(rr(0.084,0.064,0.022),fr,0.05*s,1.712,0.121);add(rr(0.068,0.049,0.016),gl,0.05*s,1.71,0.1225);add(new THREE.BoxGeometry(0.008,0.012,0.12),fr,0.095*s,1.72,0.065)});
+   add(new THREE.BoxGeometry(0.03,0.012,0.008),fr,0,1.72,0.122)}}
+ // vänster arm hänger, höger arm vinkar (figuren tittar längs +z, höger sida = −x)
+ const la=new THREE.Group();la.position.set(0.23,1.42,0);TOM.add(la);la.rotation.z=0.12;
+ add(new THREE.CylinderGeometry(0.052,0.046,0.62,20),jk,0,-0.31,0,la);add(new THREE.SphereGeometry(0.05,16,12),sk,0,-0.66,0,la);
+ const sa=new THREE.Group();sa.position.set(-0.23,1.42,0);TOM.add(sa);
+ add(new THREE.CylinderGeometry(0.052,0.048,0.32,20),jk,0,-0.16,0,sa);
+ const el=new THREE.Group();el.position.set(0,-0.32,0);sa.add(el);
+ add(new THREE.CylinderGeometry(0.047,0.043,0.3,20),jk,0,-0.15,0,el);add(new THREE.SphereGeometry(0.055,16,12),sk,0,-0.34,0,el).scale.set(1,1.2,0.6);
+ const fg=add(new THREE.BoxGeometry(0.026,0.12,0.03),sk,0,-0.45,0,el);fg.visible=false;   // långfingret – bara på nära håll
+ // större och tydligare huvud: allt ovanför halsen skalas upp kring halsen
+ TOM.children.forEach(o=>{if(o.position.y>1.54&&o.isMesh){o.position.y=1.55+(o.position.y-1.55)*1.22;o.position.x*=1.22;o.position.z*=1.22;o.scale.multiplyScalar(1.22)}});
+ TOM.scale.setScalar(1.45);   // hela figuren lite större så den syns tydligt
+ TOM.userData={sa,el,fg,k:0}}
+const _st=new THREE.Clock();let _lt=0;
+function liveTick(){const t=_st.getElapsedTime(),dt=Math.min(0.1,t-_lt);_lt=t;if(!vis.liv)return;
+ // Tomas vänder sig mjukt mot kameran och vinkar
+ const want=Math.atan2(C.position.x-TOM.position.x,C.position.z-TOM.position.z);let d=want-TOM.rotation.y;d=Math.atan2(Math.sin(d),Math.cos(d));TOM.rotation.y+=d*Math.min(1,dt*6);
+ const u=TOM.userData,near=C.position.distanceTo(TOM.position)<10;u.k+=((near?1:0)-u.k)*Math.min(1,dt*5);const k=u.k;
+ // på avstånd vinkar han; närmare än 10 m får kameran fingret
+ u.sa.rotation.z=(-2.55+0.12*Math.sin(t*3.5))*(1-k)+(-0.22)*k;u.sa.rotation.x=-0.25*(1-k)+(-1.25)*k;
+ u.el.rotation.z=0.45*Math.sin(t*7)*(1-k);u.el.rotation.x=-1.15*k;u.fg.visible=k>0.6;
+ // svanarna: ett par som följs åt runt en slinga i öppet vatten
+ SW.forEach((w,i)=>{const sp=w.dip>0.3?0.25:1;w.s+=dt*0.055*sp;const a=w.s-i*0.32,R=5+0.8*Math.sin(a*2.1+i);
+  const x=SWC[0]+R*Math.cos(a)+0.6*i,z=SWC[1]+R*0.7*Math.sin(a)*1.25;
+  const nx=SWC[0]+(5+0.8*Math.sin((a+0.01)*2.1+i))*Math.cos(a+0.01)+0.6*i,nz=SWC[1]+(5+0.8*Math.sin((a+0.01)*2.1+i))*0.875*Math.sin(a+0.01);
+  w.g.position.set(x,0.015*Math.sin(t*1.7+i*2),z);w.g.rotation.y=Math.atan2(nx-x,nz-z);
+  // ibland stoppar den huvudet i vattnet efter mat
+  if(w.dipStart<0&&t>w.next){w.dipStart=t}
+  if(w.dipStart>=0){const k=t-w.dipStart,D=4.2;w.dip=k<0.8?k/0.8:k<D-0.8?1:Math.max(0,(D-k)/0.8);if(k>=D){w.dipStart=-1;w.dip=0;w.next=t+7+Math.random()*10}
+   const rp=(k%1.6)/1.6;w.ring.position.x=x+Math.sin(w.g.rotation.y)*0.85;w.ring.position.z=z+Math.cos(w.g.rotation.y)*0.85;w.ring.scale.setScalar(0.15+rp*0.6);w.ring.material.opacity=w.dip>0.5?0.5*(1-rp):0}
+  else w.ring.material.opacity=0;
+  const e=w.dip*w.dip*(3-2*w.dip);w.nk.rotation.x=e*2.25+0.04*Math.sin(t*1.3+i);w.bd.rotation.x=e*0.32;w.bd.position.y=-e*0.03})}
+mk('rowVisa','Svanar & Tomas',{'data-tog':'liv','aria-pressed':'true'},()=>setVis('liv',!vis.liv));
+
+// ===== Fiskar i viken: gäddor och 5 abborrar som simmar under den genomskinliga ytan =====
+const FISH=[];{const G=new THREE.Group();S.add(G);
+ const stripeTex=(base,stripe,n)=>{const c=document.createElement('canvas');c.width=128;c.height=32;const g=c.getContext('2d');g.fillStyle=base;g.fillRect(0,0,128,32);g.fillStyle=stripe;for(let i=0;i<n;i++)g.fillRect(18+i*(90/n),0,7,22);g.fillStyle='rgba(255,255,240,0.55)';g.fillRect(0,22,128,10);const t=new THREE.CanvasTexture(c);return t};
+ const spotTex=()=>{const c=document.createElement('canvas');c.width=128;c.height=32;const g=c.getContext('2d');g.fillStyle='#4d6b3a';g.fillRect(0,0,128,32);g.fillStyle='#c9cf8f';for(let i=0;i<46;i++){g.beginPath();g.ellipse(Math.random()*128,4+Math.random()*18,2.4,1.4,0,0,6.3);g.fill()}g.fillStyle='rgba(240,240,220,0.6)';g.fillRect(0,23,128,9);return new THREE.CanvasTexture(c)};
+ function fish(kind){const f=new THREE.Group(),pike=kind==='gadda',L=pike?0.85+Math.random()*0.35:0.22+Math.random()*0.08;
+  const body=new THREE.Mesh(new THREE.SphereGeometry(0.5,16,10),M({map:pike?spotTex():stripeTex('#7d8a3a','#2f3418',6),roughness:0.6}));body.scale.set(pike?0.13:0.28,pike?0.16:0.42,1);body.rotation.y=0;f.add(body);
+  const tail=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.3,4),M({color:pike?0x5f6b3a:0xd0502c}));tail.rotation.x=Math.PI/2;tail.scale.set(0.15,1,0.9);tail.position.z=-0.55;f.add(tail);
+  if(!pike){const fin=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.18,0.36),M({color:0x3b3f22}));fin.position.set(0,0.24,0.02);f.add(fin);[-1,1].forEach(s=>{const p=new THREE.Mesh(new THREE.BoxGeometry(0.02,0.07,0.12),M({color:0xd0502c}));p.position.set(0.13*s,-0.12,0.15);f.add(p)})}
+  else{const snout=new THREE.Mesh(new THREE.BoxGeometry(0.07,0.05,0.18),M({color:0x4d6b3a}));snout.position.z=0.55;f.add(snout)}
+  f.scale.setScalar(L);G.add(f);return{f,tail,pike,x:6+Math.random()*24,z:52+Math.random()*16,y:pike?-0.42:-0.3-Math.random()*0.15,h:Math.random()*6.3,v:pike?0.25:0.45,t:Math.random()*10,turn:0}}
+ for(let i=0;i<3;i++)FISH.push(fish('gadda'));for(let i=0;i<5;i++)FISH.push(fish('abborre'))}
+let _ft=performance.now();function fishTick(){const now=performance.now(),dt=Math.min(0.05,(now-_ft)/1000);_ft=now;
+ FISH.forEach(o=>{o.t+=dt;if(Math.random()<dt*0.4)o.turn=(Math.random()-0.5)*1.2;
+  // håll fisken i viken söder om bryggan och undan land/vass
+  const nx=o.x+Math.sin(o.h)*o.v*2,nz=o.z+Math.cos(o.h)*o.v*2;if(base(nx,nz)>-0.6||marsh(nx,nz)||nz<50||nz>80)o.turn=1.6;
+  o.h+=o.turn*dt;o.x+=Math.sin(o.h)*o.v*dt*(o.pike&&Math.sin(o.t*0.3)>0.6?0:1);o.z+=Math.cos(o.h)*o.v*dt*(o.pike&&Math.sin(o.t*0.3)>0.6?0:1);
+  o.f.position.set(o.x,o.y+0.03*Math.sin(o.t*1.3),o.z);o.f.rotation.y=o.h;o.tail.rotation.y=0.45*Math.sin(o.t*(o.pike?5:9))})}
+(function loop(){if(spin)th+=0.003;if(goal){T.x+=(goal.t[0]-T.x)*0.07;T.y+=(goal.t[1]-T.y)*0.07;T.z+=(goal.t[2]-T.z)*0.07;let d=goal.th-th;d=Math.atan2(Math.sin(d),Math.cos(d));th+=d*0.07;ph+=(goal.ph-ph)*0.07;r+=(goal.r-r)*0.07;if(Math.abs(d)<0.002&&Math.abs(goal.r-r)<0.01&&Math.abs(goal.ph-ph)<0.002&&T.distanceTo(new THREE.Vector3(...goal.t))<0.01)goal=null}cam();FADE.forEach(F=>applyFade(F));treeFade();if(pivM.visible){const a=(performance.now()-pivT)/1500;if(a>1)pivM.visible=false;else{pivM.material.opacity=1-a;pivM.lookAt(C.position);const sc=Math.max(0.6,C.position.distanceTo(pivM.position)*0.06);pivM.scale.setScalar(sc)}}
+if(cmp)cmp.style.transform=`rotate(${th}rad)`;if(mB&&!mlabel.hidden){const v=mA.clone().add(mB).multiplyScalar(0.5).project(C),b=cvs.getBoundingClientRect();mlabel.style.left=((v.x+1)/2*b.width)+'px';mlabel.style.top=((1-v.y)/2*b.height)+'px'}
+liveTick();fishTick();if(window.PENN)PENN();if(sea.material.uniforms)sea.material.uniforms.time.value+=0.004;Rn.render(S,C);requestAnimationFrame(loop)})();
+// ===== Skärmdumpar: sparas i modellen (Claude kan läsa dem) och kan laddas ned =====
+let ASSETS=null,DL=null;
+if(window.claude&&window.claude.use){window.claude.use('assets').then(a=>ASSETS=a).catch(()=>{});window.claude.use('downloads').then(d=>DL=d).catch(()=>{})}
+function shotMsg(t){const h=document.getElementById('hint');if(h){h.textContent=t;h.style.opacity='1'}}
+function grab(){cam();FADE.forEach(F=>applyFade(F,true));treeFade();Rn.render(S,C);const src=Rn.domElement,W=Math.min(1600,src.width),H=Math.round(src.height*W/src.width),c=document.createElement('canvas');c.width=W;c.height=H;
+c.getContext('2d').drawImage(src,0,0,W,H);return new Promise(res=>c.toBlob(res,'image/jpeg',0.86))}
+async function storeShot(blob,name,extra){if(!ASSETS||!DB)return false;try{const a=await ASSETS.upload(blob);const key='shot-'+new Date().toISOString().replace(/[:.]/g,'-')+'-'+Math.random().toString(36).slice(2,6);
+await DB.collection('shots').doc(key).set({name,assetId:a.id,url:a.url,t:[+T.x.toFixed(2),+T.y.toFixed(2),+T.z.toFixed(2)],th:+th.toFixed(3),ph:+ph.toFixed(3),r:+r.toFixed(2),fov:+C.fov.toFixed(1),at:new Date().toISOString(),ver:(document.querySelector('.tag p')||{}).textContent||'',...(extra||{})});return true}catch(e){return false}}
+function viewName(){const k=Object.keys(V).find(k=>{const v=V[k];return Math.abs(v.th-th)<0.01&&Math.abs(v.r-r)<0.05});return k?V[k].n:'Egen vy'}
+mk('rowVisa','📷 Skärmdump',{},async e=>{const b=e.currentTarget;b.disabled=true;const nm=viewName(),blob=await grab();const ok=await storeShot(blob,nm);
+shotMsg(ok?'Skärmdumpen är sparad i modellen – Claude kan titta på den.':'Kunde inte spara i modellen här (öppna modellen i Claude).');
+if(DL){try{await DL.save({filename:'kattskallen-'+nm.toLowerCase().replace(/[^a-zåäö0-9]+/g,'-')+'.jpg',data:blob})}catch(err){}}b.disabled=false});
+mk('rowVisa','📷 Alla vyer',{},async e=>{const b=e.currentTarget;if(!ASSETS||!DB){shotMsg('Kan bara spara bilder när modellen är öppen i Claude.');return}b.disabled=true;lockUI(true);
+const keep={t:T.clone(),th,ph,r},ks=Object.keys(V);let n=0;
+for(const k of ks){go(k);const v=V[k];goal=null;T.set(...v.t);th=v.th;ph=v.ph;r=v.r;await new Promise(r_=>setTimeout(r_,180));const blob=await grab();if(await storeShot(blob,v.n))n++;shotMsg('Tar bilder … '+n+' av '+ks.length)}
+T.copy(keep.t);th=keep.th;ph=keep.ph;r=keep.r;shotMsg(n+' bilder sparade i modellen – säg till Claude att titta på dem.');lockUI(false);b.disabled=false;loadGallery()});
+
+// ===== Fjärrstyrda bilder: Claude skriver en beställning i modellens databas (remote/cmd); när sidan är öppen
+// tar den bilderna från de begärda vyerna/kameralägena, sparar dem i modellen och kvitterar. =====
+(function(){let busy=false,started=false;
+async function runCmd(c){if(c.mode==='camera'){try{await DB.collection('remote').doc('camera').set({t:[+T.x.toFixed(3),+T.y.toFixed(3),+T.z.toFixed(3)],th:+th.toFixed(4),ph:+ph.toFixed(4),r:+r.toFixed(3),at:new Date().toISOString()});await DB.collection('remote').doc('cmd').update({done:true})}catch(e){}return}
+busy=true;lockUI(true);const planWas=PLAN_EXT.visible;setPlanned(c.planned===true);   // Claudes jämförelsebilder visar nuläget (utan planerad utbyggnad)
+if(c.mode==='360'){await run360(c.id);setPlanned(planWas);try{await DB.collection('remote').doc('cmd').update({done:true,doneAt:new Date().toISOString()})}catch(e){}lockUI(false);busy=false;return}const keep={t:T.clone(),th,ph,r,fov:C.fov,roof:vis.roof,loft:vis.loft};let n=0;const list=c.shots||[];
+shotMsg('Claude tar bilder i modellen … 0 av '+list.length);
+for(const q of list){try{if(q.view&&V[q.view]){go(q.view);const v=V[q.view];goal=null;T.set(...v.t);th=v.th;ph=v.ph;r=v.r}
+else{goal=null;if(q.t)T.set(...q.t);if(q.th!=null)th=q.th;if(q.ph!=null)ph=q.ph;if(q.r!=null)r=q.r}
+if(q.fov){C.fov=q.fov;C.updateProjectionMatrix()}if(q.roof!=null)setVis('roof',q.roof);if(q.loft!=null)setVis('loft',q.loft);
+await new Promise(z=>setTimeout(z,220));const blob=await grab();if(await storeShot(blob,q.name||(q.view&&V[q.view]?V[q.view].n:'Beställd vy'),{req:c.id}))n++;
+shotMsg('Claude tar bilder i modellen … '+n+' av '+list.length)}catch(e){}}
+T.copy(keep.t);th=keep.th;ph=keep.ph;r=keep.r;setVis('roof',keep.roof);setVis('loft',keep.loft);size();
+try{await DB.collection('remote').doc('cmd').update({done:true,n,doneAt:new Date().toISOString()})}catch(e){}
+shotMsg(n+' bilder tagna åt Claude.');setPlanned(planWas);lockUI(false);busy=false;loadGallery()}
+const iv=setInterval(()=>{if(!DB||started)return;started=true;clearInterval(iv);
+DB.collection('settings').doc('start').get().then(d=>{if(!d.exists)return;const v=d.data();if(!v||!v.t)return;try{localStorage.setItem('kattskallen-har-startvy','1')}catch(e){}
+ if(location.hash.length>1)return;goal=null;T.set(...v.t);th=v.th;ph=v.ph;r=v.r}).catch(()=>{});
+try{DB.collection('remote').doc('cmd').onSnapshot(snap=>{if(!snap.exists||busy)return;const c=snap.data();if(!c||!c.id||c.done)return;runCmd(c).catch(()=>{busy=false;lockUI(false);shotMsg('Bildtagningen avbröts – modellen fungerar som vanligt.')})},()=>{})}catch(e){}},1000)})();
+
+// ===== Huvudmeny med flikar: Visa, Ute, Inne, Bilder, Navigering =====
+function lockUI(on){const l=document.getElementById('lock');if(l)l.hidden=!on}
+(function(){const tabs=[...document.querySelectorAll('.tab')],sel=id=>{tabs.forEach(t=>{const on=t.dataset.tab===id;t.setAttribute('aria-selected',String(on))});document.querySelectorAll('nav .panel').forEach(p=>p.classList.toggle('on',p.id===id));try{localStorage.setItem('kattskallen-flik',id)}catch(e){}
+if(id==='rowBilder')loadGallery()};
+tabs.forEach(t=>t.addEventListener('click',()=>sel(t.dataset.tab)));let st='rowUte';try{st=localStorage.getItem('kattskallen-flik')||st}catch(e){}sel(st)})();
+// flytta bildfunktionerna till fliken Bilder
+(function(){const rb=document.getElementById('rowBilder');[...document.querySelectorAll('#rowVisa button')].forEach(b=>{if(b.dataset.tog==='foto'||/📷/.test(b.textContent))rb.appendChild(b)})})();
+// --- 360 runt ön: 36 bilder var 10:e grad, samma höjd och avstånd; ersätter förra omgången
+async function run360(req){if(!ASSETS||!DB){shotMsg('360 kan bara sparas när modellen är öppen i Claude.');return 0}
+lockUI(true);const keep={t:T.clone(),th,ph,r};
+try{const old=await DB.collection('shots').where('set','==','360').get();for(const d of old.docs){const v=d.data();try{if(v.assetId)await ASSETS.delete(v.assetId)}catch(e){}try{await DB.collection('shots').doc(d.id).delete()}catch(e){}}}catch(e){}
+let n=0;for(let i=0;i<36;i++){goal=null;T.set(3,3,22);r=85;ph=1.18;th=i*Math.PI/18;await new Promise(z=>setTimeout(z,160));const blob=await grab();
+if(await storeShot(blob,'360 – '+String(i*10).padStart(3,'0')+'°',{set:'360',idx:i,req:req||'knapp'}))n++;shotMsg('360 runt ön … '+n+' av 36')}
+T.copy(keep.t);th=keep.th;ph=keep.ph;r=keep.r;lockUI(false);shotMsg(n+' bilder runt ön sparade (ersatte förra 360).');loadGallery();return n}
+mk('rowBilder','🔄 Gör en 360',{},async e=>{const b=e.currentTarget;b.disabled=true;await run360();b.disabled=false});
+// --- galleri med sparade bilder: tryck för att ställa kameran där bilden togs
+const galW=document.createElement('div');galW.style.cssText='flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;max-height:42vh;overflow-y:auto;padding-top:4px';document.getElementById('rowBilder').appendChild(galW);
+let galBusy=false;async function loadGallery(){if(!DB||galBusy)return;galBusy=true;try{const q=await DB.collection('shots').orderBy('at','desc').limit(400).get();galW.textContent='';
+q.docs.forEach(d=>{const v=d.data();if(!v||!v.url||v.deleted)return;const b=document.createElement('button');b.type='button';b.className='shot';b.dataset.shot=d.id;b.dataset.asset=v.assetId||'';const im=document.createElement('img');im.src=v.url;im.alt=v.name||'';im.loading='lazy';const sp=document.createElement('span');sp.textContent=v.name||'';b.append(im,sp);
+b.addEventListener('click',()=>{if(v.t){ovl.hidden=true;goal={t:v.t,th:v.th,ph:v.ph,r:v.r}}else if(!ovl.hidden&&ovl.getAttribute('src')===v.url){ovl.hidden=true}else{ovl.src=v.url;ovl.style.opacity=1;ovl.hidden=false}});galW.appendChild(b)})}catch(e){}galBusy=false}
+// --- Navigering: knappar och tangenter
+mk('rowNav','▲ Fokus upp',{},()=>{goal=null;T.y+=1;AF.copy(T)});
+mk('rowNav','▼ Fokus ner',{},()=>{goal=null;T.y-=1;AF.copy(T)});
+mk('rowNav','＋ Närmare',{},()=>{goal=null;zoomBy(0.75)});
+mk('rowNav','− Längre bort',{},()=>{goal=null;zoomBy(1.33)});
+mk('rowNav','⟲ Vrid',{},()=>{goal=null;th+=0.35});
+mk('rowNav','⟳ Vrid',{},()=>{goal=null;th-=0.35});
+mk('rowNav','⌂ Översikt',{},()=>go('oversikt'));
+window.addEventListener('keydown',e=>{if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;let h=true;
+switch(e.key){case'ArrowLeft':th+=0.08;break;case'ArrowRight':th-=0.08;break;case'ArrowUp':ph=Math.max(0.03,ph-0.06);break;case'ArrowDown':ph=Math.min(2.7,ph+0.06);break;
+case'+':case'=':zoomBy(0.85);break;case'-':zoomBy(1.18);break;case'PageUp':T.y+=0.5;AF.copy(T);break;case'PageDown':T.y-=0.5;AF.copy(T);break;case'Home':go('oversikt');e.preventDefault();return;default:h=false}
+if(h){goal=null;e.preventDefault()}});
+
+// ===== Ladda ner bilder från bildarkivet som en zip-fil (för att lägga dem i Drive m.m.) =====
+async function zipShots(filter,fname,btn){if(!DB){shotMsg('Bildarkivet finns bara när modellen är öppen i Claude.');return}if(!window.JSZip){shotMsg('Zip-funktionen kunde inte laddas.');return}
+const old=btn.textContent;btn.disabled=true;try{const q=await DB.collection('shots').orderBy('at','desc').limit(200).get();const z=new JSZip();let n=0;
+for(const d of q.docs){const v=d.data();if(!v||!v.url||!filter(v))continue;try{const bl=await (await fetch(v.url)).blob();const nm=(v.set==='360'?'360-'+String(v.idx).padStart(2,'0')+'-'+String(v.idx*10).padStart(3,'0')+'grader':(v.name||d.id)).replace(/[^a-zA-Z0-9åäöÅÄÖ°\- ]+/g,'').trim().replace(/\s+/g,'-');
+z.file(nm+'.jpg',bl);n++;btn.textContent='Packar … '+n}catch(e){}}
+if(!n){shotMsg('Inga bilder att ladda ner ännu.');return}const out=await z.generateAsync({type:'blob'});
+if(DL){try{await DL.save({filename:fname,data:out});shotMsg(n+' bilder sparade som '+fname+'.')}catch(e){shotMsg('Nedladdningen avbröts.')}}else shotMsg('Nedladdning stöds inte här.')}
+finally{btn.disabled=false;btn.textContent=old}}
+mk('rowBilder','⬇ Alla bilder (zip)',{},e=>zipShots(()=>true,'kattskallen-bilder.zip',e.currentTarget));
+mk('rowBilder','⬇ 360 (zip)',{},e=>zipShots(v=>v.set==='360','kattskallen-360.zip',e.currentTarget));
+// knapparna före galleriet
+(function(){const rb=document.getElementById('rowBilder'),g=rb.querySelector('.gal');if(g)rb.appendChild(g)})();
+
+// ===== Egna foton i modellen: lägg till flera foton som sparas i modellen och kan matchas; "Matchade foton" som egen mapp under Bilder =====
+const UPH={};
+function addThumb(key,name,thumb,src){if(gal.querySelector(`[data-key="${key}"]`))return;const b=document.createElement('button');b.type='button';b.setAttribute('aria-label',name);b.setAttribute('aria-pressed','false');
+ b.innerHTML=`<img src="${thumb||src}" alt="">`;b.dataset.key=key;b.addEventListener('click',()=>{gal.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');curKey=key;curName=name;showPhoto(src);applySaved(key)});gal.appendChild(b);markThumbs()}
+async function uploadPhoto(f){if(!f||!f.type||!f.type.startsWith('image/'))return null;if(!ASSETS||!DB){shotMsg('Fotot visas, men kan bara sparas i modellen när den är öppen i Claude.');return null}
+ try{const bm=await createImageBitmap(f),k=Math.min(1,1800/Math.max(bm.width,bm.height)),c=document.createElement('canvas');c.width=Math.round(bm.width*k);c.height=Math.round(bm.height*k);c.getContext('2d').drawImage(bm,0,0,c.width,c.height);
+  const blob=await new Promise(r_=>c.toBlob(r_,'image/jpeg',0.85)),tc=document.createElement('canvas'),tk=110/Math.max(c.width,c.height);tc.width=Math.round(c.width*tk);tc.height=Math.round(c.height*tk);tc.getContext('2d').drawImage(c,0,0,tc.width,tc.height);
+  const thumb=tc.toDataURL('image/jpeg',0.6),a=await ASSETS.upload(blob),id='up-'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name=(f.name||'Foto').replace(/\.[a-z]+$/i,'');
+  await DB.collection('photos').doc(id).set({name,url:a.url,assetId:a.id,thumb,at:new Date().toISOString()});UPH[id]={name,url:a.url,thumb};addThumb(id,name,thumb,a.url);shotMsg('Fotot "'+name+'" är sparat i modellen och kan matchas.');return id}catch(e){shotMsg('Fotot kunde inte sparas i modellen.');return null}}
+(function(){const iv=setInterval(()=>{if(!DB)return;clearInterval(iv);DB.collection('photos').get().then(q=>{q.docs.forEach(d=>{const v=d.data();if(v&&v.url&&!v.deleted){UPH[d.id]=v;addThumb(d.id,v.name,v.thumb,v.url)}})}).catch(()=>{})},800)})();
+// "Matchade foton": alla foton som har en sparad matchning, i en egen mapp – tryck för att öppna fotot med kameran på sin plats
+const mWrap=document.createElement('div');mWrap.style.cssText='flex-basis:100%;display:none;flex-wrap:wrap;gap:6px;max-height:42vh;overflow-y:auto;padding-top:4px';document.getElementById('rowBilder').appendChild(mWrap);
+function photoFor(key){if(key.startsWith('foto')){const p=PHOTOS[+key.slice(4)];return p?{name:p.n,thumb:p.t,src:p.s}:null}if(UPH[key])return{name:UPH[key].name,thumb:UPH[key].thumb||UPH[key].url,src:UPH[key].url};return null}
+function showMatched(){mWrap.textContent='';const ks=Object.keys(saved).filter(k=>photoFor(k)).sort((a,b)=>(saved[b].savedAt||'').localeCompare(saved[a].savedAt||''));
+ if(!ks.length){const p=document.createElement('p');p.className='navhelp';p.textContent='Inga matchade foton ännu. Välj ett foto under Foton, passa in modellen och tryck Spara matchning.';mWrap.appendChild(p);return}
+ ks.forEach(k=>{const ph=photoFor(k),b=document.createElement('button');b.type='button';b.className='shot';b.dataset.key=k;const im=document.createElement('img');im.src=ph.thumb;im.alt='';const sp=document.createElement('span');sp.textContent='📌 '+ph.name;b.append(im,sp);
+  b.addEventListener('click',()=>{openBar();curKey=k;curName=ph.name;showPhoto(ph.src);applySaved(k);gal.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.key===k)))});mWrap.appendChild(b)})}
+mk('rowBilder','📌 Matchade foton',{'data-tog':'matchade','aria-pressed':'false'},e=>{const on=mWrap.style.display==='none';mWrap.style.display=on?'flex':'none';e.currentTarget.setAttribute('aria-pressed',String(on));if(on)showMatched()});
+mk('rowBilder','＋ Lägg till foton',{},()=>pFile.click());
+
+// ===== Ta bort bilder: markera i bildarkivet, bland matchade foton eller i fotoraden – och radera =====
+let delMode=false;const delSel=new Set();
+const delBtn=mk('rowBilder','🗑 Ta bort bilder',{'data-tog':'radera','aria-pressed':'false'},e=>{delMode=!delMode;e.currentTarget.setAttribute('aria-pressed',String(delMode));delSel.clear();
+ document.querySelectorAll('[data-delmark]').forEach(x=>{x.style.outline='';delete x.dataset.delmark});goBtn.hidden=!delMode;goBtn.textContent='Radera markerade (0)';
+ shotMsg(delMode?'Tryck på bilderna du vill ta bort (i arkivet, bland matchade foton eller i fotoraden), sedan Radera markerade.':'')});
+const goBtn=mk('rowBilder','Radera markerade (0)',{},doDelete);goBtn.hidden=true;goBtn.style.background='#9b2c2c';goBtn.style.color='#fff';
+function markKey(b){return b.dataset.shot?'s:'+b.dataset.shot+':'+(b.dataset.asset||''):(b.dataset.key?'k:'+b.dataset.key:null)}
+[galW,mWrap,gal].forEach(box=>box.addEventListener('click',e=>{if(!delMode)return;const b=e.target.closest('button');if(!b||!box.contains(b))return;const k=markKey(b);if(!k)return;
+ e.preventDefault();e.stopPropagation();if(delSel.has(k)){delSel.delete(k);b.style.outline='';delete b.dataset.delmark}else{delSel.add(k);b.style.outline='3px solid #d33';b.dataset.delmark='1'}
+ goBtn.textContent='Radera markerade ('+delSel.size+')'},true));
+async function doDelete(){if(!DB){shotMsg('Bilder kan bara tas bort när modellen är öppen i Claude.');return}if(!delSel.size){shotMsg('Inga bilder markerade.');return}
+ const errs=[],note=(w,e)=>{const m=w+': '+((e&&(e.code||e.message))||e);errs.push(m);try{DB.collection('errors').doc('e-'+Date.now()+Math.random().toString(36).slice(2,5)).set({msg:'radera '+m,at:new Date().toISOString(),src:'doDelete',line:0})}catch(x){}};
+ const del=async(col,id)=>{try{await DB.collection(col).doc(id).delete();return true}catch(e){note(col+'/'+id+' delete',e);try{await DB.collection(col).doc(id).update({deleted:true});return true}catch(e2){note(col+'/'+id+' markera',e2);return false}}};
+ let n=0;for(const k of delSel){
+  if(k.startsWith('s:')){const[,id,aid]=k.split(':');if(await del('shots',id)){n++;if(aid&&ASSETS)try{await ASSETS.delete(aid)}catch(e){note('asset '+aid,e)}}}
+  else{const key=k.slice(2);
+   if(key.startsWith('up-')){const v=UPH[key];if(await del('photos',key)){n++;if(v&&v.assetId&&ASSETS)try{await ASSETS.delete(v.assetId)}catch(e){note('asset '+v.assetId,e)}delete UPH[key];const t=gal.querySelector(`[data-key="${key}"]`);if(t)t.remove()}}
+   else{HIDDEN.add(key);const t=gal.querySelector(`[data-key="${key}"]`);if(t)t.remove();n++;try{await DB.collection('settings').doc('hidden').set({keys:[...HIDDEN],at:new Date().toISOString()})}catch(e){note('settings/hidden',e)}
+    try{localStorage.setItem('kattskallen-dolda',JSON.stringify([...HIDDEN]))}catch(e){}}
+   if(saved[key]){delete saved[key];try{localStorage.setItem(LSK,JSON.stringify(saved))}catch(e){}await del('matches',key)}}}
+ delSel.clear();document.querySelectorAll('[data-delmark]').forEach(x=>{x.style.outline='';delete x.dataset.delmark});goBtn.textContent='Radera markerade (0)';markThumbs();
+ if(mWrap.style.display!=='none')showMatched();loadGallery();
+ shotMsg(errs.length?('Kunde inte ta bort allt: '+errs[0]):(n+' bilder borttagna.'))}
+// dolda (borttagna) inbyggda foton sparas i modellen och visas inte i fotoraden
+const HIDDEN=new Set();try{JSON.parse(localStorage.getItem('kattskallen-dolda')||'[]').forEach(k=>HIDDEN.add(k))}catch(e){}setTimeout(()=>hideNow(),0);
+(function(){const iv=setInterval(()=>{if(!DB)return;clearInterval(iv);DB.collection('settings').doc('hidden').get().then(d=>{if(d.exists){(d.data().keys||[]).forEach(k=>HIDDEN.add(k));hideNow()}}).catch(()=>{})},800)})();
+function hideNow(){HIDDEN.forEach(k=>{const t=gal.querySelector(`[data-key="${k}"]`);if(t)t.remove()})}
+new MutationObserver(()=>{if(HIDDEN.size)hideNow()}).observe(gal,{childList:true});
+// ta bort det foto som visas just nu (knapp i fotoraden)
+document.getElementById('phDel').addEventListener('click',async()=>{if(!curKey){shotMsg('Välj ett foto först.');return}const b=document.getElementById('phDel');
+ if(b.dataset.arm!=='1'){b.dataset.arm='1';b.textContent='Tryck igen för att ta bort';setTimeout(()=>{b.dataset.arm='';b.textContent='🗑 Ta bort fotot'},3000);return}
+ b.dataset.arm='';b.textContent='🗑 Ta bort fotot';delSel.clear();delSel.add('k:'+curKey);ovl.hidden=true;await doDelete();curKey=null});
+(function(){const rb=document.getElementById('rowBilder');rb.appendChild(mWrap);rb.appendChild(galW)})();   // knapparna först, sedan mapparna
+</script>
+</body>
+</html>
