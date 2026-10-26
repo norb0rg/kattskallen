@@ -59,7 +59,7 @@ button:focus-visible{outline:2px solid var(--on);outline-offset:2px}
 </head>
 <body>
 <div id="stage">
-<div class="tag"><h1>www.kattskallen.3D</h1><p>Sundby 7:130, Ornö · senaste uppdatering 26 okt 2026 · v67</p><p>Vit bod med brygga på östra udden (egen vy under Ute)</p></div>
+<div class="tag"><h1>www.kattskallen.3D</h1><p>Sundby 7:130, Ornö · senaste uppdatering 26 okt 2026 · v68</p><p>Filmiskt ljus: himmel med djupblå zenit, varm sol, svala skuggor</p></div>
 <img id="ovl" class="ovl" alt="" hidden>
 <div id="compass" class="compass" aria-hidden="true"><span>N</span></div>
 <div id="mlabel" class="mlabel" hidden></div>
@@ -99,18 +99,42 @@ const stage=document.getElementById('stage');
 const Rn=new THREE.WebGLRenderer({antialias:true,logarithmicDepthBuffer:true});
 Rn.setPixelRatio(Math.min(window.devicePixelRatio,2));
 Rn.shadowMap.enabled=true;Rn.shadowMap.type=THREE.PCFSoftShadowMap;
+// filmisk färgåtergivning (stilbeslut 26 okt 2026: realistiskt men som Tintin-filmen): ACES ger mjuka högdagrar och mättade mellantoner
+Rn.toneMapping=THREE.ACESFilmicToneMapping;Rn.toneMappingExposure=0.68;   // three.js delar med 0,6: 0,72 ≈ neutralt + lite ljusare (1,2 blev dubbelt så ljust och urblekt)
+// ACES gör färgerna blekare – filmlooken vill ha motsatsen: mättnaden höjs och tonen värms lite i samma steg (ingen extra renderingsrunda)
+{const ch=THREE.ShaderChunk,re=/vec3 ACESFilmicToneMapping\(\s*vec3 color\s*\)/;if(re.test(ch.tonemapping_pars_fragment))ch.tonemapping_pars_fragment=ch.tonemapping_pars_fragment.replace(re,'vec3 ACESFilmicToneMapping0( vec3 color )')+
+ '\nvec3 ACESFilmicToneMapping( vec3 color ){vec3 c=ACESFilmicToneMapping0(color);float l=dot(c,vec3(0.2126,0.7152,0.0722));return clamp(mix(vec3(l),c,1.3)*vec3(1.04,1.0,0.93),0.0,1.0);}';else console.error('färggradering: hittar inte ACES i three.js')}
 stage.appendChild(Rn.domElement);
 const S=new THREE.Scene();
-S.background=new THREE.Color(0xd6e3ea);
-S.fog=new THREE.Fog(0xd6e3ea,140,360);
+const HAZE=0xcfdee8;   // dis vid horisonten: dimman och himlens nedre kant har samma färg så att landskapet tonar ut i diset
+S.background=new THREE.Color(HAZE);
+S.fog=new THREE.Fog(HAZE,140,360);
 const C=new THREE.PerspectiveCamera(42,1,0.03,900);
-S.add(new THREE.HemisphereLight(0xf4f7ff,0x4a4a3c,0.7));
-const sun=new THREE.DirectionalLight(0xffe2b8,0.95);
+S.add(new THREE.HemisphereLight(0xb9d0f0,0x5c4e3c,0.8));   // svalt blått himmelsljus i skuggorna, varm reflex från marken
+const sun=new THREE.DirectionalLight(0xfff4e5,1.35);
 sun.target.position.set(-4,3,22);S.add(sun.target);
 sun.position.set(36,53,82);
 sun.castShadow=true;sun.shadow.mapSize.set(4096,4096);
 Object.assign(sun.shadow.camera,{left:-42,right:42,top:42,bottom:-42,near:5,far:230});
 sun.shadow.camera.updateProjectionMatrix();sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.03;S.add(sun);
+// Himlen: kupol som följer kameran (även vattnets spegelkamera) – djupblå zenit, ljust himmelsblått mot horisonten, dis nedtill,
+// varmt solsken runt solen. Värmen läggs bara kring solen och vid låg sol (varmt + blått blandat rakt av blir grått).
+const SKY=(()=>{const u={sunDir:{value:new THREE.Vector3(0,1,0)},zen:{value:new THREE.Color(0x2a66b0)},hor:{value:new THREE.Color(0xd8eaf6)},haze:{value:new THREE.Color(HAZE)},glow:{value:new THREE.Color(0xffd29a)}};
+ const m=new THREE.Mesh(new THREE.SphereGeometry(800,48,24),new THREE.ShaderMaterial({uniforms:u,side:THREE.BackSide,depthWrite:false,depthTest:false,fog:false,
+  vertexShader:'varying vec3 vD;void main(){vD=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:`uniform vec3 sunDir,zen,hor,haze,glow;varying vec3 vD;
+void main(){vec3 d=normalize(vD);float h=d.y,low=1.0-smoothstep(0.0,0.45,sunDir.y);
+float s=max(dot(d,sunDir),0.0);
+vec3 hz=mix(hor,vec3(1.0,0.86,0.66),low*(0.35+0.65*pow(s,2.0)));
+vec3 c=mix(hz,zen,smoothstep(0.0,0.75,pow(clamp(h,0.0,1.0),0.7)));
+c=mix(haze,c,smoothstep(-0.01,0.08,h));
+c+=glow*(pow(s,8.0)*(0.18+0.45*low)+pow(s,900.0)*2.0)*smoothstep(-0.04,0.04,h);
+gl_FragColor=vec4(c,1.0);
+#include <tonemapping_fragment>
+#include <encodings_fragment>
+}`}));
+ m.renderOrder=-1000;m.frustumCulled=false;m.userData.noShadow=true;m.raycast=()=>{};   // dubbeltryck ska aldrig träffa himlen
+ m.onBeforeRender=(r,s,c)=>{m.position.copy(c.position);u.sunDir.value.subVectors(sun.position,sun.target.position).normalize()};S.add(m);return m})();
 
 let seed=13;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
 const cl=v=>Math.min(1,Math.max(0,v));
@@ -1002,7 +1026,7 @@ mk('rowVisa','Träd',{'data-tog':'trad','aria-pressed':'true'},()=>setVis('trad'
 let contour=false;mk('rowVisa','Höjdkurvor',{'data-tog':'hk','aria-pressed':'false'},e=>{contour=!contour;TERR.forEach(m=>{const a=m.geometry.attributes.color;a.array.set(contour?m.userData.colB:m.userData.colA);a.needsUpdate=true});e.currentTarget.setAttribute('aria-pressed',String(contour))});
 mk('rowVisa','Planerad utbyggnad',{'data-tog':'plan','aria-pressed':'true'},e=>{setPlanned(!PLAN_EXT.visible);e.currentTarget.setAttribute('aria-pressed',String(PLAN_EXT.visible))});
 mk('rowVisa','Rutnät',{'data-tog':'grid','aria-pressed':'false'},e=>{GRID.visible=!GRID.visible;e.currentTarget.setAttribute('aria-pressed',String(GRID.visible))});
-const SUN=[{n:'Sol: middag',p:[36,53,82],c:0xffe2b8,i:0.95},{n:'Sol: kväll',p:[-70,22,40],c:0xffc48a,i:0.85},{n:'Sol: morgon',p:[70,25,-20],c:0xffe9cf,i:0.8}];let si=0;
+const SUN=[{n:'Sol: middag',p:[36,53,82],c:0xfff4e5,i:1.35},{n:'Sol: kväll',p:[-70,22,40],c:0xffb27a,i:1.25},{n:'Sol: morgon',p:[70,25,-20],c:0xffdcb8,i:1.15}];let si=0;
 mk('rowVisa',SUN[0].n,{'data-tog':'sun','aria-pressed':'false'},e=>{si=(si+1)%SUN.length;const q=SUN[si];sun.position.set(-4+q.p[0],3+q.p[1],22+q.p[2]);sun.color.setHex(q.c);sun.intensity=q.i;e.currentTarget.textContent=q.n});
 let measure=false,mA=null,mB=null;const mMat=new THREE.MeshBasicMaterial({color:0xd8322a,depthTest:false}),mkA=new THREE.Mesh(new THREE.SphereGeometry(0.12,12,8),mMat),mkB=mkA.clone();mkA.renderOrder=mkB.renderOrder=9;mkA.visible=mkB.visible=false;S.add(mkA,mkB);
 const mLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineBasicMaterial({color:0xd8322a,depthTest:false}));mLine.renderOrder=9;mLine.visible=false;S.add(mLine);
