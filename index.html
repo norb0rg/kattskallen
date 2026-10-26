@@ -59,7 +59,7 @@ button:focus-visible{outline:2px solid var(--on);outline-offset:2px}
 </head>
 <body>
 <div id="stage">
-<div class="tag"><h1>www.kattskallen.3D</h1><p>Sundby 7:130, Ornö · senaste uppdatering 26 okt 2026 · v66</p><p>Vit bod med brygga på östra udden, där vassranden slutar</p></div>
+<div class="tag"><h1>www.kattskallen.3D</h1><p>Sundby 7:130, Ornö · senaste uppdatering 26 okt 2026 · v67</p><p>Vit bod med brygga på östra udden (egen vy under Ute)</p></div>
 <img id="ovl" class="ovl" alt="" hidden>
 <div id="compass" class="compass" aria-hidden="true"><span>N</span></div>
 <div id="mlabel" class="mlabel" hidden></div>
@@ -956,6 +956,7 @@ const V={
  altan:{n:'Nya altanen',g:'ute',t:[altC[0],Fr+0.5,altC[1]],r:11,th:Math.PI-0.5,ph:1.05},
  sjostugan:{n:'Sjöstugan',g:'ute',t:[JX,1.5,JZ],r:18,th:0.35,ph:1.2},
  sundet:{n:'Mot sundet',g:'ute',t:[6,4,60],r:34,th:Math.PI-0.15,ph:1.3},
+ bod:{n:'Boden på östra udden',g:'ute',t:[EBOD[0]-1,2,EBOD[1]],r:30,th:-1.57,ph:1.2},
  uppifran:{n:'Uppifrån',g:'ute',t:[2,0,12],r:120,th:0.0001,ph:0.05},
  vardagsrum:Object.assign({n:'Vardagsrum',g:'inne',roof:true,loft:true},fromEye(AW(1.0,1.55,3.05),AW(-1.0,1.05,0.2))),
  kok:Object.assign({n:'Köket',g:'inne',roof:true,loft:true},fromEye(AW(0.55,1.6,1.0),AW(-1.6,1.0,1.1))),
