@@ -59,7 +59,7 @@ button:focus-visible{outline:2px solid var(--on);outline-offset:2px}
 </head>
 <body>
 <div id="stage">
-<div class="tag"><h1>www.kattskallen.3D</h1><p>Sundby 7:130, Ornö · senaste uppdatering 26 okt 2026 · v68</p><p>Filmiskt ljus: himmel med djupblå zenit, varm sol, svala skuggor</p></div>
+<div class="tag"><h1>www.kattskallen.3D</h1><p>Sundby 7:130, Ornö · senaste uppdatering 26 okt 2026 · v69</p><p>Filmisk look: djupt vatten, väderbitet trä, speglande fönster, levande skog</p></div>
 <img id="ovl" class="ovl" alt="" hidden>
 <div id="compass" class="compass" aria-hidden="true"><span>N</span></div>
 <div id="mlabel" class="mlabel" hidden></div>
@@ -162,7 +162,19 @@ function ctex(r){const c=document.createElement('canvas');c.width=128;c.height=1
 function stoneTex(){const c=document.createElement('canvas');c.width=128;c.height=64;const x=c.getContext('2d');x.fillStyle='#6d6a64';x.fillRect(0,0,128,64);for(let i=0;i<40;i++){const s=Math.random()*40-20;x.fillStyle=`rgb(${140+s},${135+s},${128+s})`;x.beginPath();x.ellipse(Math.random()*128,Math.random()*64,6+Math.random()*8,4+Math.random()*4,0,0,7);x.fill()}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(3,1);return t}
 function tileFloorTex(){const c=document.createElement('canvas');c.width=64;c.height=64;const x=c.getContext('2d');x.fillStyle='#8e9192';x.fillRect(0,0,64,64);for(let i=0;i<4;i++)for(let k=0;k<4;k++){const s=Math.random()*12-6;x.fillStyle=`rgb(${120+s},${124+s},${126+s})`;x.fillRect(i*16+1,k*16+1,14,14)}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(3,8);return t}
 
-const M=o=>new THREE.MeshStandardMaterial(Object.assign({roughness:0.85},o));
+// Mikrostruktur (PBR-riktlinje 4, 26 okt 2026): svagt brus i normalen, räknat i världskoordinater så att det är lika fint (ca 7 cm)
+// på en stor vägg som på en stol – bryter den platta "digitala" skuggningen. Inte på flatShading-material (berget, träden har egen form).
+const MICRO=sh=>{sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vWP;').replace('#include <project_vertex>',
+ '#include <project_vertex>\n#ifdef USE_INSTANCING\nvWP=(modelMatrix*instanceMatrix*vec4(transformed,1.0)).xyz;\n#else\nvWP=(modelMatrix*vec4(transformed,1.0)).xyz;\n#endif');
+ sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vWP;\nfloat mh(vec3 p){return fract(sin(dot(p,vec3(127.1,311.7,74.7)))*43758.5453);}\nfloat mn(vec3 p){vec3 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(mix(mh(i),mh(i+vec3(1,0,0)),f.x),mix(mh(i+vec3(0,1,0)),mh(i+vec3(1,1,0)),f.x),f.y),mix(mix(mh(i+vec3(0,0,1)),mh(i+vec3(1,0,1)),f.x),mix(mh(i+vec3(0,1,1)),mh(i+vec3(1,1,1)),f.x),f.y),f.z);}')
+ .replace('#include <normal_fragment_maps>','#include <normal_fragment_maps>\n{vec3 p=vWP*14.0;float n0=mn(p);vec3 g=vec3(mn(p+vec3(0.15,0,0))-n0,mn(p+vec3(0,0.15,0))-n0,mn(p+vec3(0,0,0.15))-n0)/0.15;vec3 gv=(viewMatrix*vec4(g,0.0)).xyz;normal=normalize(normal-0.035*(gv-dot(gv,normal)*normal));}')};
+const M=o=>{const m=new THREE.MeshStandardMaterial(Object.assign({roughness:0.85},o));if(!m.flatShading)m.onBeforeCompile=MICRO;return m};
+// Väderbitet trä (PBR-riktlinje 2): plankornas fogar som bumpkarta; nära vattenlinjen mörkt, grönaktigt och blankt (alger, Roughness 0,2),
+// ovanför matt (0,8) – gammalt trä dessutom solblekt grått
+const WOOD=bleach=>sh=>{MICRO(sh);sh.fragmentShader=sh.fragmentShader.replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\n'+
+ '{float w=1.0-smoothstep(0.12,0.75,vWP.y);'+(bleach?'diffuseColor.rgb=mix(diffuseColor.rgb,vec3(dot(diffuseColor.rgb,vec3(0.3,0.4,0.3)))*vec3(1.02,1.0,0.97),0.45*(1.0-w));':'')+
+ 'diffuseColor.rgb=mix(diffuseColor.rgb,diffuseColor.rgb*vec3(0.42,0.52,0.4),w);roughnessFactor=mix(0.8,0.2,w);}')};
+const woodM=(o,bleach)=>{const m=M(o);if(m.map){m.bumpMap=m.map;m.bumpScale=0.025}m.onBeforeCompile=WOOD(bleach);return m};
 let cur=S;
 function box(w,h,d,x,y,z,m){const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,y,z);cur.add(b);return b}
 function cyl(r,h,x,y,z,m,seg){const c=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,seg||10),m);c.position.set(x,y,z);cur.add(c);return c}
@@ -171,13 +183,16 @@ function tri(pts,mat,x,z,ry){const s=new THREE.Shape();s.moveTo(pts[0][0],pts[0]
 // Form med rektangulära hål: outline [[x,y]...], holes [[x0,y0,x1,y1]...]
 function holeShape(outline,holes){const s=new THREE.Shape();s.moveTo(outline[0][0],outline[0][1]);outline.slice(1).forEach(p=>s.lineTo(p[0],p[1]));(holes||[]).forEach(h=>{const p=new THREE.Path();p.moveTo(h[0],h[1]);p.lineTo(h[0],h[3]);p.lineTo(h[2],h[3]);p.lineTo(h[2],h[1]);p.lineTo(h[0],h[1]);s.holes.push(p)});return s}
 
+// Miljökarta från himlen (tas en gång, middagssol): fönster och plåt speglar himlens toner
+const ENV=(()=>{const pm=new THREE.PMREMGenerator(Rn),sc=new THREE.Scene();S.remove(SKY);sc.add(SKY);const t=pm.fromScene(sc,0.02).texture;sc.remove(SKY);S.add(SKY);pm.dispose();return t})();
 // Gemensamma material
-const roofAZ=M({color:0xb7bcc0,metalness:0.55,roughness:0.4}),seamM=M({color:0xc9cdd0,metalness:0.6,roughness:0.35});
-const glass=M({color:0x2c3a44,roughness:0.08,metalness:0.3});
-const glassT=new THREE.MeshStandardMaterial({color:0xa9c3cf,roughness:0.05,metalness:0.1,transparent:true,opacity:0.22,depthWrite:false});
+const roofAZ=M({color:0xb7bcc0,metalness:0.5,roughness:0.4,envMap:ENV}),seamM=M({color:0xc9cdd0,metalness:0.6,roughness:0.35,envMap:ENV});   // plåt: fångar himlens toner
+// fönster: spegelblankt (Roughness 0) med mörk insida så att himlen syns i rutan; ingen mikrostruktur
+const glass=new THREE.MeshStandardMaterial({color:0x10181e,roughness:0,metalness:0.6,envMap:ENV,envMapIntensity:1.4});
+const glassT=new THREE.MeshStandardMaterial({color:0xa9c3cf,roughness:0,metalness:0.1,transparent:true,opacity:0.22,depthWrite:false,envMap:ENV});
 const frame=M({color:0x6f6b64}),white=M({color:0xf2f0ea}),dark=M({color:0x3b3631});
-const deckOld=M({map:tex([138,132,122],2)}),deckNew=M({map:tex([200,176,134],3)}),deckAlt=M({map:tex([178,160,132],3)});
-const post=M({color:0x8a7f70}),wood=M({color:0xa98d66}),capM=M({color:0x1e1e1e,metalness:0.5});
+const deckOld=woodM({map:tex([138,132,122],2)},true),deckNew=woodM({map:tex([200,176,134],3)}),deckAlt=woodM({map:tex([178,160,132],3)});
+const post=woodM({color:0x8a7f70},true),wood=woodM({color:0xa98d66}),capM=M({color:0x1e1e1e,metalness:0.5});
 
 const PHOTOS=[];
 // ===== 10_terrain: berget, vassen, stränderna, sjön =====
@@ -301,6 +316,15 @@ const vx=RB_[0]-RA_[0],vz=RB_[1]-RA_[1],L2=vx*vx+vz*vz,tt=((lx-RA_[0])*vx+(lz-RA
 const qx=RA_[0]+vx*tc,qz=RA_[1]+vz*tc,perp=Math.hypot(lx-qx,lz-qz),ry=RA_[2]+(RB_[2]-RA_[2])*tc;y=Math.max(y,ry-0.65*Math.max(0,perp-0.8));return y}
 function shoreE(z){for(let x=0;x<60;x+=0.2)if(raw(x,z)<0.05)return x;return 60}
 function shoreS(x){for(let z=10;z<80;z+=0.2)if(raw(x,z)<0.05)return z;return 80}
+// Avstånd till närmaste strand (m) i ett grovt rutnät (2 m), räknat en gång: styr bottnens färg från ljust turkos vid land
+// till djupt blågrönt ute i viken (PBR-riktlinje 1, 26 okt 2026). Bottnen är bara 0,8 m djup i modellen, så djupet går inte att använda.
+const SHOREDIST=(()=>{const X0=-110,Z0=-130,CS=2,NX=111,NZ=196,g=new Float32Array(NX*NZ),Q=CS*Math.SQRT2;
+ for(let j=0;j<NZ;j++)for(let i=0;i<NX;i++)g[j*NX+i]=base(X0+i*CS,Z0+j*CS)>0.05?0:1e9;
+ const rl=(i,j,a,b,c)=>{const k=j*NX+i;if(i+a>=0&&i+a<NX&&j+b>=0&&j+b<NZ)g[k]=Math.min(g[k],g[(j+b)*NX+i+a]+c)};   // avståndstransform i två svep
+ for(let j=0;j<NZ;j++)for(let i=0;i<NX;i++){rl(i,j,-1,0,CS);rl(i,j,0,-1,CS);rl(i,j,-1,-1,Q);rl(i,j,1,-1,Q)}
+ for(let j=NZ-1;j>=0;j--)for(let i=NX-1;i>=0;i--){rl(i,j,1,0,CS);rl(i,j,0,1,CS);rl(i,j,1,1,Q);rl(i,j,-1,1,Q)}
+ return(x,z)=>{const fi=Math.min(NX-1.001,Math.max(0,(x-X0)/CS)),fj=Math.min(NZ-1.001,Math.max(0,(z-Z0)/CS)),i=Math.floor(fi),j=Math.floor(fj),u=fi-i,v=fj-j,k=j*NX+i;
+  return(g[k]*(1-u)+g[k+1]*u)*(1-v)+(g[k+NX]*(1-u)+g[k+NX+1]*u)*v}})();
 function terrain(x0,z0,w,d,sx,sz,off0,cover){const g=new THREE.PlaneGeometry(w,d,sx,sz);g.rotateX(-Math.PI/2);g.translate(x0+w/2,0,z0+d/2);const pa=g.attributes.position,col=[],offs=new Float32Array(pa.count);
 for(let i=0;i<pa.count;i++){const x=pa.getX(i),z=pa.getZ(i),h=ground(x,z),b=raw(x,z),off=cover&&x>cover[0]&&x<cover[1]&&z>cover[2]&&z<cover[3]?off0:0;offs[i]=off;pa.setY(i,h+off);const n=(rnd()-0.5)*0.08;const[lx,lz]=loc(x,z);const lich=0.5+0.5*Math.sin(x*1.3+z*0.7)*Math.sin(z*1.1-x*0.4);
 if(lx>-2.45&&lx<2.42&&lz>-5.4&&lz<3.8&&Math.abs(h-(F-0.1))<0.01)col.push(0.6+n,0.59+n,0.56+n);
@@ -310,7 +334,7 @@ else if(gravelW(x,z)>0.5||(z<-24&&Math.abs(x-NECKX(z))<12&&b>0.3&&b<2.2)){const 
 else if((onPath(lx,lz)!==null&&onPath(lx,lz)<0.55)||onPath2(x,z)<0.55){const r=(rnd()-0.5)*0.05;col.push(0.74+r,0.7+r,0.62+r)}
 else if(fillW(lx,lz)>base(x,z)+0.05&&Math.abs(h-fillW(lx,lz))<0.02){const r=(rnd()-0.5)*0.14;col.push(0.55+r,0.52+r,0.5+r)}
 else if(marsh(x,z)&&b<0.3)col.push(0.66+n,0.57+n,0.38+n);
-else if(h<-0.05)col.push(0.36+n+h*0.12,0.38+n+h*0.08,0.3+n+h*0.04);   // botten: ljus sand/sten grunt, mörkare djupare
+else if(h<-0.05){const t=Math.min(1,Math.max(0,(SHOREDIST(x,z)-1)/15)),q=t*t*(3-2*t);col.push(0.5+(0.04-0.5)*q+n,0.66+(0.11-0.66)*q+n,0.6+(0.16-0.6)*q+n)}   // botten: ljust turkos vid stranden, djupt blågrönt ute i viken
 else if(h<0.35)col.push(0.45+n,0.42+n,0.36+n);
 else{const e=0.35,hf=(x>-7&&x<19&&z>26&&z<50)?ground:raw,gx=(hf(x+e,z)-hf(x-e,z))/(2*e),gz=(hf(x,z+e)-hf(x,z-e))/(2*e),sl=Math.hypot(gx,gz),R=rockDetail(x,z),hol=R.hump<-0.38&&sl<0.45;
  const lv=fbm(x*0.55,z*0.55),pink=fbm(x*0.08+11.3,z*0.08-4.2);   // oregelbundet brus i stället för sinusvågor (gav rutmönster)
@@ -333,7 +357,7 @@ const WAVE=(()=>{const N=256,c=document.createElement('canvas');c.width=c.height
  g.putImageData(im,0,0);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(220,220);return t})();
 // Spegelblankt, genomskinligt vatten som speglar ön, träden och himlen (three.js Water: realtidsspegling + mycket små krusningar)
 const sea=THREE.Water?new THREE.Water(new THREE.PlaneGeometry(900,900),{textureWidth:768,textureHeight:768,waterNormals:WAVE,
-  sunDirection:new THREE.Vector3(0.36,0.53,0.77).normalize(),sunColor:0xfff4e0,waterColor:0x1f5a72,distortionScale:0.06,alpha:0.62,fog:true})
+  sunDirection:new THREE.Vector3(0.36,0.53,0.77).normalize(),sunColor:0xfff4e5,waterColor:0x0b1d28,distortionScale:0.06,alpha:0.62,fog:true})   // Albedo #0b1d28 (djupt blågrönt)
  :new THREE.Mesh(new THREE.PlaneGeometry(900,900),M({color:0x6aa6c6,roughness:0.28,metalness:0.05,normalMap:WAVE,normalScale:new THREE.Vector2(0.22,0.22)}));
 if(sea.material.uniforms){const m=sea.material;m.transparent=true;m.uniforms.size.value=14.0;
  // säkerställ stöd för logaritmisk djupbuffert (används av hela scenen) så vattnet sorteras rätt mot land och båtar
@@ -825,7 +849,15 @@ for(let i=0;i<8;i++){const x=-6.3,z=shoreS(-6)-0.8-i*0.45;box(1.0,0.08,0.4,x,0.7
 // tallkrona: platta, oregelbundna barrskivor i våningar högt upp på stammen (inte runda bollar)
 const PAD=(()=>{const g=new THREE.CylinderGeometry(0.62,1,1,9,1);const p=g.attributes.position;for(let i=0;i<p.count;i++){const a=Math.atan2(p.getZ(i),p.getX(i)),k=1+0.22*Math.sin(a*3+1.3)+0.12*Math.sin(a*5);p.setX(i,p.getX(i)*k);p.setZ(i,p.getZ(i)*k)}g.computeVertexNormals();return g})();
 // ===== 50_natur_detaljer: skog runt om, block, vass, detaljer från bilderna =====
-const NT=1500,trunkI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1,0.18,1,6),M({color:0x9a5a38}),NT),crownI=new THREE.InstancedMesh(PAD,M({color:0xffffff,flatShading:true,transparent:true,opacity:0.6,depthWrite:false}),NT*6);
+// Barr (PBR-riktlinje 3, 26 okt 2026): kronorna färgas om i efterhand med ett fast mönster per instans (inte rnd – slumpföljden får inte ändras):
+// mest skogsgrönt, inslag av oliv och lime, ljusare högre upp. Fejkad SSS: i motljus lyser barren varmt gulgröna.
+const LEAF=sh=>{sh.fragmentShader=sh.fragmentShader.replace('#include <lights_fragment_end>','#include <lights_fragment_end>\n#if NUM_DIR_LIGHTS > 0\n'+
+ '{float bl=pow(max(dot(normalize(-vViewPosition),directionalLights[0].direction),0.0),3.0);reflectedLight.indirectDiffuse+=diffuseColor.rgb*vec3(1.3,1.45,0.45)*directionalLights[0].color*bl*0.55;}\n#endif')};
+function leafify(im,n){const m4=new THREE.Matrix4(),v=new THREE.Vector3(),c=new THREE.Color(),OL=[0.3,0.36,0.13],LI=[0.38,0.5,0.14],FO=[0.1,0.24,0.12];
+ for(let i=0;i<n;i++){im.getMatrixAt(i,m4);v.setFromMatrixPosition(m4);const hsh=((Math.sin(i*12.9898+v.x*0.7)*43758.5453)%1+1)%1,tr=((Math.sin(Math.floor(v.x)*3.1+Math.floor(v.z)*7.7)*9631.7)%1+1)%1;
+  const p=tr<0.62?FO:tr<0.85?OL:LI,up=Math.min(1,Math.max(0,(v.y-base(v.x,v.z))/14)),k=0.78+0.3*up+0.16*(hsh-0.5);   // trädets ton, ljusare toppar
+  c.setRGB(p[0]*k,p[1]*k,p[2]*k);im.setColorAt(i,c)}if(im.instanceColor)im.instanceColor.needsUpdate=true;im.material.onBeforeCompile=LEAF}
+const NT=1500,trunkI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1,0.18,1,6),M({color:0x9a5a38,roughness:0.9,metalness:0}),NT),crownI=new THREE.InstancedMesh(PAD,M({color:0xffffff,flatShading:true,transparent:true,opacity:0.6,depthWrite:false}),NT*6);
 const dm=new THREE.Object3D(),cc=new THREE.Color();let nt=0,nc=0;
 function pine(x,z,s){if(nt>=NT)return;const y=base(x,z);const H=(8+rnd()*5)*s;dm.position.set(x,y+H*0.42,z);dm.rotation.set((rnd()-0.5)*0.12,0,(rnd()-0.5)*0.12);dm.scale.set(s,H*0.84,s);dm.updateMatrix();trunkI.setMatrixAt(nt++,dm.matrix);
 const k=5+Math.floor(rnd()*2);for(let i=0;i<k&&nc<NT*6;i++){const f=i/(k-1||1),r=(2.1-f*1.0+rnd()*0.6)*s;dm.position.set(x+(rnd()-0.5)*1.4*s,y+H*(0.5+f*0.46),z+(rnd()-0.5)*1.4*s);dm.rotation.set((rnd()-0.5)*0.15,rnd()*6.3,(rnd()-0.5)*0.15);dm.scale.set(r,(0.45+rnd()*0.25)*s,r*(0.8+rnd()*0.3));dm.updateMatrix();crownI.setMatrixAt(nc,dm.matrix);cc.setRGB(0.15+rnd()*0.05,0.25+rnd()*0.07,0.17+rnd()*0.04);crownI.setColorAt(nc++,cc)}}
@@ -836,6 +868,7 @@ for(let i=0,c=0;i<6000&&c<55&&nt<NT;i++){const z=-46+rnd()*26,x=NECKX(z)+(rnd()*
 for(let i=0;i<40000&&nt<NT;i++){const x=rnd()*220-110,z=rnd()*390-130;if((raw(x,z)<0.3||(z<-24&&Math.abs(x-NECKX(z))<16))&&(!marsh(x,z)||raw(x,z)>=0.3)&&base(x,z)>0.9&&!(gravelW(x,z)>0.02||(Math.abs(x-NECKX(z))<3.5&&z<-36&&z>-95)))pine(x,z,0.9+rnd()*0.5)}
 // glänta runt boden på östra udden: träd där tas bort i efterhand (slumpföljden och resten av skogen ändras inte)
 {const v=new THREE.Vector3(),m4=new THREE.Matrix4(),z0=new THREE.Matrix4().makeScale(0,0,0);[[trunkI,nt],[crownI,nc]].forEach(([im,n])=>{for(let i=0;i<n;i++){im.getMatrixAt(i,m4);v.setFromMatrixPosition(m4);if(Math.hypot(v.x-EBOD[0],v.z-EBOD[1])<6)im.setMatrixAt(i,z0)}})}
+leafify(crownI,nc);
 window.AIR_MATS=[[crownI.material,1],[trunkI.material,2.2]];trunkI.userData.air=crownI.userData.air=true;trunkI.count=nt;crownI.count=nc;trunkI.userData.noShadow=crownI.userData.noShadow=true;S.add(trunkI,crownI);
 function yardFree(x,z){return gravelW(x,z)<0.01&&!(z<-22&&Math.abs(x-NECKX(z))<12)}   // inga stenar, buskar eller döda träd på grusplanen/landtungan
 function far(x,z){if(!yardFree(x,z))return false;const[rx,rz]=rloc(x,z);if(rx>-8&&rx<10&&rz>-10&&rz<10)return false;return !(Math.hypot(x-AX,z-AZ)<7||Math.hypot(x-JX,z-JZ)<7)}
@@ -864,7 +897,7 @@ for(let k=0;k<tops.length-1;k++){const a=tops[k],b=tops[k+1];for(let j=1;j<9;j++
 [[1.4,0],[-1.4,0.3],[0.2,1.5]].forEach(([dx,dz])=>{const c=box(0.5,0.45,0.5,w[0]+dx,base(w[0]+dx,w[1]+dz)+0.22,w[1]+dz,M({color:0x3d4a3f}))})}
 
 // ===== Tallar på halvön (kan tändas/släckas med knappen Träd) =====
-{const NP=170,tI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.13,0.26,1,7),M({color:0x8a5a3e}),NP),cI=new THREE.InstancedMesh(PAD,M({color:0xffffff,flatShading:true,transparent:true,opacity:0.45,depthWrite:false}),NP*6);
+{const NP=170,tI=new THREE.InstancedMesh(new THREE.CylinderGeometry(0.13,0.26,1,7),M({color:0x8a5a3e,roughness:0.9,metalness:0}),NP),cI=new THREE.InstancedMesh(PAD,M({color:0xffffff,flatShading:true,transparent:true,opacity:0.45,depthWrite:false}),NP*6);
 let a=0,b=0;
 function okSpot(x,z){if(!yardFree(x,z))return false;if(Math.hypot(x-RX,z-RZ)<15||Math.hypot(x-AX,z-AZ)<18)return false;   // inga slumpade träd som skymmer attefallshuset
 {const q=rloc(x,z);if(q[0]>3&&Math.hypot(q[0],q[1])<34)return false}   // framför röda stugan ner mot vattnet: bara träd som finns på bilderna   // runt husen bara träden som syns på bilderna
@@ -883,7 +916,7 @@ dm.position.set(x,y+H*0.5,z);dm.rotation.set(lx,rnd()*3,lz);dm.scale.set(1,H,1);
 const nb=H>5?3:1;for(let k=0;k<nb&&s<NS*5;k++){const hh=H*(0.45+k*0.17),ang=rnd()*6.3,L=0.8+rnd()*1.2;dm.position.set(x+Math.cos(ang)*L*0.45,y+hh,z+Math.sin(ang)*L*0.45);dm.rotation.set(Math.sin(ang)*1.2,0,-Math.cos(ang)*1.2);dm.scale.set(0.35,L,0.35);dm.updateMatrix();sI.setMatrixAt(s++,dm.matrix)}}
 for(let i=0;i<4000&&l<8;i++){const x=rnd()*60-28,z=rnd()*96-52,h=raw(x,z);if(h<0.8||!okSpot(x,z)||Math.hypot(x-RX,z-RZ)<22||Math.hypot(x-AX,z-AZ)<18)continue;const L=3+rnd()*6,a=rnd()*3.14;dm.position.set(x,ground(x,z)+0.2,z);dm.rotation.set(0,a,Math.PI/2);dm.scale.set(1,L,1);dm.updateMatrix();lI.setMatrixAt(l++,dm.matrix)}
 sI.count=s;lI.count=l;sI.castShadow=lI.castShadow=true;sI.receiveShadow=lI.receiveShadow=true;S.add(sI,lI);tag('trad',sI);tag('trad',lI);sI.userData.air=true}
-AIR_MATS.push([cI.material,1.15],[tI.material,2.2]);tI.userData.air=cI.userData.air=true;tI.count=a;cI.count=b;tI.castShadow=cI.castShadow=true;S.add(tI,cI);tag('trad',tI);tag('trad',cI);}
+leafify(cI,b);AIR_MATS.push([cI.material,1.15],[tI.material,2.2]);tI.userData.air=cI.userData.air=true;tI.count=a;cI.count=b;tI.castShadow=cI.castShadow=true;S.add(tI,cI);tag('trad',tI);tag('trad',cI);}
 
 // ===== 55_omgivning: grannhus, utedass, öar och båtar utanför tomten (ungefärligt efter satellit- och drönarbilder) =====
 cur=S;
